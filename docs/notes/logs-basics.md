@@ -75,3 +75,15 @@ For example:
 
 describes a failure mechanism, but additional investigation may still
 be required to determine why the connection was refused.
+
+A trace ID can be used to retrieve logs emitted by multiple services
+participating in the same distributed request.
+
+For one failing checkout trace, correlated logs showed successful activity
+from Cart, Product Catalog, Shipping and other services, followed by the
+frontend message:
+
+`Checkout failed to place order`
+
+This demonstrates how trace/log correlation can reconstruct the sequence
+of events across services.
