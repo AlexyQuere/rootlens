@@ -1,7 +1,9 @@
 from rootlens.retrieval.tfidf import (
+    build_vocabulary,
     document_frequency,
     inverse_document_frequency,
     term_frequency,
+    tfidf_vector,
     tokenize,
 )
 
@@ -117,3 +119,113 @@ def test_idf_returns_zero_for_unknown_term():
 
 def test_idf_handles_empty_corpus():
     assert inverse_document_frequency("payment", []) == 0.0
+
+def test_build_vocabulary():
+    documents = [
+        ["payment", "service"],
+        ["payment", "service", "unavailable"],
+        ["shipping", "service"],
+    ]
+
+    result = build_vocabulary(documents)
+
+    assert result == {
+        "payment": 0,
+        "service": 1,
+        "shipping": 2,
+        "unavailable": 3,
+    }
+
+def test_build_vocabulary_removes_duplicates():
+    documents = [
+        ["payment", "payment", "service"],
+        ["service", "shipping"],
+    ]
+
+    result = build_vocabulary(documents)
+
+    assert result == {
+        "payment": 0,
+        "service": 1,
+        "shipping": 2,
+    }
+
+def test_build_vocabulary_handles_empty_corpus():
+    assert build_vocabulary([]) == {}
+
+def test_tfidf_vector():
+    vocabulary = build_vocabulary(DOCUMENTS)
+
+    result = tfidf_vector(
+        ["payment", "service", "unavailable"],
+        DOCUMENTS,
+        vocabulary,
+    )
+
+    expected = [
+        math.log(3 / 2),
+        0.0,
+        0.0,
+        math.log(3),
+    ]
+
+    assert len(result) == len(expected)
+
+    for actual, expected_value in zip(result, expected):
+        assert math.isclose(actual, expected_value)
+
+def test_tfidf_vector_for_payment_service():
+    vocabulary = build_vocabulary(DOCUMENTS)
+
+    result = tfidf_vector(
+        ["payment", "service"],
+        DOCUMENTS,
+        vocabulary,
+    )
+
+    expected = [
+        math.log(3 / 2),
+        0.0,
+        0.0,
+        0.0,
+    ]
+
+    for actual, expected_value in zip(result, expected):
+        assert math.isclose(actual, expected_value)
+
+def test_tfidf_vector_for_shipping_service():
+    vocabulary = build_vocabulary(DOCUMENTS)
+
+    result = tfidf_vector(
+        ["shipping", "service"],
+        DOCUMENTS,
+        vocabulary,
+    )
+
+    expected = [
+        0.0,
+        0.0,
+        math.log(3),
+        0.0,
+    ]
+
+    for actual, expected_value in zip(result, expected):
+        assert math.isclose(actual, expected_value)
+
+def test_tfidf_uses_term_frequency():
+    vocabulary = build_vocabulary(DOCUMENTS)
+
+    result = tfidf_vector(
+        ["payment", "payment", "service"],
+        DOCUMENTS,
+        vocabulary,
+    )
+
+    payment_index = vocabulary["payment"]
+
+    expected = 2 * math.log(3 / 2)
+
+    assert math.isclose(
+        result[payment_index],
+        expected,
+    )

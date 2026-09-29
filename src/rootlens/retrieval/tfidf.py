@@ -103,3 +103,67 @@ def inverse_document_frequency(
         return 0.0
 
     return math.log(number_of_documents / df)
+
+def build_vocabulary(
+    documents: list[list[str]],
+) -> dict[str, int]:
+    """Build a deterministic token-to-index mapping from a corpus.
+
+    Tokens are sorted alphabetically so the vocabulary is reproducible.
+
+    Example:
+        documents = [
+            ["payment", "service"],
+            ["shipping", "service"],
+        ]
+
+        result:
+        {
+            "payment": 0,
+            "service": 1,
+            "shipping": 2,
+        }
+    """
+
+    unique_terms: set[str] = set()
+
+    for document in documents:
+        unique_terms.update(document)
+
+    sorted_terms = sorted(unique_terms)
+
+    return {
+        term: index
+        for index, term in enumerate(sorted_terms)
+    }
+
+def tfidf_vector(
+    tokens: list[str],
+    documents: list[list[str]],
+    vocabulary: dict[str, int],
+) -> list[float]:
+    """Represent one document as a TF-IDF vector.
+
+    The vector follows the dimensions defined by `vocabulary`.
+
+    TF-IDF(t, d) = TF(t, d) * IDF(t)
+    """
+
+    vector = [0.0] * len(vocabulary)
+
+    frequencies = term_frequency(tokens)
+
+    for term, tf in frequencies.items():
+        if term not in vocabulary:
+            continue
+
+        index = vocabulary[term]
+
+        idf = inverse_document_frequency(
+            term,
+            documents,
+        )
+
+        vector[index] = tf * idf
+
+    return vector
