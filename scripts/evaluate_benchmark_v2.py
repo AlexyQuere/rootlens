@@ -61,6 +61,22 @@ def mean(values: list[float]) -> float:
         return 0.0
     return sum(values) / len(values)
 
+def maximum_recall_at_k(
+    relevance: dict[str, int],
+    k: int,
+) -> float:
+    relevant_count = sum(
+        grade > 0
+        for grade in relevance.values()
+    )
+
+    if relevant_count == 0:
+        return 0.0
+
+    return (
+        min(k, relevant_count)
+        / relevant_count
+    )
 
 def compute_metrics(
     retrieved: list[str],
@@ -176,7 +192,12 @@ def evaluate_retriever(
                 )
             )
 
-        if metrics["Recall@3"] < 1.0:
+        max_recall = maximum_recall_at_k(
+            example["relevance"],
+            k=3,
+        )
+
+        if metrics["Recall@3"] < max_recall - 1e-12:
             missing = sorted(
                 {
                     document_id
@@ -235,7 +256,7 @@ def evaluate_retriever(
 
     print()
     print(
-        f"Incomplete Recall@3 queries: "
+        f"Suboptimal Recall@3 queries: "
         f"{len(recall_failures)}"
     )
 
@@ -243,6 +264,7 @@ def evaluate_retriever(
         print(
             f"  {query_id}: "
             f"Recall@3={recall:.3f} "
+            f"max={max_recall:.3f} "
             f"missing={missing}"
         )
 
