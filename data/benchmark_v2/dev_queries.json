@@ -1,0 +1,238 @@
+[
+  {
+    "query_id": "dev-001",
+    "query": "Which service owns the oteldemo.PaymentService/Charge operation?",
+    "category": "exact_identifier",
+    "relevance": {
+      "payment-service.md": 2,
+      "checkout-payment-flow.md": 1
+    }
+  },
+  {
+    "query_id": "dev-002",
+    "query": "What should I inspect when rpc.response.status_code is UNAVAILABLE on a client span?",
+    "category": "exact_identifier",
+    "relevance": {
+      "grpc-troubleshooting.md": 2,
+      "service-discovery.md": 1,
+      "payment-runbook.md": 1
+    }
+  },
+  {
+    "query_id": "dev-003",
+    "query": "What is the purpose of oteldemo.CheckoutService/PlaceOrder?",
+    "category": "exact_identifier",
+    "relevance": {
+      "checkout-architecture.md": 2,
+      "checkout-runbook.md": 1
+    }
+  },
+  {
+    "query_id": "dev-004",
+    "query": "How are TraceId and SpanId different?",
+    "category": "exact_identifier",
+    "relevance": {
+      "distributed-tracing-guide.md": 2,
+      "telemetry-correlation.md": 1
+    }
+  },
+  {
+    "query_id": "dev-005",
+    "query": "How does an application find the network destination of another backend service?",
+    "category": "semantic_paraphrase",
+    "relevance": {
+      "service-discovery.md": 2,
+      "dns-troubleshooting.md": 1
+    }
+  },
+  {
+    "query_id": "dev-006",
+    "query": "How can I tie messages emitted by several services to the same user transaction?",
+    "category": "semantic_paraphrase",
+    "relevance": {
+      "telemetry-correlation.md": 2,
+      "structured-logging-guide.md": 1,
+      "distributed-tracing-guide.md": 1
+    }
+  },
+  {
+    "query_id": "dev-007",
+    "query": "What can make an RPC fail before the remote application ever sees the request?",
+    "category": "semantic_paraphrase",
+    "relevance": {
+      "grpc-troubleshooting.md": 2,
+      "service-discovery.md": 2,
+      "dns-troubleshooting.md": 1
+    }
+  },
+  {
+    "query_id": "dev-008",
+    "query": "Why is a browser HTTP 500 not enough to identify which backend component is faulty?",
+    "category": "semantic_paraphrase",
+    "relevance": {
+      "frontend-service.md": 2,
+      "incident-response-guide.md": 1,
+      "checkout-runbook.md": 1
+    }
+  },
+  {
+    "query_id": "dev-009",
+    "query": "Which downstream dependencies participate in placing an order?",
+    "category": "architecture",
+    "relevance": {
+      "checkout-architecture.md": 2,
+      "checkout-payment-flow.md": 2
+    }
+  },
+  {
+    "query_id": "dev-010",
+    "query": "What is the difference between the responsibility of CurrencyService and PaymentService?",
+    "category": "architecture",
+    "relevance": {
+      "currency-service.md": 2,
+      "payment-service.md": 2,
+      "checkout-architecture.md": 1
+    }
+  },
+  {
+    "query_id": "dev-011",
+    "query": "Which service calculates delivery cost before the customer is charged?",
+    "category": "architecture",
+    "relevance": {
+      "shipping-service.md": 2,
+      "checkout-payment-flow.md": 1,
+      "checkout-architecture.md": 1
+    }
+  },
+  {
+    "query_id": "dev-012",
+    "query": "What is the expected successful sequence from the frontend to payment during checkout?",
+    "category": "architecture",
+    "relevance": {
+      "checkout-payment-flow.md": 2,
+      "checkout-architecture.md": 1,
+      "frontend-service.md": 1
+    }
+  },
+  {
+    "query_id": "dev-013",
+    "query": "A client span returns UNAVAILABLE and there is no downstream server span. What should I investigate?",
+    "category": "troubleshooting",
+    "relevance": {
+      "grpc-troubleshooting.md": 2,
+      "service-discovery.md": 2,
+      "payment-runbook.md": 1
+    }
+  },
+  {
+    "query_id": "dev-014",
+    "query": "What does DEADLINE_EXCEEDED tell me, and what does it not tell me about root cause?",
+    "category": "troubleshooting",
+    "relevance": {
+      "timeout-and-retry-guidance.md": 2,
+      "grpc-troubleshooting.md": 1,
+      "latency-troubleshooting.md": 1
+    }
+  },
+  {
+    "query_id": "dev-015",
+    "query": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+    "category": "troubleshooting",
+    "relevance": {
+      "payment-runbook.md": 2,
+      "payment-service.md": 2,
+      "service-discovery.md": 1,
+      "grpc-troubleshooting.md": 1
+    }
+  },
+  {
+    "query_id": "dev-016",
+    "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+    "category": "troubleshooting",
+    "relevance": {
+      "service-discovery.md": 2,
+      "dns-troubleshooting.md": 1,
+      "grpc-troubleshooting.md": 1
+    }
+  },
+  {
+    "query_id": "dev-017",
+    "query": "Which observability signal is best for detecting and quantifying an increase in checkout error rate?",
+    "category": "observability",
+    "relevance": {
+      "metrics-guide.md": 2,
+      "observability-guide.md": 1,
+      "checkout-runbook.md": 1
+    }
+  },
+  {
+    "query_id": "dev-018",
+    "query": "Which telemetry signal should I use to identify where one distributed request failed?",
+    "category": "observability",
+    "relevance": {
+      "distributed-tracing-guide.md": 2,
+      "observability-guide.md": 1
+    }
+  },
+  {
+    "query_id": "dev-019",
+    "query": "What evidence should I require before treating an error log as causal for an incident?",
+    "category": "observability",
+    "relevance": {
+      "structured-logging-guide.md": 2,
+      "incident-response-guide.md": 1,
+      "telemetry-correlation.md": 1
+    }
+  },
+  {
+    "query_id": "dev-020",
+    "query": "What evidence distinguishes a network or resolution failure from an application-level payment failure?",
+    "category": "multi_document",
+    "relevance": {
+      "payment-runbook.md": 2,
+      "service-discovery.md": 2,
+      "grpc-troubleshooting.md": 1,
+      "payment-service.md": 1
+    }
+  },
+  {
+    "query_id": "dev-021",
+    "query": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+    "category": "multi_document",
+    "relevance": {
+      "checkout-runbook.md": 2,
+      "metrics-guide.md": 1,
+      "distributed-tracing-guide.md": 1,
+      "telemetry-correlation.md": 1
+    }
+  },
+  {
+    "query_id": "dev-022",
+    "query": "How can I determine whether high request latency comes from retries or from a slow downstream dependency?",
+    "category": "multi_document",
+    "relevance": {
+      "latency-troubleshooting.md": 2,
+      "timeout-and-retry-guidance.md": 2,
+      "distributed-tracing-guide.md": 1,
+      "metrics-guide.md": 1
+    }
+  },
+  {
+    "query_id": "dev-023",
+    "query": "Which document should I use to design PaymentService dashboards and alerts rather than debug one request?",
+    "category": "hard_negative",
+    "relevance": {
+      "payment-monitoring.md": 2,
+      "metrics-guide.md": 1
+    }
+  },
+  {
+    "query_id": "dev-024",
+    "query": "Which guidance explains how injected fault flags should be handled without leaking benchmark ground truth?",
+    "category": "hard_negative",
+    "relevance": {
+      "feature-flags.md": 2,
+      "incident-response-guide.md": 1
+    }
+  }
+]
