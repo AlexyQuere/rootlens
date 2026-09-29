@@ -1,3 +1,4 @@
+import math
 import re
 
 
@@ -46,3 +47,59 @@ def term_frequency(tokens: list[str]) -> dict[str, int]:
         frequencies[token] = frequencies.get(token, 0) + 1
 
     return frequencies
+
+def document_frequency(
+    term: str,
+    documents: list[list[str]],
+) -> int:
+    """Count how many documents contain a term at least once.
+
+    Example:
+        documents = [
+            ["payment", "service"],
+            ["payment", "payment", "unavailable"],
+            ["shipping", "service"],
+        ]
+
+        document_frequency("payment", documents)
+        -> 2
+
+    Multiple occurrences inside the same document count only once.
+    """
+
+    count = 0
+
+    for document in documents:
+        if term in document:
+            count += 1
+
+    return count
+
+def inverse_document_frequency(
+    term: str,
+    documents: list[list[str]],
+) -> float:
+    """Compute the unsmoothed inverse document frequency of a term.
+
+    IDF(t) = log(N / df(t))
+
+    where:
+        N     = total number of documents
+        df(t) = number of documents containing the term
+
+    Terms absent from the entire corpus receive an IDF of 0.0 in this
+    initial implementation because they cannot contribute to matching
+    any indexed document.
+    """
+
+    number_of_documents = len(documents)
+
+    if number_of_documents == 0:
+        return 0.0
+
+    df = document_frequency(term, documents)
+
+    if df == 0:
+        return 0.0
+
+    return math.log(number_of_documents / df)
