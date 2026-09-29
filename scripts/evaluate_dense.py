@@ -162,8 +162,8 @@ def main() -> None:
     n = len(queries)
 
     print()
-    print("=== BM25 baseline ===")
-
+    print("=== Dense retrieval baseline ===")
+    
     print(
         "Precision@1:",
         sum(precision_1_scores) / n,
