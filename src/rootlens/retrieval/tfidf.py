@@ -167,3 +167,91 @@ def tfidf_vector(
         vector[index] = tf * idf
 
     return vector
+
+def dot_product(
+    vector_a: list[float],
+    vector_b: list[float],
+) -> float:
+    """Compute the dot product between two vectors.
+
+    Raises:
+        ValueError: if the vectors do not have the same dimension.
+    """
+
+    if len(vector_a) != len(vector_b):
+        raise ValueError("Vectors must have the same dimension.")
+
+    return sum(
+        a * b
+        for a, b in zip(vector_a, vector_b)
+    )
+
+def vector_norm(vector: list[float]) -> float:
+    """Compute the Euclidean norm of a vector."""
+
+    return math.sqrt(
+        sum(value * value for value in vector)
+    )
+
+def cosine_similarity(
+    vector_a: list[float],
+    vector_b: list[float],
+) -> float:
+    """Compute cosine similarity between two vectors.
+
+    Returns 0.0 if at least one vector has zero norm.
+    """
+
+    if len(vector_a) != len(vector_b):
+        raise ValueError("Vectors must have the same dimension.")
+
+    norm_a = vector_norm(vector_a)
+    norm_b = vector_norm(vector_b)
+
+    if norm_a == 0.0 or norm_b == 0.0:
+        return 0.0
+
+    return dot_product(vector_a, vector_b) / (
+        norm_a * norm_b
+    )
+
+def rank_documents(
+    query_tokens: list[str],
+    documents: list[list[str]],
+    vocabulary: dict[str, int],
+) -> list[tuple[int, float]]:
+    """Rank documents by TF-IDF cosine similarity to a query.
+
+    Returns:
+        A list of `(document_index, score)` tuples sorted from
+        highest to lowest similarity.
+    """
+
+    query_vector = tfidf_vector(
+        query_tokens,
+        documents,
+        vocabulary,
+    )
+
+    scores: list[tuple[int, float]] = []
+
+    for document_index, document in enumerate(documents):
+        document_vector = tfidf_vector(
+            document,
+            documents,
+            vocabulary,
+        )
+
+        score = cosine_similarity(
+            query_vector,
+            document_vector,
+        )
+
+        scores.append(
+            (document_index, score)
+        )
+
+    return sorted(
+        scores,
+        key=lambda item: (-item[1], item[0]),
+    )

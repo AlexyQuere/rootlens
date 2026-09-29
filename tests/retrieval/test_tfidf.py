@@ -1,11 +1,17 @@
 from rootlens.retrieval.tfidf import (
     build_vocabulary,
+    cosine_similarity,
     document_frequency,
+    dot_product,
     inverse_document_frequency,
+    rank_documents,
     term_frequency,
     tfidf_vector,
     tokenize,
+    vector_norm,
 )
+import pytest
+
 
 def test_tokenize_basic_sentence():
     text = "Payment service unavailable"
@@ -228,4 +234,96 @@ def test_tfidf_uses_term_frequency():
     assert math.isclose(
         result[payment_index],
         expected,
+    )
+
+def test_dot_product():
+    result = dot_product(
+        [1.0, 2.0],
+        [3.0, 4.0],
+    )
+
+    assert result == 11.0
+
+def test_dot_product_rejects_different_dimensions():
+    with pytest.raises(ValueError):
+        dot_product(
+            [1.0, 2.0],
+            [1.0],
+        )
+
+def test_vector_norm():
+    result = vector_norm([3.0, 4.0])
+
+    assert math.isclose(result, 5.0)
+
+def test_cosine_similarity_identical_vectors():
+    vector = [1.0, 2.0, 3.0]
+
+    result = cosine_similarity(
+        vector,
+        vector,
+    )
+
+    assert math.isclose(result, 1.0)
+
+def test_cosine_similarity_orthogonal_vectors():
+    result = cosine_similarity(
+        [1.0, 0.0],
+        [0.0, 1.0],
+    )
+
+    assert math.isclose(result, 0.0)
+
+def test_cosine_similarity_with_zero_vector():
+    result = cosine_similarity(
+        [0.0, 0.0],
+        [1.0, 2.0],
+    )
+
+    assert result == 0.0
+
+def test_rank_documents():
+    vocabulary = build_vocabulary(DOCUMENTS)
+
+    result = rank_documents(
+        ["payment", "service", "unavailable"],
+        DOCUMENTS,
+        vocabulary,
+    )
+
+    ranked_document_indices = [
+        document_index
+        for document_index, _ in result
+    ]
+
+    assert ranked_document_indices == [
+        1,
+        0,
+        2,
+    ]
+
+def test_rank_documents_scores():
+    vocabulary = build_vocabulary(DOCUMENTS)
+
+    result = rank_documents(
+        ["payment", "service", "unavailable"],
+        DOCUMENTS,
+        vocabulary,
+    )
+
+    scores = {
+        document_index: score
+        for document_index, score in result
+    }
+
+    assert math.isclose(
+        scores[1],
+        1.0,
+    )
+
+    assert 0.0 < scores[0] < 1.0
+
+    assert math.isclose(
+        scores[2],
+        0.0,
     )
