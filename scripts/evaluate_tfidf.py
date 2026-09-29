@@ -24,12 +24,17 @@ EVALUATION_FILE = (
 def load_documents() -> dict[str, str]:
     documents = {}
 
-    for path in sorted(
-        KNOWLEDGE_DIR.glob("*.md")
-    ):
-        documents[path.name] = path.read_text(
+    for path in sorted(KNOWLEDGE_DIR.glob("*.md")):
+        content = path.read_text(
             encoding="utf-8"
-        )
+        ).strip()
+
+        if not content:
+            raise ValueError(
+                f"Knowledge document is empty: {path.name}"
+            )
+
+        documents[path.name] = content
 
     return documents
 
@@ -45,6 +50,22 @@ def load_queries() -> list[dict]:
 def main() -> None:
     documents = load_documents()
     queries = load_queries()
+    missing_relevant_documents = {
+        document_id
+        for example in queries
+        for document_id in example["relevant_documents"]
+        if document_id not in documents
+    }
+
+    if missing_relevant_documents:
+        missing = ", ".join(
+            sorted(missing_relevant_documents)
+        )
+
+        raise ValueError(
+            "Evaluation references documents that are "
+            f"missing from the knowledge corpus: {missing}"
+        )
 
     retriever = TfidfRetriever(documents)
 
@@ -144,10 +165,11 @@ def main() -> None:
     )
 
     print(
-        "MRR:",
+        "MRR@3:",
         sum(reciprocal_ranks)
         / number_of_queries,
     )
+
 
 
 if __name__ == "__main__":
