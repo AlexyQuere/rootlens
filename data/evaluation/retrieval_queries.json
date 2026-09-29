@@ -1,0 +1,71 @@
+[
+  {
+    "query_id": "q1",
+    "query": "How does Checkout communicate with PaymentService?",
+    "relevant_documents": [
+      "checkout-architecture.md",
+      "payment-service.md"
+    ],
+    "category": "architecture"
+  },
+  {
+    "query_id": "q2",
+    "query": "What can cause a gRPC request to return UNAVAILABLE?",
+    "relevant_documents": [
+      "grpc-troubleshooting.md",
+      "service-discovery.md"
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "query_id": "q3",
+    "query": "How can I correlate logs from several services for one request?",
+    "relevant_documents": [
+      "observability-guide.md"
+    ],
+    "category": "observability"
+  },
+  {
+    "query_id": "q4",
+    "query": "Which component charges the customer during checkout?",
+    "relevant_documents": [
+      "payment-service.md",
+      "checkout-architecture.md"
+    ],
+    "category": "architecture"
+  },
+  {
+    "query_id": "q5",
+    "query": "What should I inspect after detecting a large error-rate increase?",
+    "relevant_documents": [
+      "incident-response-guide.md",
+      "observability-guide.md"
+    ],
+    "category": "investigation"
+  },
+  {
+    "query_id": "q6",
+    "query": "Why might a client fail before a downstream server receives the request?",
+    "relevant_documents": [
+      "grpc-troubleshooting.md",
+      "service-discovery.md"
+    ],
+    "category": "troubleshooting"
+  },
+  {
+    "query_id": "q7",
+    "query": "How does a distributed application locate a backend service?",
+    "relevant_documents": [
+      "service-discovery.md"
+    ],
+    "category": "paraphrase"
+  },
+  {
+    "query_id": "q8",
+    "query": "Why should the first error I find not automatically be called the root cause?",
+    "relevant_documents": [
+      "incident-response-guide.md"
+    ],
+    "category": "investigation"
+  }
+]
