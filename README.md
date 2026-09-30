@@ -21,6 +21,8 @@ The project is being built incrementally to study and evaluate:
 - Document important architectural decisions.
 - Compare agentic approaches against simpler alternatives.
 - Keep evaluation data separate from retrieval knowledge.
+- Treat model scores as ranking signals unless they are explicitly calibrated.
+- Fail fast on invalid numerical outputs such as `NaN` or infinity.
 - Prefer evidence-backed conclusions over architectural complexity.
 
 ## Current status
@@ -31,7 +33,7 @@ Completed.
 
 RootLens first established a manual root-cause-analysis workflow on the OpenTelemetry Demo before adding any AI component.
 
-The initial calibration incident demonstrated the investigation chain:
+The initial calibration incident established the investigation chain:
 
 ```text
 metrics
@@ -47,7 +49,7 @@ additional evidence
 → establish the best-supported root cause
 ```
 
-This phase established a core project rule:
+This phase established the project discipline:
 
 ```text
 claim → evidence → source
@@ -68,15 +70,16 @@ In progress.
 
 Before building RAG or an investigation agent, RootLens is implementing and evaluating retrieval from first principles.
 
-Implemented baselines include:
+Implemented approaches include:
 
 - TF-IDF + cosine similarity;
 - BM25;
 - dense retrieval with `BAAI/bge-small-en-v1.5`;
 - hybrid BM25 + Dense retrieval with Reciprocal Rank Fusion;
-- fixed-size chunked dense retrieval.
+- fixed-size chunked dense retrieval;
+- cross-encoder reranking.
 
-The current preferred candidate retriever is:
+The current preferred retrieval architecture remains:
 
 ```text
 Query
@@ -85,14 +88,18 @@ BAAI/bge-small-en-v1.5
   ↓
 whole-document dense retrieval
   ↓
-top-k evidence candidates
+top-k evidence
 ```
 
-Whole-document retrieval is currently preferred because the benchmark documents are short and focused. Fixed-size chunking degraded retrieval quality and is retained only as an experimental capability for future long documents.
+Whole-document retrieval is currently preferred because the benchmark documents are short and focused.
+
+Fixed-size chunking degraded retrieval quality and is retained only as an experimental capability for future long documents.
+
+The first cross-encoder reranker also degraded aggregate retrieval quality, so reranking is not currently part of the default architecture.
 
 ## Retrieval Benchmark v2
 
-The current retrieval benchmark contains:
+The benchmark contains:
 
 ```text
 24 operational knowledge documents
@@ -148,7 +155,7 @@ Dense retrieval substantially improved semantic and paraphrase matching.
 
 Combined lexical and dense rankings with Reciprocal Rank Fusion.
 
-The hybrid approach preserved strong top-ranked results but did not improve overall evidence recall enough to justify becoming the default retriever.
+The hybrid approach improved some top-ranked results but did not improve overall evidence recall enough to justify becoming the default retriever.
 
 ### Experiment 005 — Retrieval Benchmark v2
 
@@ -165,7 +172,7 @@ nDCG@3      = 0.8317
 nDCG@5      = 0.8500
 ```
 
-### Experiment 006 — Chunking and retrieval granularity
+### Experiment 006 — Chunking and Retrieval Granularity
 
 Compared:
 
@@ -179,7 +186,7 @@ Whole-document retrieval remained clearly stronger.
 
 The experiment rejected fixed-size chunking as the default for the current short-document corpus.
 
-### Experiment 007 — Candidate recall and reranking readiness
+### Experiment 007 — Candidate Recall and Reranking Readiness
 
 Dense candidate recall was measured at increasing depths:
 
@@ -191,7 +198,7 @@ Recall@10 = 0.9236
 Recall@20 = 0.9896
 ```
 
-The top-10 candidate set contains substantial reranking headroom:
+The top-10 candidate set contains substantial theoretical reranking headroom:
 
 ```text
 Actual Recall@3        = 0.7500
@@ -201,51 +208,94 @@ Actual nDCG@3          = 0.8317
 Oracle nDCG@3(top10)   = 0.9877
 ```
 
-Twelve DEV queries contain relevant documents inside the top-10 candidate set that are ranked too low in the current dense ranking.
+This justified testing a reranking stage.
 
-This experimentally justifies a reranking stage.
+### Experiment 008 — Cross-Encoder Reranking
 
-## Current retrieval architecture
+Evaluated:
 
-The architecture currently being evaluated is:
+```text
+Dense BGE top-10 candidates
+        ↓
+cross-encoder/ms-marco-MiniLM-L6-v2
+```
+
+The initial CPU run on the local Apple Silicon environment produced `NaN` reranker scores.
+
+The pipeline was hardened to reject non-finite model outputs, and the valid experiment was rerun on MPS.
+
+Valid DEV results:
+
+```text
+                       Dense       + Cross-Encoder
+Precision@1            0.9167       0.9167
+Recall@3               0.7500       0.6562
+Recall@5               0.8299       0.7674
+MRR@3                  0.9583       0.9514
+nDCG@3                 0.8317       0.7725
+nDCG@5                 0.8500       0.8162
+```
+
+The reranker improved some individual queries, including service-discovery and shipping/troubleshooting ranking cases, but degraded aggregate evidence recall and graded ranking.
+
+The MiniLM reranker is therefore retained as an experimental baseline but is not selected for the default architecture.
+
+## Current architecture decision
+
+Selected:
 
 ```text
 Query
   ↓
-Dense BGE candidate retrieval
+Dense BGE
   ↓
-Top 10 candidates
+whole-document retrieval
   ↓
-Cross-encoder reranker
-  ↓
-Top 3 / Top 5 evidence
+top-k evidence
 ```
 
-The following approaches remain implemented as baselines but are not currently selected as defaults:
+Implemented but not selected as defaults:
 
 ```text
 TF-IDF
 BM25
 Hybrid RRF
 Fixed-size chunking
+MiniLM cross-encoder reranking
 ```
 
 ## Next experiment
 
-### Experiment 008 — Cross-Encoder Reranking
+### Experiment 009 — Stronger Reranker Baseline
 
-The next experiment evaluates a cross-encoder over the top-10 Dense BGE candidates.
+Experiment 007 demonstrated that reranking headroom exists, but Experiment 008 showed that the first MiniLM MS MARCO reranker does not exploit it reliably.
 
-The objective is to determine whether joint query-document scoring improves:
+The next experiment will evaluate one stronger reranker while holding the rest of the pipeline fixed.
 
-- Precision@1;
-- Recall@3;
-- Recall@5;
-- MRR@3;
-- nDCG@3;
-- nDCG@5.
+Candidate:
 
-The experiment will also measure reranking latency and compare the gain against the additional inference cost.
+```text
+BAAI/bge-reranker-base
+```
+
+Experimental controls:
+
+```text
+candidate retriever = BAAI/bge-small-en-v1.5
+candidate_k         = 10
+retrieval unit      = whole document
+split               = DEV only
+```
+
+The experiment will compare:
+
+```text
+Dense BGE
+Dense BGE + MiniLM reranker
+Dense BGE + BGE reranker
+```
+
+If the stronger reranker still fails to improve the Dense baseline, RootLens will stop reranker tuning and move to candidate-generation strategies such as query rewriting, multi-query retrieval, or query decomposition.
 
 The frozen TEST split remains untouched.
 
@@ -260,7 +310,7 @@ Retrieval Benchmark v2
         ↓
 Dense candidate retrieval
         ↓
-Cross-encoder reranking
+Reranker evaluation
         ↓
 Candidate-generation improvements
         ↓
