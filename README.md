@@ -1,6 +1,4 @@
-# RootLens
-
-RootLens is an experimental autonomous AI system for evidence-grounded root-cause analysis of distributed systems.
+## RootLens is an experimental autonomous AI system for evidence-grounded root-cause analysis of distributed systems.
 
 The project is being built incrementally to study and evaluate:
 
@@ -16,24 +14,64 @@ The project is being built incrementally to study and evaluate:
 
 - Start with the simplest working baseline.
 - Understand mechanisms before abstracting them with frameworks.
+- Change one architectural variable at a time.
 - Measure improvements rather than relying on intuition.
 - Keep the system provider-agnostic.
-- Document important architectural decisions.
-- Compare agentic approaches against simpler alternatives.
+- Separate probabilistic generation from deterministic evaluation.
 - Keep evaluation data separate from retrieval knowledge.
-- Treat model scores as ranking signals unless they are explicitly calibrated.
-- Fail fast on invalid numerical outputs such as `NaN` or infinity.
+- Treat model scores as ranking signals unless explicitly calibrated.
+- Fail fast on invalid numerical model outputs.
+- Document negative experiments as well as positive ones.
+- Stop tuning an approach when experiments no longer justify its complexity.
+- Compare agentic approaches against simpler alternatives.
 - Prefer evidence-backed conclusions over architectural complexity.
 
-## Current status
+## Project objective
 
-### Milestone 0 — Observable System
+RootLens aims to become an autonomous incident investigator capable of combining:
+
+- metrics;
+- logs;
+- distributed traces;
+- technical documentation;
+- runbooks;
+- historical incidents;
+- source code;
+- Git history;
+- service topology;
+- time-series evidence.
+
+The long-term system should be able to:
+
+1. observe an incident;
+2. identify missing evidence;
+3. choose tools;
+4. query telemetry;
+5. retrieve operational knowledge;
+6. generate competing hypotheses;
+7. test those hypotheses against evidence;
+8. reject unsupported explanations;
+9. identify the best-supported root cause;
+10. explain every conclusion with traceable evidence;
+11. abstain when the evidence is insufficient.
+
+The central evidence rule is:
+
+```text
+claim → evidence → source
+```
+
+---
+
+# Current status
+
+## Milestone 0 — Observable System
 
 Completed.
 
 RootLens first established a manual root-cause-analysis workflow on the OpenTelemetry Demo before adding any AI component.
 
-The initial calibration incident established the investigation chain:
+The calibration incident established the investigation chain:
 
 ```text
 metrics
@@ -49,13 +87,7 @@ additional evidence
 → establish the best-supported root cause
 ```
 
-This phase established the project discipline:
-
-```text
-claim → evidence → source
-```
-
-and the distinction between:
+This phase also established the distinction between:
 
 ```text
 observation
@@ -64,42 +96,32 @@ hypothesis
 conclusion
 ```
 
-### Milestone 1 — Retrieval Foundations
+---
+
+# Milestone 1 — Retrieval Foundations
 
 In progress.
 
-Before building RAG or an investigation agent, RootLens is implementing and evaluating retrieval from first principles.
+Before introducing RAG generation or autonomous agents, RootLens is implementing and evaluating information retrieval from first principles.
 
 Implemented approaches include:
 
 - TF-IDF + cosine similarity;
 - BM25;
-- dense retrieval with `BAAI/bge-small-en-v1.5`;
-- hybrid BM25 + Dense retrieval with Reciprocal Rank Fusion;
-- fixed-size chunked dense retrieval;
-- cross-encoder reranking.
+- dense retrieval;
+- hybrid lexical/dense retrieval with Reciprocal Rank Fusion;
+- fixed-size chunking;
+- MiniLM cross-encoder reranking;
+- BGE reranking;
+- LLM query rewriting;
+- multi-query dense candidate generation;
+- multi-query Reciprocal Rank Fusion.
 
-The current preferred retrieval architecture remains:
+---
 
-```text
-Query
-  ↓
-BAAI/bge-small-en-v1.5
-  ↓
-whole-document dense retrieval
-  ↓
-top-k evidence
-```
+# Retrieval Benchmark v2
 
-Whole-document retrieval is currently preferred because the benchmark documents are short and focused.
-
-Fixed-size chunking degraded retrieval quality and is retained only as an experimental capability for future long documents.
-
-The first cross-encoder reranker also degraded aggregate retrieval quality, so reranking is not currently part of the default architecture.
-
-## Retrieval Benchmark v2
-
-The benchmark contains:
+The benchmark currently contains:
 
 ```text
 24 operational knowledge documents
@@ -125,46 +147,72 @@ Relevance judgments are graded:
 0 = irrelevant
 ```
 
-The DEV split is used for architecture selection and failure analysis.
+The DEV split is used for:
 
-The TEST split is frozen and is not used for tuning.
+- architecture selection;
+- failure analysis;
+- hypothesis testing.
 
-## Retrieval experiments
+The TEST split remains frozen.
 
-### Experiment 001 — TF-IDF baseline
+---
 
-Established the first educational lexical retrieval baseline.
+# Retrieval experiments
 
-### Experiment 002 — BM25 baseline
+## Experiment 001 — TF-IDF Baseline
 
-Added term-frequency saturation and document-length normalization.
+Established the first lexical retrieval baseline and implemented:
 
-On the original calibration benchmark, BM25 did not materially improve over TF-IDF.
+- tokenization;
+- term frequency;
+- document frequency;
+- inverse document frequency;
+- TF-IDF vectors;
+- cosine similarity.
 
-### Experiment 003 — Dense retrieval
+---
 
-Introduced local dense retrieval using:
+## Experiment 002 — BM25 Baseline
+
+Added:
+
+- term-frequency saturation;
+- document-length normalization;
+- BM25 IDF.
+
+On the original calibration benchmark, BM25 did not materially outperform TF-IDF.
+
+---
+
+## Experiment 003 — Dense Retrieval
+
+Introduced:
 
 ```text
 BAAI/bge-small-en-v1.5
 ```
 
-Dense retrieval substantially improved semantic and paraphrase matching.
+Dense retrieval substantially improved semantic retrieval and became the strongest retrieval baseline.
 
-### Experiment 004 — Hybrid BM25 + Dense RRF
+---
 
-Combined lexical and dense rankings with Reciprocal Rank Fusion.
+## Experiment 004 — Hybrid BM25 + Dense RRF
 
-The hybrid approach improved some top-ranked results but did not improve overall evidence recall enough to justify becoming the default retriever.
+Combined lexical and dense rankings using Reciprocal Rank Fusion.
 
-### Experiment 005 — Retrieval Benchmark v2
+The hybrid approach improved some individual rankings but did not improve evidence recall sufficiently to replace Dense retrieval.
+
+---
+
+## Experiment 005 — Retrieval Benchmark v2
 
 The larger benchmark confirmed Dense BGE as the strongest overall candidate retriever.
 
-Dense BGE results on DEV:
+DEV baseline:
 
 ```text
 Precision@1 = 0.9167
+Recall@1    = 0.3507
 Recall@3    = 0.7500
 Recall@5    = 0.8299
 MRR@3       = 0.9583
@@ -172,7 +220,9 @@ nDCG@3      = 0.8317
 nDCG@5      = 0.8500
 ```
 
-### Experiment 006 — Chunking and Retrieval Granularity
+---
+
+## Experiment 006 — Chunking and Retrieval Granularity
 
 Compared:
 
@@ -182,11 +232,15 @@ whole document
 128 words / 32 overlap
 ```
 
-Whole-document retrieval remained clearly stronger.
+Whole-document retrieval clearly outperformed fixed-size chunking.
 
-The experiment rejected fixed-size chunking as the default for the current short-document corpus.
+The current benchmark documents are sufficiently short and focused that chunking removes useful global context.
 
-### Experiment 007 — Candidate Recall and Reranking Readiness
+Whole-document retrieval therefore remains the selected granularity.
+
+---
+
+## Experiment 007 — Candidate Recall and Reranking Readiness
 
 Dense candidate recall was measured at increasing depths:
 
@@ -198,7 +252,7 @@ Recall@10 = 0.9236
 Recall@20 = 0.9896
 ```
 
-The top-10 candidate set contains substantial theoretical reranking headroom:
+Oracle analysis showed substantial ranking headroom:
 
 ```text
 Actual Recall@3        = 0.7500
@@ -208,111 +262,315 @@ Actual nDCG@3          = 0.8317
 Oracle nDCG@3(top10)   = 0.9877
 ```
 
-This justified testing a reranking stage.
+This motivated explicit reranking experiments.
 
-### Experiment 008 — Cross-Encoder Reranking
+---
+
+## Experiment 008 — MiniLM Cross-Encoder Reranking
 
 Evaluated:
 
 ```text
-Dense BGE top-10 candidates
+Dense BGE top 10
         ↓
 cross-encoder/ms-marco-MiniLM-L6-v2
 ```
 
-The initial CPU run on the local Apple Silicon environment produced `NaN` reranker scores.
+An initial CPU run on Apple Silicon produced `NaN` reranker scores.
 
-The pipeline was hardened to reject non-finite model outputs, and the valid experiment was rerun on MPS.
+The retrieval pipeline was hardened to reject non-finite model outputs, and the valid experiment was rerun using MPS.
 
-Valid DEV results:
-
-```text
-                       Dense       + Cross-Encoder
-Precision@1            0.9167       0.9167
-Recall@3               0.7500       0.6562
-Recall@5               0.8299       0.7674
-MRR@3                  0.9583       0.9514
-nDCG@3                 0.8317       0.7725
-nDCG@5                 0.8500       0.8162
-```
-
-The reranker improved some individual queries, including service-discovery and shipping/troubleshooting ranking cases, but degraded aggregate evidence recall and graded ranking.
-
-The MiniLM reranker is therefore retained as an experimental baseline but is not selected for the default architecture.
-
-## Current architecture decision
-
-Selected:
+Results:
 
 ```text
-Query
-  ↓
-Dense BGE
-  ↓
-whole-document retrieval
-  ↓
-top-k evidence
+                       Dense       + MiniLM
+
+Precision@1            0.9167      0.9167
+Recall@3               0.7500      0.6562
+Recall@5               0.8299      0.7674
+nDCG@3                 0.8317      0.7725
+nDCG@5                 0.8500      0.8162
 ```
 
-Implemented but not selected as defaults:
+MiniLM reranking was not selected.
 
-```text
-TF-IDF
-BM25
-Hybrid RRF
-Fixed-size chunking
-MiniLM cross-encoder reranking
-```
+---
 
-## Next experiment
+## Experiment 009 — BGE Reranker
 
-### Experiment 009 — Stronger Reranker Baseline
-
-Experiment 007 demonstrated that reranking headroom exists, but Experiment 008 showed that the first MiniLM MS MARCO reranker does not exploit it reliably.
-
-The next experiment will evaluate one stronger reranker while holding the rest of the pipeline fixed.
-
-Candidate:
+A stronger reranker was evaluated:
 
 ```text
 BAAI/bge-reranker-base
 ```
 
-Experimental controls:
+Results:
 
 ```text
-candidate retriever = BAAI/bge-small-en-v1.5
-candidate_k         = 10
-retrieval unit      = whole document
-split               = DEV only
+                       Dense       + BGE Reranker
+
+Precision@1            0.9167      0.7500
+Recall@3               0.7500      0.6840
+Recall@5               0.8299      0.8021
+nDCG@3                 0.8317      0.7388
+nDCG@5                 0.8500      0.7744
 ```
 
-The experiment will compare:
+Local mean latency increased approximately from:
 
 ```text
-Dense BGE
-Dense BGE + MiniLM reranker
-Dense BGE + BGE reranker
+9.87 ms
 ```
 
-If the stronger reranker still fails to improve the Dense baseline, RootLens will stop reranker tuning and move to candidate-generation strategies such as query rewriting, multi-query retrieval, or query decomposition.
+to:
 
-The frozen TEST split remains untouched.
+```text
+228.96 ms
+```
 
-## Longer-term roadmap
+Both tested rerankers therefore degraded the Dense baseline.
+
+The reranking stop condition was triggered.
+
+No additional reranker model shopping is planned.
+
+---
+
+## Experiment 010 — Multi-Query Retrieval
+
+The next hypothesis was that a single query embedding may fail to express every useful semantic formulation of an operational information need.
+
+RootLens introduced a provider-independent LLM interface and used:
+
+```text
+qwen-3.6-35b-instruct
+```
+
+to generate three semantic rewrites per DEV query.
+
+The rewrites were generated once and frozen:
+
+```text
+data/benchmark_v2/dev_rewrites_v1.json
+```
+
+The benchmark itself is therefore deterministic and makes no LLM calls.
+
+Architecture:
+
+```text
+original query
+      +
+3 semantic rewrites
+      ↓
+Dense BGE retrieval × 4
+      ↓
+candidate union
+      ↓
+RRF
+```
+
+### Candidate-generation result
+
+```text
+Dense candidate recall:
+0.9236
+
+Multi-query union recall:
+0.9896
+```
+
+Oracle ranking potential also increased:
+
+```text
+Dense oracle Recall@3:
+0.9236
+
+Union oracle Recall@3:
+0.9583
+```
+
+and:
+
+```text
+Dense oracle nDCG@3:
+0.9877
+
+Union oracle nDCG@3:
+1.0000
+```
+
+Average candidate-union size:
+
+```text
+13.25 documents
+```
+
+### Final RRF ranking
+
+```text
+                       Dense       Multi-query + RRF
+
+Precision@1            0.9167      0.9167
+Recall@1               0.3507      0.3472
+Recall@3               0.7500      0.7326
+Recall@5               0.8299      0.8194
+Recall@10              0.9236      0.9340
+MRR@3                  0.9583      0.9583
+nDCG@3                 0.8317      0.8394
+nDCG@5                 0.8500      0.8602
+```
+
+The final ranking is mixed.
+
+Recall@3 and Recall@5 decrease slightly while graded ranking quality improves slightly.
+
+### Candidate-failure analysis
+
+Experiment 007 identified six queries where a relevant document was missing from the Dense top 10.
+
+Multi-query candidate generation recovered the missing evidence for:
+
+```text
+5 / 6
+```
+
+of these cases.
+
+However, only:
+
+```text
+1 / 5
+```
+
+recovered documents survived into the RRF top 10.
+
+This isolates the next bottleneck:
+
+```text
+candidate generation      → strong
+candidate availability    → strong
+candidate fusion          → insufficient
+```
+
+### Decision
+
+Do not replace the Dense baseline with raw Multi-Query + RRF.
+
+Retain multi-query retrieval as a candidate-generation mechanism.
+
+---
+
+# Current architecture
+
+The current default experimental baseline remains:
+
+```text
+Query
+  ↓
+BAAI/bge-small-en-v1.5
+  ↓
+whole-document dense retrieval
+  ↓
+top-k evidence
+```
+
+RootLens also now has an experimental high-recall candidate-generation path:
+
+```text
+Query
+  ↓
+LLM semantic rewrites
+  ↓
+Dense retrieval for original + rewrites
+  ↓
+candidate union
+```
+
+This candidate pool is not yet used as the default final evidence set because fusion remains unresolved.
+
+---
+
+# Next experiment
+
+## Experiment 011 — Multi-Query Fusion Strategies
+
+Experiment 010 demonstrated that candidate generation is no longer the main bottleneck.
+
+The next experiment keeps the candidate pool fixed and compares deterministic selection strategies.
+
+Initial methods:
+
+```text
+RRF
+MaxSim
+MeanSim
+```
+
+Experimental rule:
+
+```text
+same queries
+same frozen rewrites
+same Dense model
+same candidate pool
+different fusion rule only
+```
+
+This isolates evidence selection from candidate generation.
+
+### RRF
+
+Uses only rank positions:
+
+```text
+RRF(d) = Σ 1 / (k + rank_i(d))
+```
+
+### MaxSim
+
+Preserves documents that are strongly supported by at least one formulation:
+
+```text
+MaxSim(d) = max_i cosine(q_i, d)
+```
+
+### MeanSim
+
+Rewards documents that remain relevant across several formulations:
+
+```text
+MeanSim(d) = mean_i cosine(q_i, d)
+```
+
+For MaxSim and MeanSim, every document in the fixed union candidate set is explicitly scored against every expanded query. Missing top-10 membership is not treated as a zero score.
+
+If simple deterministic fusion still fails to exploit the high-recall pool, RootLens will move to explicit coverage/diversity-aware evidence-set selection rather than trying arbitrary additional score formulas.
+
+---
+
+# Longer-term roadmap
 
 ```text
 Observability foundations
         ↓
-Retrieval foundations
+Information-retrieval foundations
         ↓
-Retrieval Benchmark v2
+Dense retrieval
         ↓
-Dense candidate retrieval
+Retrieval benchmark
         ↓
-Reranker evaluation
+Chunking evaluation
         ↓
-Candidate-generation improvements
+Candidate-depth analysis
+        ↓
+Reranking experiments
+        ↓
+Multi-query candidate generation
+        ↓
+Candidate fusion / evidence selection
+        ↓
+Query decomposition
         ↓
 Basic RAG
         ↓
@@ -328,9 +586,10 @@ Hypothesis / evidence investigation engine
         ↓
 Multi-agent evaluation
         ↓
-Productization and UI
+Productization
 ```
 
-The project follows a simple rule:
+The project follows one central architectural rule:
 
 > Complexity must earn its place through measured improvements.
+
