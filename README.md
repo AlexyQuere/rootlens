@@ -1,4 +1,6 @@
-## RootLens is an experimental autonomous AI system for evidence-grounded root-cause analysis of distributed systems.
+# RootLens
+
+RootLens is an experimental autonomous AI system for evidence-grounded root-cause analysis of distributed systems.
 
 The project is being built incrementally to study and evaluate:
 
@@ -22,7 +24,7 @@ The project is being built incrementally to study and evaluate:
 - Treat model scores as ranking signals unless explicitly calibrated.
 - Fail fast on invalid numerical model outputs.
 - Document negative experiments as well as positive ones.
-- Stop tuning an approach when experiments no longer justify its complexity.
+- Stop tuning approaches that do not justify their complexity.
 - Compare agentic approaches against simpler alternatives.
 - Prefer evidence-backed conclusions over architectural complexity.
 
@@ -115,7 +117,9 @@ Implemented approaches include:
 - BGE reranking;
 - LLM query rewriting;
 - multi-query dense candidate generation;
-- multi-query Reciprocal Rank Fusion.
+- RRF multi-query fusion;
+- MaxSim fusion;
+- MeanSim fusion.
 
 ---
 
@@ -147,13 +151,9 @@ Relevance judgments are graded:
 0 = irrelevant
 ```
 
-The DEV split is used for:
+DEV is used for architecture selection and failure analysis.
 
-- architecture selection;
-- failure analysis;
-- hypothesis testing.
-
-The TEST split remains frozen.
+TEST remains frozen.
 
 ---
 
@@ -161,28 +161,13 @@ The TEST split remains frozen.
 
 ## Experiment 001 — TF-IDF Baseline
 
-Established the first lexical retrieval baseline and implemented:
-
-- tokenization;
-- term frequency;
-- document frequency;
-- inverse document frequency;
-- TF-IDF vectors;
-- cosine similarity.
-
----
+Established the first lexical retrieval baseline.
 
 ## Experiment 002 — BM25 Baseline
 
-Added:
+Added term-frequency saturation and document-length normalization.
 
-- term-frequency saturation;
-- document-length normalization;
-- BM25 IDF.
-
-On the original calibration benchmark, BM25 did not materially outperform TF-IDF.
-
----
+BM25 did not materially outperform the original lexical baseline.
 
 ## Experiment 003 — Dense Retrieval
 
@@ -192,23 +177,17 @@ Introduced:
 BAAI/bge-small-en-v1.5
 ```
 
-Dense retrieval substantially improved semantic retrieval and became the strongest retrieval baseline.
-
----
+Dense retrieval substantially improved semantic retrieval.
 
 ## Experiment 004 — Hybrid BM25 + Dense RRF
 
 Combined lexical and dense rankings using Reciprocal Rank Fusion.
 
-The hybrid approach improved some individual rankings but did not improve evidence recall sufficiently to replace Dense retrieval.
-
----
+The additional complexity did not improve evidence recall sufficiently to replace Dense retrieval.
 
 ## Experiment 005 — Retrieval Benchmark v2
 
-The larger benchmark confirmed Dense BGE as the strongest overall candidate retriever.
-
-DEV baseline:
+Dense BGE became the primary benchmark baseline:
 
 ```text
 Precision@1 = 0.9167
@@ -220,29 +199,13 @@ nDCG@3      = 0.8317
 nDCG@5      = 0.8500
 ```
 
----
-
 ## Experiment 006 — Chunking and Retrieval Granularity
 
-Compared:
-
-```text
-whole document
-64 words / 16 overlap
-128 words / 32 overlap
-```
-
-Whole-document retrieval clearly outperformed fixed-size chunking.
-
-The current benchmark documents are sufficiently short and focused that chunking removes useful global context.
-
-Whole-document retrieval therefore remains the selected granularity.
-
----
+Whole-document retrieval outperformed fixed-size chunking on the current short operational documents.
 
 ## Experiment 007 — Candidate Recall and Reranking Readiness
 
-Dense candidate recall was measured at increasing depths:
+Dense candidate-depth analysis showed:
 
 ```text
 Recall@1  = 0.3507
@@ -252,131 +215,41 @@ Recall@10 = 0.9236
 Recall@20 = 0.9896
 ```
 
-Oracle analysis showed substantial ranking headroom:
-
-```text
-Actual Recall@3        = 0.7500
-Oracle Recall@3(top10) = 0.9236
-
-Actual nDCG@3          = 0.8317
-Oracle nDCG@3(top10)   = 0.9877
-```
-
-This motivated explicit reranking experiments.
-
----
+Oracle analysis showed substantial ranking headroom.
 
 ## Experiment 008 — MiniLM Cross-Encoder Reranking
 
-Evaluated:
+`cross-encoder/ms-marco-MiniLM-L6-v2` degraded aggregate retrieval quality.
 
-```text
-Dense BGE top 10
-        ↓
-cross-encoder/ms-marco-MiniLM-L6-v2
-```
-
-An initial CPU run on Apple Silicon produced `NaN` reranker scores.
-
-The retrieval pipeline was hardened to reject non-finite model outputs, and the valid experiment was rerun using MPS.
-
-Results:
-
-```text
-                       Dense       + MiniLM
-
-Precision@1            0.9167      0.9167
-Recall@3               0.7500      0.6562
-Recall@5               0.8299      0.7674
-nDCG@3                 0.8317      0.7725
-nDCG@5                 0.8500      0.8162
-```
-
-MiniLM reranking was not selected.
-
----
+An invalid Apple-Silicon CPU run also exposed the importance of rejecting non-finite model scores.
 
 ## Experiment 009 — BGE Reranker
 
-A stronger reranker was evaluated:
+`BAAI/bge-reranker-base` also degraded aggregate retrieval quality while substantially increasing latency.
 
-```text
-BAAI/bge-reranker-base
-```
-
-Results:
-
-```text
-                       Dense       + BGE Reranker
-
-Precision@1            0.9167      0.7500
-Recall@3               0.7500      0.6840
-Recall@5               0.8299      0.8021
-nDCG@3                 0.8317      0.7388
-nDCG@5                 0.8500      0.7744
-```
-
-Local mean latency increased approximately from:
-
-```text
-9.87 ms
-```
-
-to:
-
-```text
-228.96 ms
-```
-
-Both tested rerankers therefore degraded the Dense baseline.
-
-The reranking stop condition was triggered.
-
-No additional reranker model shopping is planned.
-
----
+The reranker-model stop condition was triggered.
 
 ## Experiment 010 — Multi-Query Retrieval
 
-The next hypothesis was that a single query embedding may fail to express every useful semantic formulation of an operational information need.
-
-RootLens introduced a provider-independent LLM interface and used:
+Three semantic rewrites were generated per DEV query with:
 
 ```text
 qwen-3.6-35b-instruct
 ```
 
-to generate three semantic rewrites per DEV query.
-
-The rewrites were generated once and frozen:
+The rewrites were frozen in:
 
 ```text
 data/benchmark_v2/dev_rewrites_v1.json
 ```
 
-The benchmark itself is therefore deterministic and makes no LLM calls.
-
-Architecture:
-
-```text
-original query
-      +
-3 semantic rewrites
-      ↓
-Dense BGE retrieval × 4
-      ↓
-candidate union
-      ↓
-RRF
-```
-
-### Candidate-generation result
+Multi-query candidate generation increased candidate recall:
 
 ```text
 Dense candidate recall:
 0.9236
 
-Multi-query union recall:
+Multi-query union candidate recall:
 0.9896
 ```
 
@@ -388,11 +261,7 @@ Dense oracle Recall@3:
 
 Union oracle Recall@3:
 0.9583
-```
 
-and:
-
-```text
 Dense oracle nDCG@3:
 0.9877
 
@@ -400,70 +269,61 @@ Union oracle nDCG@3:
 1.0000
 ```
 
-Average candidate-union size:
+However, RRF preserved only one of five newly recovered relevant documents in its top 10.
+
+Candidate generation was therefore validated, while candidate fusion became the next bottleneck.
+
+## Experiment 011 — Multi-Query Fusion Strategies
+
+Experiment 011 kept the high-recall candidate union fixed and compared:
 
 ```text
-13.25 documents
+RRF
+MaxSim
+MeanSim
 ```
 
-### Final RRF ranking
+Aggregate results:
 
 ```text
-                       Dense       Multi-query + RRF
+                 Dense    RRF      MaxSim   MeanSim
 
-Precision@1            0.9167      0.9167
-Recall@1               0.3507      0.3472
-Recall@3               0.7500      0.7326
-Recall@5               0.8299      0.8194
-Recall@10              0.9236      0.9340
-MRR@3                  0.9583      0.9583
-nDCG@3                 0.8317      0.8394
-nDCG@5                 0.8500      0.8602
+Precision@1      0.9167   0.9167   0.9167   0.9167
+Recall@3         0.7500   0.7326   0.7049   0.7257
+Recall@5         0.8299   0.8194   0.8299   0.8125
+Recall@10        0.9236   0.9340   0.9340   0.9340
+MRR@3            0.9583   0.9583   0.9583   0.9583
+nDCG@3           0.8317   0.8394   0.8177   0.8316
+nDCG@5           0.8500   0.8602   0.8493   0.8455
 ```
 
-The final ranking is mixed.
+RRF remained the strongest fusion rule on aggregate graded ranking, but none of the three methods improved top-3 evidence recall over Dense.
 
-Recall@3 and Recall@5 decrease slightly while graded ranking quality improves slightly.
-
-### Candidate-failure analysis
-
-Experiment 007 identified six queries where a relevant document was missing from the Dense top 10.
-
-Multi-query candidate generation recovered the missing evidence for:
-
-```text
-5 / 6
-```
-
-of these cases.
-
-However, only:
+Most importantly, all three methods retained only:
 
 ```text
 1 / 5
 ```
 
-recovered documents survived into the RRF top 10.
+newly recovered relevant documents in their top 10.
 
-This isolates the next bottleneck:
+This rejects the hypothesis that the Experiment 010 bottleneck is specific to RRF.
+
+The evidence-selection problem is broader:
 
 ```text
 candidate generation      → strong
 candidate availability    → strong
-candidate fusion          → insufficient
+scalar fusion             → insufficient
 ```
 
-### Decision
-
-Do not replace the Dense baseline with raw Multi-Query + RRF.
-
-Retain multi-query retrieval as a candidate-generation mechanism.
+The next step is set-aware evidence selection.
 
 ---
 
 # Current architecture
 
-The current default experimental baseline remains:
+The default experimental baseline remains:
 
 ```text
 Query
@@ -475,7 +335,7 @@ whole-document dense retrieval
 top-k evidence
 ```
 
-RootLens also now has an experimental high-recall candidate-generation path:
+RootLens also retains an experimental high-recall path:
 
 ```text
 Query
@@ -487,65 +347,57 @@ Dense retrieval for original + rewrites
 candidate union
 ```
 
-This candidate pool is not yet used as the default final evidence set because fusion remains unresolved.
+The union candidate pool is not yet used as the default final evidence set.
 
 ---
 
 # Next experiment
 
-## Experiment 011 — Multi-Query Fusion Strategies
+## Experiment 012 — Set-Aware Evidence Selection
 
-Experiment 010 demonstrated that candidate generation is no longer the main bottleneck.
+Experiment 011 shows that independent scalar scoring is not sufficient to exploit the multi-query candidate union.
 
-The next experiment keeps the candidate pool fixed and compares deterministic selection strategies.
+The next experiment will treat the output as a set-selection problem.
 
-Initial methods:
-
-```text
-RRF
-MaxSim
-MeanSim
-```
-
-Experimental rule:
+Keep fixed:
 
 ```text
-same queries
-same frozen rewrites
-same Dense model
-same candidate pool
-different fusion rule only
+Dense model           = BAAI/bge-small-en-v1.5
+frozen rewrites       = dev_rewrites_v1.json
+rewrites/query        = 3
+candidates/query      = 10
+candidate union       = unchanged
+benchmark             = DEV only
 ```
 
-This isolates evidence selection from candidate generation.
-
-### RRF
-
-Uses only rank positions:
+Compare:
 
 ```text
-RRF(d) = Σ 1 / (k + rank_i(d))
+Dense baseline
+RRF baseline
+MMR
+query-coverage selection
 ```
 
-### MaxSim
+### MMR
 
-Preserves documents that are strongly supported by at least one formulation:
+Maximal Marginal Relevance balances relevance with non-redundancy:
 
 ```text
-MaxSim(d) = max_i cosine(q_i, d)
+MMR(d | S)
+=
+λ * relevance(d)
+-
+(1 - λ) * max similarity(d, selected_document)
 ```
 
-### MeanSim
+### Query-Coverage Selection
 
-Rewards documents that remain relevant across several formulations:
+Instead of assigning one independent scalar to each document, greedily select documents that improve coverage across the expanded query representations.
 
-```text
-MeanSim(d) = mean_i cosine(q_i, d)
-```
+The goal is to test whether a set-aware objective can preserve complementary evidence that simple RRF, MaxSim, and MeanSim discard.
 
-For MaxSim and MeanSim, every document in the fixed union candidate set is explicitly scored against every expanded query. Missing top-10 membership is not treated as a zero score.
-
-If simple deterministic fusion still fails to exploit the high-recall pool, RootLens will move to explicit coverage/diversity-aware evidence-set selection rather than trying arbitrary additional score formulas.
+If set-aware selection still cannot exploit the candidate union, the next step will be explicit query decomposition.
 
 ---
 
@@ -568,7 +420,9 @@ Reranking experiments
         ↓
 Multi-query candidate generation
         ↓
-Candidate fusion / evidence selection
+Scalar fusion experiments
+        ↓
+Set-aware evidence selection
         ↓
 Query decomposition
         ↓
@@ -592,4 +446,3 @@ Productization
 The project follows one central architectural rule:
 
 > Complexity must earn its place through measured improvements.
-
