@@ -1,3 +1,5 @@
+import math
+
 import pytest
 
 from rootlens.retrieval.reranker import (
@@ -296,6 +298,47 @@ def test_mismatched_reranker_scores_are_rejected():
     )
 
     with pytest.raises(ValueError):
+        retriever.search(
+            "query",
+            k=2,
+        )
+
+class NonFiniteFakeReranker:
+    def score(
+        self,
+        query: str,
+        documents,
+    ) -> list[float]:
+        return [
+            float("nan")
+            for _ in documents
+        ]
+
+
+def test_non_finite_reranker_scores_are_rejected():
+    candidate_retriever = (
+        FakeCandidateRetriever(
+            [
+                ("a.md", 0.9),
+                ("b.md", 0.8),
+            ]
+        )
+    )
+
+    retriever = RerankedRetriever(
+        candidate_retriever=(
+            candidate_retriever
+        ),
+        documents=DOCUMENTS,
+        reranker=(
+            NonFiniteFakeReranker()
+        ),
+        candidate_k=2,
+    )
+
+    with pytest.raises(
+        RuntimeError
+    ):
         retriever.search(
             "query",
             k=2,

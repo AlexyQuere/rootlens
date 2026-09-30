@@ -1,6 +1,12 @@
 from __future__ import annotations
 
 import math
+import torch
+
+from transformers import (
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+)
 from typing import Protocol, Sequence
 
 from sentence_transformers import CrossEncoder
@@ -86,6 +92,149 @@ class CrossEncoderReranker:
 
         return scores
 
+
+class BGEReranker:
+    """BAAI BGE cross-encoder-style reranker.
+
+    The model jointly scores a query-document pair using a
+    sequence-classification model.
+
+    Returned values are raw ranking logits, not calibrated
+    probabilities or confidence scores.
+    """
+
+    DEFAULT_MODEL_NAME = (
+        "BAAI/bge-reranker-base"
+    )
+
+    def __init__(
+        self,
+        model_name: str = DEFAULT_MODEL_NAME,
+        device: str = "cpu",
+        batch_size: int = 4,
+        max_length: int = 512,
+    ) -> None:
+        if batch_size <= 0:
+            raise ValueError(
+                "batch_size must be strictly positive."
+            )
+
+        if max_length <= 0:
+            raise ValueError(
+                "max_length must be strictly positive."
+            )
+
+        self.model_name = model_name
+        self.device = device
+        self.batch_size = batch_size
+        self.max_length = max_length
+
+        self.tokenizer = (
+            AutoTokenizer.from_pretrained(
+                model_name
+            )
+        )
+
+        self.model = (
+            AutoModelForSequenceClassification
+            .from_pretrained(
+                model_name
+            )
+        )
+
+        self.model.to(
+            self.device
+        )
+
+        self.model.eval()
+
+    def score(
+        self,
+        query: str,
+        documents,
+    ) -> list[float]:
+        if not documents:
+            return []
+
+        scores: list[float] = []
+
+        for start in range(
+            0,
+            len(documents),
+            self.batch_size,
+        ):
+            batch_documents = documents[
+                start:
+                start + self.batch_size
+            ]
+
+            pairs = [
+                (
+                    query,
+                    document,
+                )
+                for document
+                in batch_documents
+            ]
+
+            inputs = self.tokenizer(
+                pairs,
+                padding=True,
+                truncation=True,
+                max_length=self.max_length,
+                return_tensors="pt",
+            )
+
+            inputs = {
+                name: tensor.to(
+                    self.device
+                )
+                for name, tensor
+                in inputs.items()
+            }
+
+            with torch.inference_mode():
+                outputs = self.model(
+                    **inputs,
+                    return_dict=True,
+                )
+
+            batch_scores = (
+                outputs
+                .logits
+                .view(-1)
+                .float()
+                .detach()
+                .cpu()
+                .tolist()
+            )
+
+            scores.extend(
+                float(score)
+                for score
+                in batch_scores
+            )
+
+        if len(scores) != len(documents):
+            raise RuntimeError(
+                "BGE reranker returned a different "
+                "number of scores than documents."
+            )
+
+        invalid_scores = [
+            score
+            for score in scores
+            if not math.isfinite(score)
+        ]
+
+        if invalid_scores:
+            raise RuntimeError(
+                "BGE reranker produced "
+                "non-finite scores."
+            )
+
+        return scores
+    
 
 class RerankedRetriever:
     """Retrieve candidates, then rerank them with a slower model."""
