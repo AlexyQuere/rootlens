@@ -1,0 +1,157 @@
+[
+  {
+    "query_id": "test-001",
+    "query": "Where is PaymentService/Charge invoked in the normal checkout path?",
+    "category": "exact_identifier",
+    "relevance": {
+      "checkout-payment-flow.md": 2,
+      "checkout-architecture.md": 2,
+      "payment-service.md": 1
+    }
+  },
+  {
+    "query_id": "test-002",
+    "query": "What information does DEADLINE_EXCEEDED provide about an RPC failure?",
+    "category": "exact_identifier",
+    "relevance": {
+      "grpc-troubleshooting.md": 2,
+      "timeout-and-retry-guidance.md": 2,
+      "latency-troubleshooting.md": 1
+    }
+  },
+  {
+    "query_id": "test-003",
+    "query": "Which documentation explains resource.service.name together with trace and span identifiers in logs?",
+    "category": "exact_identifier",
+    "relevance": {
+      "structured-logging-guide.md": 2,
+      "telemetry-correlation.md": 1
+    }
+  },
+  {
+    "query_id": "test-004",
+    "query": "How can a client discover the address it should use to contact another service?",
+    "category": "semantic_paraphrase",
+    "relevance": {
+      "service-discovery.md": 2,
+      "dns-troubleshooting.md": 1
+    }
+  },
+  {
+    "query_id": "test-005",
+    "query": "How do I connect an aggregate error spike to the detailed evidence for one failing request?",
+    "category": "semantic_paraphrase",
+    "relevance": {
+      "observability-guide.md": 2,
+      "telemetry-correlation.md": 2,
+      "metrics-guide.md": 1,
+      "distributed-tracing-guide.md": 1
+    }
+  },
+  {
+    "query_id": "test-006",
+    "query": "Why can the user-facing component appear broken when the actual defect is deeper in the backend?",
+    "category": "semantic_paraphrase",
+    "relevance": {
+      "frontend-service.md": 2,
+      "incident-response-guide.md": 1
+    }
+  },
+  {
+    "query_id": "test-007",
+    "query": "What happens between retrieving the cart and charging the customer during a successful order?",
+    "category": "architecture",
+    "relevance": {
+      "checkout-architecture.md": 2,
+      "checkout-payment-flow.md": 2,
+      "shipping-service.md": 1,
+      "currency-service.md": 1
+    }
+  },
+  {
+    "query_id": "test-008",
+    "query": "Which service owns product metadata and which service owns the user's selected items?",
+    "category": "architecture",
+    "relevance": {
+      "product-catalog-service.md": 2,
+      "cart-service.md": 2
+    }
+  },
+  {
+    "query_id": "test-009",
+    "query": "There is a Payment client span with UNAVAILABLE but no Payment server span. What evidence is most relevant?",
+    "category": "troubleshooting",
+    "relevance": {
+      "payment-runbook.md": 2,
+      "service-discovery.md": 2,
+      "grpc-troubleshooting.md": 2,
+      "payment-service.md": 1
+    }
+  },
+  {
+    "query_id": "test-010",
+    "query": "How is a DNS failure different from the broader problem of service discovery?",
+    "category": "troubleshooting",
+    "relevance": {
+      "dns-troubleshooting.md": 2,
+      "service-discovery.md": 2
+    }
+  },
+  {
+    "query_id": "test-011",
+    "query": "Why can retries make an outage or latency incident worse?",
+    "category": "troubleshooting",
+    "relevance": {
+      "timeout-and-retry-guidance.md": 2,
+      "latency-troubleshooting.md": 1
+    }
+  },
+  {
+    "query_id": "test-012",
+    "query": "Why does an empty Prometheus Targets page not necessarily mean that application metrics are missing?",
+    "category": "observability",
+    "relevance": {
+      "otel-collector.md": 2,
+      "metrics-guide.md": 1
+    }
+  },
+  {
+    "query_id": "test-013",
+    "query": "Why should I not sum every span duration to estimate total request latency?",
+    "category": "observability",
+    "relevance": {
+      "distributed-tracing-guide.md": 2,
+      "latency-troubleshooting.md": 1
+    }
+  },
+  {
+    "query_id": "test-014",
+    "query": "How can I use a trace to rule out Currency and Shipping before focusing on a later Payment failure?",
+    "category": "multi_document",
+    "relevance": {
+      "checkout-runbook.md": 2,
+      "distributed-tracing-guide.md": 2,
+      "currency-service.md": 1,
+      "shipping-service.md": 1,
+      "payment-runbook.md": 1
+    }
+  },
+  {
+    "query_id": "test-015",
+    "query": "Telemetry disappears across several services while checkout still works. What subsystem should I investigate?",
+    "category": "multi_document",
+    "relevance": {
+      "otel-collector.md": 2,
+      "observability-guide.md": 1
+    }
+  },
+  {
+    "query_id": "test-016",
+    "query": "I need the normal business sequence between Checkout and Payment, not monitoring or failure diagnosis. Which document is most relevant?",
+    "category": "hard_negative",
+    "relevance": {
+      "checkout-payment-flow.md": 2,
+      "checkout-architecture.md": 1
+    }
+  }
+]
