@@ -1,0 +1,314 @@
+{
+  "metadata": {
+    "experiment": "014E",
+    "version": "v1",
+    "baseline": "dev_rag_outputs_v1.json",
+    "intervention": "rag_oracle_outputs_v1.json",
+    "important_note": "Qrel relevance is not claim entailment. Final attribution requires answer-level inspection."
+  },
+  "aggregate": {
+    "mean_baseline_qrel_citation_recall": 0.5277777777777778,
+    "mean_enriched_qrel_citation_recall": 0.8611111111111112,
+    "mean_citation_recall_delta": 0.33333333333333337,
+    "recovered_qrel_documents": 9,
+    "recovered_qrel_documents_cited": 8,
+    "recovered_evidence_uptake": 0.8888888888888888
+  },
+  "queries": [
+    {
+      "query_id": "dev-008",
+      "category": "semantic_paraphrase",
+      "question": "Why is a browser HTTP 500 not enough to identify which backend component is faulty?",
+      "baseline_evidence": [
+        "frontend-service.md",
+        "payment-runbook.md",
+        "checkout-runbook.md",
+        "service-discovery.md",
+        "dns-troubleshooting.md"
+      ],
+      "enriched_evidence": [
+        "frontend-service.md",
+        "checkout-runbook.md",
+        "incident-response-guide.md",
+        "payment-runbook.md",
+        "service-discovery.md"
+      ],
+      "recovered_qrel": [
+        "incident-response-guide.md"
+      ],
+      "dropped_baseline": [
+        "dns-troubleshooting.md"
+      ],
+      "omitted_positive_qrel": [],
+      "baseline_status": "answered",
+      "oracle_status": "answered",
+      "baseline_claim_count": 4,
+      "oracle_claim_count": 5,
+      "baseline_cited_sources": [
+        "checkout-runbook.md",
+        "frontend-service.md",
+        "payment-runbook.md"
+      ],
+      "oracle_cited_sources": [
+        "frontend-service.md",
+        "incident-response-guide.md",
+        "payment-runbook.md"
+      ],
+      "baseline_qrel_citation_recall": 0.6666666666666666,
+      "oracle_qrel_citation_recall": 0.6666666666666666,
+      "citation_recall_delta": 0.0,
+      "recovered_evidence_uptake": 1.0,
+      "recovered_qrel_cited": [
+        "incident-response-guide.md"
+      ],
+      "intervention_outcome": "recovered_evidence_used"
+    },
+    {
+      "query_id": "dev-015",
+      "category": "troubleshooting",
+      "question": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+      "baseline_evidence": [
+        "payment-service.md",
+        "payment-runbook.md",
+        "payment-monitoring.md",
+        "cart-service.md",
+        "checkout-runbook.md"
+      ],
+      "enriched_evidence": [
+        "payment-service.md",
+        "payment-runbook.md",
+        "grpc-troubleshooting.md",
+        "service-discovery.md",
+        "payment-monitoring.md"
+      ],
+      "recovered_qrel": [
+        "grpc-troubleshooting.md",
+        "service-discovery.md"
+      ],
+      "dropped_baseline": [
+        "cart-service.md",
+        "checkout-runbook.md"
+      ],
+      "omitted_positive_qrel": [],
+      "baseline_status": "answered",
+      "oracle_status": "answered",
+      "baseline_claim_count": 6,
+      "oracle_claim_count": 6,
+      "baseline_cited_sources": [
+        "payment-runbook.md",
+        "payment-service.md"
+      ],
+      "oracle_cited_sources": [
+        "grpc-troubleshooting.md",
+        "payment-runbook.md",
+        "payment-service.md",
+        "service-discovery.md"
+      ],
+      "baseline_qrel_citation_recall": 0.5,
+      "oracle_qrel_citation_recall": 1.0,
+      "citation_recall_delta": 0.5,
+      "recovered_evidence_uptake": 1.0,
+      "recovered_qrel_cited": [
+        "grpc-troubleshooting.md",
+        "service-discovery.md"
+      ],
+      "intervention_outcome": "recovered_evidence_used"
+    },
+    {
+      "query_id": "dev-020",
+      "category": "multi_document",
+      "question": "What evidence distinguishes a network or resolution failure from an application-level payment failure?",
+      "baseline_evidence": [
+        "payment-runbook.md",
+        "service-discovery.md",
+        "payment-service.md",
+        "dns-troubleshooting.md",
+        "payment-monitoring.md"
+      ],
+      "enriched_evidence": [
+        "payment-runbook.md",
+        "service-discovery.md",
+        "payment-service.md",
+        "grpc-troubleshooting.md",
+        "dns-troubleshooting.md"
+      ],
+      "recovered_qrel": [
+        "grpc-troubleshooting.md"
+      ],
+      "dropped_baseline": [
+        "payment-monitoring.md"
+      ],
+      "omitted_positive_qrel": [],
+      "baseline_status": "answered",
+      "oracle_status": "answered",
+      "baseline_claim_count": 5,
+      "oracle_claim_count": 6,
+      "baseline_cited_sources": [
+        "dns-troubleshooting.md",
+        "payment-runbook.md",
+        "payment-service.md",
+        "service-discovery.md"
+      ],
+      "oracle_cited_sources": [
+        "grpc-troubleshooting.md",
+        "payment-runbook.md",
+        "payment-service.md",
+        "service-discovery.md"
+      ],
+      "baseline_qrel_citation_recall": 0.75,
+      "oracle_qrel_citation_recall": 1.0,
+      "citation_recall_delta": 0.25,
+      "recovered_evidence_uptake": 1.0,
+      "recovered_qrel_cited": [
+        "grpc-troubleshooting.md"
+      ],
+      "intervention_outcome": "recovered_evidence_used"
+    },
+    {
+      "query_id": "dev-021",
+      "category": "multi_document",
+      "question": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "baseline_evidence": [
+        "incident-response-guide.md",
+        "checkout-runbook.md",
+        "frontend-service.md",
+        "payment-monitoring.md",
+        "currency-service.md"
+      ],
+      "enriched_evidence": [
+        "checkout-runbook.md",
+        "distributed-tracing-guide.md",
+        "metrics-guide.md",
+        "telemetry-correlation.md",
+        "incident-response-guide.md"
+      ],
+      "recovered_qrel": [
+        "distributed-tracing-guide.md",
+        "metrics-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "dropped_baseline": [
+        "frontend-service.md",
+        "payment-monitoring.md",
+        "currency-service.md"
+      ],
+      "omitted_positive_qrel": [],
+      "baseline_status": "answered",
+      "oracle_status": "answered",
+      "baseline_claim_count": 8,
+      "oracle_claim_count": 7,
+      "baseline_cited_sources": [
+        "checkout-runbook.md",
+        "frontend-service.md",
+        "incident-response-guide.md"
+      ],
+      "oracle_cited_sources": [
+        "checkout-runbook.md",
+        "distributed-tracing-guide.md",
+        "incident-response-guide.md",
+        "metrics-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "baseline_qrel_citation_recall": 0.25,
+      "oracle_qrel_citation_recall": 1.0,
+      "citation_recall_delta": 0.75,
+      "recovered_evidence_uptake": 1.0,
+      "recovered_qrel_cited": [
+        "distributed-tracing-guide.md",
+        "metrics-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "intervention_outcome": "recovered_evidence_used"
+    },
+    {
+      "query_id": "dev-022",
+      "category": "multi_document",
+      "question": "How can I determine whether high request latency comes from retries or from a slow downstream dependency?",
+      "baseline_evidence": [
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md",
+        "observability-guide.md",
+        "telemetry-correlation.md",
+        "distributed-tracing-guide.md"
+      ],
+      "enriched_evidence": [
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md",
+        "distributed-tracing-guide.md",
+        "metrics-guide.md",
+        "observability-guide.md"
+      ],
+      "recovered_qrel": [
+        "metrics-guide.md"
+      ],
+      "dropped_baseline": [
+        "telemetry-correlation.md"
+      ],
+      "omitted_positive_qrel": [],
+      "baseline_status": "answered",
+      "oracle_status": "answered",
+      "baseline_claim_count": 5,
+      "oracle_claim_count": 8,
+      "baseline_cited_sources": [
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "oracle_cited_sources": [
+        "distributed-tracing-guide.md",
+        "latency-troubleshooting.md",
+        "metrics-guide.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "baseline_qrel_citation_recall": 0.5,
+      "oracle_qrel_citation_recall": 1.0,
+      "citation_recall_delta": 0.5,
+      "recovered_evidence_uptake": 1.0,
+      "recovered_qrel_cited": [
+        "metrics-guide.md"
+      ],
+      "intervention_outcome": "recovered_evidence_used"
+    },
+    {
+      "query_id": "dev-023",
+      "category": "hard_negative",
+      "question": "Which document should I use to design PaymentService dashboards and alerts rather than debug one request?",
+      "baseline_evidence": [
+        "payment-monitoring.md",
+        "payment-runbook.md",
+        "payment-service.md",
+        "telemetry-correlation.md",
+        "checkout-runbook.md"
+      ],
+      "enriched_evidence": [
+        "payment-monitoring.md",
+        "metrics-guide.md",
+        "payment-runbook.md",
+        "payment-service.md",
+        "telemetry-correlation.md"
+      ],
+      "recovered_qrel": [
+        "metrics-guide.md"
+      ],
+      "dropped_baseline": [
+        "checkout-runbook.md"
+      ],
+      "omitted_positive_qrel": [],
+      "baseline_status": "answered",
+      "oracle_status": "answered",
+      "baseline_claim_count": 3,
+      "oracle_claim_count": 3,
+      "baseline_cited_sources": [
+        "payment-monitoring.md"
+      ],
+      "oracle_cited_sources": [
+        "payment-monitoring.md"
+      ],
+      "baseline_qrel_citation_recall": 0.5,
+      "oracle_qrel_citation_recall": 0.5,
+      "citation_recall_delta": 0.0,
+      "recovered_evidence_uptake": 0.0,
+      "recovered_qrel_cited": [],
+      "intervention_outcome": "recovered_evidence_not_cited"
+    }
+  ]
+}
