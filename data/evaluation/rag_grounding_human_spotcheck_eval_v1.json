@@ -1,0 +1,161 @@
+{
+  "metadata": {
+    "version": "v1",
+    "important_note": "This is a targeted human audit, not a random population estimate."
+  },
+  "summary": {
+    "spot_checks": 10,
+    "human_labels": {
+      "full": 10,
+      "partial": 0,
+      "none": 0
+    },
+    "gemma_human_agreement": 0.9,
+    "qwen_human_agreement": 0.9,
+    "judge_disagreement_items": 2,
+    "judge_agreement_items": 8,
+    "hidden_consensus_failures": 0
+  },
+  "items": [
+    {
+      "annotation_id": "dev-020:claim-05",
+      "query_id": "dev-020",
+      "claim_index": 5,
+      "category": "multi_document",
+      "claim": "The causal path must be verified by checking if a server span exists downstream; if no server span exists, the failure likely occurred before the request arrived at PaymentService, whereas if a server span exists, the failure occurred inside or after PaymentService.",
+      "human": "full",
+      "human_note": "",
+      "gemma": "full",
+      "qwen_reasoning": "full",
+      "gemma_matches_human": true,
+      "qwen_matches_human": true,
+      "judges_agree": true
+    },
+    {
+      "annotation_id": "dev-007:claim-03",
+      "query_id": "dev-007",
+      "claim_index": 3,
+      "category": "semantic_paraphrase",
+      "claim": "A failure occurring before the downstream application processes the request is indicated by a failing client span with no corresponding server span in the traces.",
+      "human": "full",
+      "human_note": "",
+      "gemma": "partial",
+      "qwen_reasoning": "full",
+      "gemma_matches_human": false,
+      "qwen_matches_human": true,
+      "judges_agree": false
+    },
+    {
+      "annotation_id": "dev-013:claim-07",
+      "query_id": "dev-013",
+      "claim_index": 7,
+      "category": "troubleshooting",
+      "claim": "Potential causes for UNAVAILABLE in this context include unreachable endpoints, connection failures, name-resolution failures, unavailable service instances, or transient network failures.",
+      "human": "full",
+      "human_note": "",
+      "gemma": "full",
+      "qwen_reasoning": "full",
+      "gemma_matches_human": true,
+      "qwen_matches_human": true,
+      "judges_agree": true
+    },
+    {
+      "annotation_id": "dev-006:claim-01",
+      "query_id": "dev-006",
+      "claim_index": 1,
+      "category": "semantic_paraphrase",
+      "claim": "To tie messages from several services to the same user transaction, you must use the trace ID, which groups the entire distributed request across service boundaries.",
+      "human": "full",
+      "human_note": "",
+      "gemma": "full",
+      "qwen_reasoning": "partial",
+      "gemma_matches_human": true,
+      "qwen_matches_human": false,
+      "judges_agree": false
+    },
+    {
+      "annotation_id": "dev-016:claim-13",
+      "query_id": "dev-016",
+      "claim_index": 13,
+      "category": "troubleshooting",
+      "claim": "Endpoint configuration or discovery state can produce a similar symptom of zero addresses, so DNS is not the only hypothesis.",
+      "human": "full",
+      "human_note": "",
+      "gemma": "full",
+      "qwen_reasoning": "full",
+      "gemma_matches_human": true,
+      "qwen_matches_human": true,
+      "judges_agree": true
+    },
+    {
+      "annotation_id": "dev-022:claim-05",
+      "query_id": "dev-022",
+      "claim_index": 5,
+      "category": "multi_document",
+      "claim": "A DEADLINE_EXCEEDED error indicates that the request exceeded a deadline but does not identify the underlying latency mechanism, so traces and metrics are required to determine the cause.",
+      "human": "full",
+      "human_note": "high latency is different from deadline exceeded error",
+      "gemma": "full",
+      "qwen_reasoning": "full",
+      "gemma_matches_human": true,
+      "qwen_matches_human": true,
+      "judges_agree": true
+    },
+    {
+      "annotation_id": "dev-014:claim-05",
+      "query_id": "dev-014",
+      "claim_index": 5,
+      "category": "troubleshooting",
+      "claim": "DEADLINE_EXCEEDED does not identify the specific operation contributing to the critical path or the root cause; investigators must determine where time was actually spent rather than assuming the slowest-looking span is the root cause.",
+      "human": "full",
+      "human_note": "",
+      "gemma": "full",
+      "qwen_reasoning": "full",
+      "gemma_matches_human": true,
+      "qwen_matches_human": true,
+      "judges_agree": true
+    },
+    {
+      "annotation_id": "dev-021:claim-03",
+      "query_id": "dev-021",
+      "claim_index": 3,
+      "category": "multi_document",
+      "claim": "To move from detection to request-level evidence, locate the first meaningful failure on the request path by checking gRPC status, status description, and whether earlier dependencies completed successfully, rather than assuming the final Checkout error is the root cause.",
+      "human": "full",
+      "human_note": "",
+      "gemma": "full",
+      "qwen_reasoning": "full",
+      "gemma_matches_human": true,
+      "qwen_matches_human": true,
+      "judges_agree": true
+    },
+    {
+      "annotation_id": "dev-008:claim-01",
+      "query_id": "dev-008",
+      "claim_index": 1,
+      "category": "semantic_paraphrase",
+      "claim": "An HTTP 500 error only establishes that the user request failed, but it does not identify the backend root cause.",
+      "human": "full",
+      "human_note": "",
+      "gemma": "full",
+      "qwen_reasoning": "full",
+      "gemma_matches_human": true,
+      "qwen_matches_human": true,
+      "judges_agree": true
+    },
+    {
+      "annotation_id": "dev-015:claim-01",
+      "query_id": "dev-015",
+      "claim_index": 1,
+      "category": "troubleshooting",
+      "claim": "To distinguish between a failure to reach PaymentService and a PaymentService business logic failure, investigators must first determine if the request actually reached the service by inspecting the distributed trace for the presence of a Payment server span.",
+      "human": "full",
+      "human_note": "",
+      "gemma": "full",
+      "qwen_reasoning": "full",
+      "gemma_matches_human": true,
+      "qwen_matches_human": true,
+      "judges_agree": true
+    }
+  ]
+}

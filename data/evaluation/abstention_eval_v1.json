@@ -1,0 +1,429 @@
+{
+  "metadata": {
+    "experiment": "014D",
+    "version": "v1",
+    "outputs_file": "abstention_outputs_v1.json",
+    "gold_file": "abstention_gold_v1.json",
+    "gold_hidden_during_generation": true,
+    "important_note": "This is a small synthetic matched-triplet calibration benchmark, not a broad population estimate."
+  },
+  "classification": {
+    "accuracy": 1.0,
+    "balanced_accuracy": 1.0,
+    "macro_f1": 1.0,
+    "confusion_matrix": {
+      "answered": {
+        "answered": 6,
+        "partial": 0,
+        "abstained": 0
+      },
+      "partial": {
+        "answered": 0,
+        "partial": 6,
+        "abstained": 0
+      },
+      "abstained": {
+        "answered": 0,
+        "partial": 0,
+        "abstained": 6
+      }
+    },
+    "per_class": {
+      "answered": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "partial": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "abstained": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    }
+  },
+  "selectivity": {
+    "failure_to_abstain_rate": 0.0,
+    "partial_overclaim_rate": 0.0,
+    "partial_overabstain_rate": 0.0,
+    "triplet_consistency_rate": 1.0
+  },
+  "evidence": {
+    "expected_source_hit_rate": 1.0,
+    "note": "Expected-source overlap is not claim-level groundedness."
+  },
+  "generation": {
+    "schema_retry_count": 1,
+    "schema_retry_rate": 0.05555555555555555,
+    "mean_attempts": 1.0555555555555556,
+    "mean_latency_ms": 2357.296694561632,
+    "median_latency_ms": 1720.745729515329,
+    "p95_latency_ms": 11194.602958043106
+  },
+  "queries": [
+    {
+      "query_id": "abs-001",
+      "pair_id": "payment_database",
+      "variant": "answerable",
+      "expected_status": "answered",
+      "predicted_status": "answered",
+      "correct": true,
+      "expected_sources": [
+        "payment-service.md"
+      ],
+      "cited_sources": [
+        "checkout-payment-flow.md",
+        "payment-service.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "PaymentService is responsible for charging the customer during checkout.",
+      "missing_component": null,
+      "limitation": null,
+      "generation_attempts": 1,
+      "latency_ms": 754.7564579872414
+    },
+    {
+      "query_id": "abs-002",
+      "pair_id": "payment_database",
+      "variant": "partial",
+      "expected_status": "partial",
+      "predicted_status": "partial",
+      "correct": true,
+      "expected_sources": [
+        "payment-service.md"
+      ],
+      "cited_sources": [
+        "payment-service.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "PaymentService is responsible for charging the customer.",
+      "missing_component": "The PostgreSQL version used in production is not described.",
+      "limitation": "The provided evidence does not contain information regarding the PostgreSQL version used in production.",
+      "generation_attempts": 1,
+      "latency_ms": 1540.7724169781432
+    },
+    {
+      "query_id": "abs-003",
+      "pair_id": "payment_database",
+      "variant": "unanswerable",
+      "expected_status": "abstained",
+      "predicted_status": "abstained",
+      "correct": true,
+      "expected_sources": [],
+      "cited_sources": [],
+      "expected_source_hit": null,
+      "supported_component": null,
+      "missing_component": "The corpus does not specify a PostgreSQL version.",
+      "limitation": "The provided evidence describes the architecture, monitoring, and troubleshooting procedures for the PaymentService but does not specify the version of PostgreSQL used in production.",
+      "generation_attempts": 1,
+      "latency_ms": 1859.2194170923904
+    },
+    {
+      "query_id": "abs-004",
+      "pair_id": "metrics_region",
+      "variant": "answerable",
+      "expected_status": "answered",
+      "predicted_status": "answered",
+      "correct": true,
+      "expected_sources": [
+        "metrics-guide.md",
+        "observability-guide.md"
+      ],
+      "cited_sources": [
+        "metrics-guide.md",
+        "observability-guide.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "Metrics are used for detection and quantification of checkout degradation.",
+      "missing_component": null,
+      "limitation": null,
+      "generation_attempts": 1,
+      "latency_ms": 1239.9089169921353
+    },
+    {
+      "query_id": "abs-005",
+      "pair_id": "metrics_region",
+      "variant": "partial",
+      "expected_status": "partial",
+      "predicted_status": "partial",
+      "correct": true,
+      "expected_sources": [
+        "metrics-guide.md",
+        "observability-guide.md"
+      ],
+      "cited_sources": [
+        "metrics-guide.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "Metrics are appropriate for detecting and quantifying the degradation.",
+      "missing_component": "The production cloud region is not specified.",
+      "limitation": "The provided evidence does not specify which production cloud region hosts the system.",
+      "generation_attempts": 1,
+      "latency_ms": 715.6636250438169
+    },
+    {
+      "query_id": "abs-006",
+      "pair_id": "metrics_region",
+      "variant": "unanswerable",
+      "expected_status": "abstained",
+      "predicted_status": "abstained",
+      "correct": true,
+      "expected_sources": [],
+      "cited_sources": [],
+      "expected_source_hit": null,
+      "supported_component": null,
+      "missing_component": "The corpus does not specify a production cloud region.",
+      "limitation": "The provided evidence describes the architecture, dependencies, and troubleshooting procedures for the checkout system but does not specify which production cloud region hosts it.",
+      "generation_attempts": 1,
+      "latency_ms": 658.5921669611707
+    },
+    {
+      "query_id": "abs-007",
+      "pair_id": "trace_oncall",
+      "variant": "answerable",
+      "expected_status": "answered",
+      "predicted_status": "answered",
+      "correct": true,
+      "expected_sources": [
+        "grpc-troubleshooting.md",
+        "payment-runbook.md",
+        "service-discovery.md"
+      ],
+      "cited_sources": [
+        "distributed-tracing-guide.md",
+        "grpc-troubleshooting.md",
+        "payment-runbook.md",
+        "service-discovery.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "Investigate failures occurring before the downstream application handled the request, including resolution, discovery, endpoint, or connectivity problems.",
+      "missing_component": null,
+      "limitation": null,
+      "generation_attempts": 2,
+      "latency_ms": 11194.602958043106
+    },
+    {
+      "query_id": "abs-008",
+      "pair_id": "trace_oncall",
+      "variant": "partial",
+      "expected_status": "partial",
+      "predicted_status": "partial",
+      "correct": true,
+      "expected_sources": [
+        "grpc-troubleshooting.md",
+        "payment-runbook.md",
+        "service-discovery.md"
+      ],
+      "cited_sources": [
+        "distributed-tracing-guide.md",
+        "grpc-troubleshooting.md",
+        "latency-troubleshooting.md",
+        "payment-runbook.md",
+        "service-discovery.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "The missing server span supports investigating pre-service failures.",
+      "missing_component": "The current on-call engineer is not specified.",
+      "limitation": "The provided evidence does not identify the current on-call engineer.",
+      "generation_attempts": 1,
+      "latency_ms": 3093.29612494912
+    },
+    {
+      "query_id": "abs-009",
+      "pair_id": "trace_oncall",
+      "variant": "unanswerable",
+      "expected_status": "abstained",
+      "predicted_status": "abstained",
+      "correct": true,
+      "expected_sources": [],
+      "cited_sources": [],
+      "expected_source_hit": null,
+      "supported_component": null,
+      "missing_component": "The corpus does not identify a current on-call engineer.",
+      "limitation": "The provided evidence describes the architecture, runbooks, and monitoring for the Checkout and Payment services, but it does not contain any information regarding specific personnel, roles, or on-call assignments for checkout incidents.",
+      "generation_attempts": 1,
+      "latency_ms": 670.7958750193939
+    },
+    {
+      "query_id": "abs-010",
+      "pair_id": "shipping_replicas",
+      "variant": "answerable",
+      "expected_status": "answered",
+      "predicted_status": "answered",
+      "correct": true,
+      "expected_sources": [
+        "shipping-service.md"
+      ],
+      "cited_sources": [
+        "checkout-architecture.md",
+        "shipping-service.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "Shipping calculates delivery quotes and participates before payment is completed.",
+      "missing_component": null,
+      "limitation": null,
+      "generation_attempts": 1,
+      "latency_ms": 1119.0817500464618
+    },
+    {
+      "query_id": "abs-011",
+      "pair_id": "shipping_replicas",
+      "variant": "partial",
+      "expected_status": "partial",
+      "predicted_status": "partial",
+      "correct": true,
+      "expected_sources": [
+        "shipping-service.md"
+      ],
+      "cited_sources": [
+        "shipping-service.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "Shipping calculates delivery quotes before payment completes.",
+      "missing_component": "The production Kubernetes replica count is not specified.",
+      "limitation": "The provided evidence does not contain information regarding the number of Kubernetes replicas the Shipping service runs in production.",
+      "generation_attempts": 1,
+      "latency_ms": 2028.7388750584796
+    },
+    {
+      "query_id": "abs-012",
+      "pair_id": "shipping_replicas",
+      "variant": "unanswerable",
+      "expected_status": "abstained",
+      "predicted_status": "abstained",
+      "correct": true,
+      "expected_sources": [],
+      "cited_sources": [],
+      "expected_source_hit": null,
+      "supported_component": null,
+      "missing_component": "The corpus does not specify Kubernetes replica counts.",
+      "limitation": "The provided evidence describes the Shipping service's role, its dependencies, and how to investigate issues with it, but it does not contain any information regarding the number of Kubernetes replicas running in production.",
+      "generation_attempts": 1,
+      "latency_ms": 1582.2720419382676
+    },
+    {
+      "query_id": "abs-013",
+      "pair_id": "deadline_tls",
+      "variant": "answerable",
+      "expected_status": "answered",
+      "predicted_status": "answered",
+      "correct": true,
+      "expected_sources": [
+        "grpc-troubleshooting.md",
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "cited_sources": [
+        "grpc-troubleshooting.md",
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "DEADLINE_EXCEEDED indicates a deadline was exceeded but does not by itself identify the underlying cause.",
+      "missing_component": null,
+      "limitation": null,
+      "generation_attempts": 1,
+      "latency_ms": 2671.6942089842632
+    },
+    {
+      "query_id": "abs-014",
+      "pair_id": "deadline_tls",
+      "variant": "partial",
+      "expected_status": "partial",
+      "predicted_status": "partial",
+      "correct": true,
+      "expected_sources": [
+        "grpc-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "cited_sources": [
+        "grpc-troubleshooting.md",
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "The meaning and limitations of DEADLINE_EXCEEDED are documented.",
+      "missing_component": "The TLS certificate expiration date is not specified.",
+      "limitation": "The provided evidence does not contain information regarding when the production TLS certificate expires.",
+      "generation_attempts": 1,
+      "latency_ms": 4613.812334020622
+    },
+    {
+      "query_id": "abs-015",
+      "pair_id": "deadline_tls",
+      "variant": "unanswerable",
+      "expected_status": "abstained",
+      "predicted_status": "abstained",
+      "correct": true,
+      "expected_sources": [],
+      "cited_sources": [],
+      "expected_source_hit": null,
+      "supported_component": null,
+      "missing_component": "The corpus contains no production TLS certificate expiry information.",
+      "limitation": "The provided evidence contains troubleshooting guides for latency, observability, gRPC, shipping services, and timeouts/retries. None of the sources contain information regarding TLS certificates or their expiration dates.",
+      "generation_attempts": 1,
+      "latency_ms": 2646.8330409843475
+    },
+    {
+      "query_id": "abs-016",
+      "pair_id": "currency_cpu",
+      "variant": "answerable",
+      "expected_status": "answered",
+      "predicted_status": "answered",
+      "correct": true,
+      "expected_sources": [
+        "currency-service.md"
+      ],
+      "cited_sources": [
+        "currency-service.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "CurrencyService converts monetary values between currencies.",
+      "missing_component": null,
+      "limitation": null,
+      "generation_attempts": 1,
+      "latency_ms": 1985.4524589609355
+    },
+    {
+      "query_id": "abs-017",
+      "pair_id": "currency_cpu",
+      "variant": "partial",
+      "expected_status": "partial",
+      "predicted_status": "partial",
+      "correct": true,
+      "expected_sources": [
+        "currency-service.md"
+      ],
+      "cited_sources": [
+        "checkout-architecture.md",
+        "currency-service.md"
+      ],
+      "expected_source_hit": true,
+      "supported_component": "CurrencyService converts monetary values.",
+      "missing_component": "The production CPU limit is not specified.",
+      "limitation": "The provided evidence does not contain information regarding the CPU limit configured for the Currency service in production.",
+      "generation_attempts": 1,
+      "latency_ms": 3339.8554580053315
+    },
+    {
+      "query_id": "abs-018",
+      "pair_id": "currency_cpu",
+      "variant": "unanswerable",
+      "expected_status": "abstained",
+      "predicted_status": "abstained",
+      "correct": true,
+      "expected_sources": [],
+      "cited_sources": [],
+      "expected_source_hit": null,
+      "supported_component": null,
+      "missing_component": "The corpus does not specify CPU limits.",
+      "limitation": "The provided evidence does not contain any information regarding the CPU limit configuration for the CurrencyService in production. The document 'currency-service.md' describes the service's function and useful investigation evidence but does not specify resource limits.",
+      "generation_attempts": 1,
+      "latency_ms": 715.9923750441521
+    }
+  ]
+}

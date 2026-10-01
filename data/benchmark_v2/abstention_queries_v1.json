@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "version": "v1",
+    "experiment": "014D",
+    "design": "6 matched status triplets",
+    "gold_labels_included": false
+  },
+  "queries": [
+    {
+      "query_id": "abs-001",
+      "pair_id": "payment_database",
+      "variant": "answerable",
+      "query": "Which service is responsible for charging the customer during checkout?"
+    },
+    {
+      "query_id": "abs-002",
+      "pair_id": "payment_database",
+      "variant": "partial",
+      "query": "Which service is responsible for charging the customer during checkout, and which PostgreSQL version does it use in production?"
+    },
+    {
+      "query_id": "abs-003",
+      "pair_id": "payment_database",
+      "variant": "unanswerable",
+      "query": "Which PostgreSQL version does PaymentService use in production?"
+    },
+    {
+      "query_id": "abs-004",
+      "pair_id": "metrics_region",
+      "variant": "answerable",
+      "query": "Which observability signal should be used to detect and quantify an increase in checkout error rate?"
+    },
+    {
+      "query_id": "abs-005",
+      "pair_id": "metrics_region",
+      "variant": "partial",
+      "query": "Which observability signal should be used to detect and quantify an increase in checkout error rate, and which production cloud region hosts the system?"
+    },
+    {
+      "query_id": "abs-006",
+      "pair_id": "metrics_region",
+      "variant": "unanswerable",
+      "query": "Which production cloud region hosts the checkout system?"
+    },
+    {
+      "query_id": "abs-007",
+      "pair_id": "trace_oncall",
+      "variant": "answerable",
+      "query": "A failing client span has no matching downstream server span. What should I investigate?"
+    },
+    {
+      "query_id": "abs-008",
+      "pair_id": "trace_oncall",
+      "variant": "partial",
+      "query": "A failing client span has no matching downstream server span. What should I investigate, and who is the current on-call engineer?"
+    },
+    {
+      "query_id": "abs-009",
+      "pair_id": "trace_oncall",
+      "variant": "unanswerable",
+      "query": "Who is the current on-call engineer for checkout incidents?"
+    },
+    {
+      "query_id": "abs-010",
+      "pair_id": "shipping_replicas",
+      "variant": "answerable",
+      "query": "What role does the Shipping service play in checkout before payment is completed?"
+    },
+    {
+      "query_id": "abs-011",
+      "pair_id": "shipping_replicas",
+      "variant": "partial",
+      "query": "What role does the Shipping service play in checkout before payment is completed, and how many Kubernetes replicas does it run in production?"
+    },
+    {
+      "query_id": "abs-012",
+      "pair_id": "shipping_replicas",
+      "variant": "unanswerable",
+      "query": "How many Kubernetes replicas does the Shipping service run in production?"
+    },
+    {
+      "query_id": "abs-013",
+      "pair_id": "deadline_tls",
+      "variant": "answerable",
+      "query": "What does DEADLINE_EXCEEDED tell me, and what does it not establish about the underlying root cause?"
+    },
+    {
+      "query_id": "abs-014",
+      "pair_id": "deadline_tls",
+      "variant": "partial",
+      "query": "What does DEADLINE_EXCEEDED tell me about the request, and when does the production TLS certificate expire?"
+    },
+    {
+      "query_id": "abs-015",
+      "pair_id": "deadline_tls",
+      "variant": "unanswerable",
+      "query": "When does the production TLS certificate expire?"
+    },
+    {
+      "query_id": "abs-016",
+      "pair_id": "currency_cpu",
+      "variant": "answerable",
+      "query": "What is the Currency service responsible for during checkout?"
+    },
+    {
+      "query_id": "abs-017",
+      "pair_id": "currency_cpu",
+      "variant": "partial",
+      "query": "What is the Currency service responsible for during checkout, and what CPU limit is configured for it in production?"
+    },
+    {
+      "query_id": "abs-018",
+      "pair_id": "currency_cpu",
+      "variant": "unanswerable",
+      "query": "What CPU limit is configured for CurrencyService in production?"
+    }
+  ]
+}

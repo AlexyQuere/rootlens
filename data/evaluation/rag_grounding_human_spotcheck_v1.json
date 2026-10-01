@@ -1,0 +1,252 @@
+{
+  "metadata": {
+    "version": "v1",
+    "target_size": 10,
+    "seed": 1402,
+    "selection": "All cross-judge disagreements plus high-risk judge-agreement claims.",
+    "judge_labels_visible": false,
+    "grounding_file": "rag_grounding_dev_v1.json",
+    "grounding_sha256": "06d1b430e823e6b5263e9539240d33314332f9f6b111ba20e5bf59ad9b3a6f98",
+    "gemma_file": "rag_grounding_judge_gemma_dev_v1.json",
+    "gemma_sha256": "15096412db94f1a76a1cbceb7ac8ae75de609dab195bb59d68ea5505fc54eb78",
+    "qwen_file": "rag_grounding_judge_qwen_reasoning_dev_v1.json",
+    "qwen_sha256": "b972ab31b8b02b37c56a5f00dc5235fd7895c06f237d3b600d56ea86a620eaa3",
+    "number_of_cross_judge_disagreements": 2
+  },
+  "items": [
+    {
+      "annotation_id": "dev-020:claim-05",
+      "query_id": "dev-020",
+      "claim_index": 5,
+      "category": "multi_document",
+      "query": "What evidence distinguishes a network or resolution failure from an application-level payment failure?",
+      "claim": "The causal path must be verified by checking if a server span exists downstream; if no server span exists, the failure likely occurred before the request arrived at PaymentService, whereas if a server span exists, the failure occurred inside or after PaymentService.",
+      "citations": [
+        {
+          "source_id": "payment-runbook.md",
+          "source_text": "# Payment Runbook\n\nUse this runbook when a checkout investigation points toward the Payment dependency.\n\nFirst determine whether the request actually reached PaymentService.\n\n## Client span exists, server span missing\n\nThis pattern suggests failure before PaymentService handled the request.\n\nInvestigate:\n\n- service name and endpoint configuration;\n- name resolution;\n- service discovery;\n- network connectivity;\n- gRPC status and status description.\n\n`UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\n\n## Payment server span exists\n\nIf the server span exists, inspect PaymentService itself.\n\nCheck:\n\n- Payment application logs;\n- gRPC server status;\n- charge-processing errors;\n- latency;\n- downstream calls made by PaymentService.\n\n## Distinguish symptom from cause\n\nA frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure.\n\nLikewise, a Payment-related error elsewhere in telemetry is not causal unless it belongs to the failing request path.\n\nA useful final report should state whether the failure occurred:\n\n```text\nbefore PaymentService\ninside PaymentService\nafter PaymentService returned\n```\n\nand cite the trace and logs supporting that conclusion.",
+          "support": null,
+          "note": ""
+        },
+        {
+          "source_id": "payment-service.md",
+          "source_text": "# Payment Service\n\nPaymentService is responsible for charging a customer as part of checkout. The main RPC used by Checkout is `oteldemo.PaymentService/Charge`.\n\nA successful payment request reaches the Payment service, executes the charge logic, and returns a successful gRPC status to the caller. A payment-related checkout failure can occur at several different layers, so investigators should distinguish them carefully.\n\nExamples include:\n\n1. The Checkout client cannot resolve or connect to PaymentService.\n2. The RPC reaches PaymentService but fails before charge processing completes.\n3. PaymentService executes normally but rejects or cannot process the charge.\n4. PaymentService is healthy, but Checkout mishandles the returned result.\n\nThe presence of a failing Checkout → Payment client span does not prove that PaymentService processed the request. If the client span reports a connectivity-oriented status such as `UNAVAILABLE` and no matching Payment server span exists, the failure may have happened before the request arrived at PaymentService.\n\nWhen the server span exists, inspect Payment logs and span attributes for the application-level mechanism.\n\nUseful evidence includes:\n\n- `oteldemo.PaymentService/Charge`;\n- client and server span pairing;\n- `rpc.response.status_code`;\n- trace IDs shared between Checkout and Payment logs;\n- Payment request rate, error rate, and latency.\n\nPaymentService should not be blamed solely because a failing trace contains the word \"payment\"; the causal path must be verified.",
+          "support": null,
+          "note": ""
+        },
+        {
+          "source_id": "dns-troubleshooting.md",
+          "source_text": "# DNS Troubleshooting\n\nDNS translates host names into network addresses and may participate in service discovery for distributed applications.\n\nCommon DNS-related failure modes include:\n\n- nonexistent or misspelled host names;\n- temporary resolver failures;\n- stale cached records;\n- incorrect search domains;\n- network access problems to the resolver;\n- records that resolve to unreachable addresses.\n\nDNS evidence should be separated from generic service-discovery evidence. A name-resolution error can originate in DNS, but some service discovery mechanisms do not use DNS directly.\n\nDuring investigation, compare:\n\n- the configured service name;\n- resolver error messages;\n- actual DNS lookup results;\n- container or host search-domain configuration;\n- whether other clients can resolve the same name;\n- whether a server span exists downstream.\n\nIf an RPC client reports that resolution produced no addresses, DNS is one hypothesis, not an automatic conclusion. Endpoint configuration or discovery state can produce a similar symptom.",
+          "support": null,
+          "note": ""
+        }
+      ],
+      "human_label": "full",
+      "human_note": ""
+    },
+    {
+      "annotation_id": "dev-007:claim-03",
+      "query_id": "dev-007",
+      "claim_index": 3,
+      "category": "semantic_paraphrase",
+      "query": "What can make an RPC fail before the remote application ever sees the request?",
+      "claim": "A failure occurring before the downstream application processes the request is indicated by a failing client span with no corresponding server span in the traces.",
+      "citations": [
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "source_text": "# gRPC Troubleshooting\n\ngRPC status codes describe the outcome observed by an RPC caller. They should be interpreted together with traces, logs, and service topology.\n\n`UNAVAILABLE` usually indicates that the service is currently unavailable at the transport or connectivity level. Possible causes include:\n\n- unreachable endpoint;\n- connection failure;\n- name-resolution failure;\n- unavailable service instance;\n- transient network failure.\n\n`DEADLINE_EXCEEDED` means that the operation did not complete before the caller's deadline. The underlying cause may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.\n\n`INTERNAL` is broader. It can represent an internal application failure or an upstream service translating a lower-level dependency failure into a generic error.\n\nWhen a client span fails, check whether a corresponding server span exists. If no server span exists, the failure may have occurred before the downstream application processed the request.\n\nUseful span fields include:\n\n- RPC service and method;\n- `rpc.response.status_code`;\n- span status;\n- status description;\n- client/server span relationship;\n- trace ID.\n\nDo not diagnose root cause from the status code alone. The same code can result from several mechanisms.",
+          "support": null,
+          "note": ""
+        },
+        {
+          "source_id": "service-discovery.md",
+          "source_text": "# Service Discovery\n\nDistributed applications need a mechanism for locating service instances.\n\nA client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses. The resulting addresses are then used to establish a connection to the downstream service.\n\nService discovery failures can occur because of:\n\n- an invalid service name;\n- incorrect endpoint configuration;\n- failed DNS or name resolution;\n- no available service instances;\n- stale or incomplete discovery data.\n\nA discovery failure can prevent an RPC from reaching the downstream application at all. In traces, this may appear as a failing client span with no corresponding server span.\n\nMessages such as \"name resolver error\", \"produced zero addresses\", or equivalent resolver diagnostics strongly suggest that the client could not obtain a usable destination.\n\nService discovery is related to, but distinct from, DNS. DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.\n\nFor incident investigation, compare the client-side error with service endpoint configuration, DNS behavior, and the presence or absence of a downstream server span.",
+          "support": null,
+          "note": ""
+        }
+      ],
+      "human_label": "full",
+      "human_note": ""
+    },
+    {
+      "annotation_id": "dev-013:claim-07",
+      "query_id": "dev-013",
+      "claim_index": 7,
+      "category": "troubleshooting",
+      "query": "A client span returns UNAVAILABLE and there is no downstream server span. What should I investigate?",
+      "claim": "Potential causes for UNAVAILABLE in this context include unreachable endpoints, connection failures, name-resolution failures, unavailable service instances, or transient network failures.",
+      "citations": [
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "source_text": "# gRPC Troubleshooting\n\ngRPC status codes describe the outcome observed by an RPC caller. They should be interpreted together with traces, logs, and service topology.\n\n`UNAVAILABLE` usually indicates that the service is currently unavailable at the transport or connectivity level. Possible causes include:\n\n- unreachable endpoint;\n- connection failure;\n- name-resolution failure;\n- unavailable service instance;\n- transient network failure.\n\n`DEADLINE_EXCEEDED` means that the operation did not complete before the caller's deadline. The underlying cause may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.\n\n`INTERNAL` is broader. It can represent an internal application failure or an upstream service translating a lower-level dependency failure into a generic error.\n\nWhen a client span fails, check whether a corresponding server span exists. If no server span exists, the failure may have occurred before the downstream application processed the request.\n\nUseful span fields include:\n\n- RPC service and method;\n- `rpc.response.status_code`;\n- span status;\n- status description;\n- client/server span relationship;\n- trace ID.\n\nDo not diagnose root cause from the status code alone. The same code can result from several mechanisms.",
+          "support": null,
+          "note": ""
+        },
+        {
+          "source_id": "service-discovery.md",
+          "source_text": "# Service Discovery\n\nDistributed applications need a mechanism for locating service instances.\n\nA client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses. The resulting addresses are then used to establish a connection to the downstream service.\n\nService discovery failures can occur because of:\n\n- an invalid service name;\n- incorrect endpoint configuration;\n- failed DNS or name resolution;\n- no available service instances;\n- stale or incomplete discovery data.\n\nA discovery failure can prevent an RPC from reaching the downstream application at all. In traces, this may appear as a failing client span with no corresponding server span.\n\nMessages such as \"name resolver error\", \"produced zero addresses\", or equivalent resolver diagnostics strongly suggest that the client could not obtain a usable destination.\n\nService discovery is related to, but distinct from, DNS. DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.\n\nFor incident investigation, compare the client-side error with service endpoint configuration, DNS behavior, and the presence or absence of a downstream server span.",
+          "support": null,
+          "note": ""
+        }
+      ],
+      "human_label": "full",
+      "human_note": ""
+    },
+    {
+      "annotation_id": "dev-006:claim-01",
+      "query_id": "dev-006",
+      "claim_index": 1,
+      "category": "semantic_paraphrase",
+      "query": "How can I tie messages emitted by several services to the same user transaction?",
+      "claim": "To tie messages from several services to the same user transaction, you must use the trace ID, which groups the entire distributed request across service boundaries.",
+      "citations": [
+        {
+          "source_id": "structured-logging-guide.md",
+          "source_text": "# Structured Logging Guide\n\nStructured logs represent events using fields rather than relying only on free-form text.\n\nA structured log entry may contain:\n\n- timestamp;\n- severity;\n- message body;\n- `resource.service.name`;\n- trace ID;\n- span ID;\n- error code;\n- request or user context.\n\nTrace and span identifiers allow logs to be correlated with a distributed trace when the application emits them correctly.\n\nNot every log entry has trace context. Background tasks, startup messages, health checks, and infrastructure logs may not belong to a user request.\n\nInvestigators should avoid searching only for the word \"error\" and assuming every match is causal. A relevant log should ideally satisfy several conditions:\n\n- it occurs in the incident time window;\n- it belongs to a service on the failing request path;\n- it shares the relevant trace ID when available;\n- its message explains or supports the observed failure.\n\nTelemetry can contain malformed or surprising timestamps. Such data-quality problems should be recorded rather than silently treated as trustworthy evidence.",
+          "support": null,
+          "note": ""
+        },
+        {
+          "source_id": "telemetry-correlation.md",
+          "source_text": "# Telemetry Correlation\n\nRoot-cause analysis often requires linking metrics, traces, and logs that describe the same incident from different perspectives.\n\nMetrics are aggregated, so they rarely identify a single request. Traces and logs provide request-level evidence.\n\nA common correlation workflow is:\n\n1. Use metrics to identify the affected service, time window, and symptom.\n2. Select a failing trace from that interval.\n3. Use the trace ID to find logs emitted by services on that request path.\n4. Compare failing and healthy traces when possible.\n5. Check whether the detailed log message is consistent with the failing span.\n\n`TraceId` and `SpanId` serve different purposes. A trace ID groups the entire distributed request, while a span ID identifies one operation within that trace.\n\nSearching logs with a span ID when the logging backend expects the trace ID may return incomplete or misleading results.\n\nCorrelation does not establish causality by itself. A log can share the correct trace ID and still describe a non-causal warning. Evidence should also explain the observed failure and occur on the relevant causal path.",
+          "support": null,
+          "note": ""
+        }
+      ],
+      "human_label": "full",
+      "human_note": ""
+    },
+    {
+      "annotation_id": "dev-016:claim-13",
+      "query_id": "dev-016",
+      "claim_index": 13,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "Endpoint configuration or discovery state can produce a similar symptom of zero addresses, so DNS is not the only hypothesis.",
+      "citations": [
+        {
+          "source_id": "dns-troubleshooting.md",
+          "source_text": "# DNS Troubleshooting\n\nDNS translates host names into network addresses and may participate in service discovery for distributed applications.\n\nCommon DNS-related failure modes include:\n\n- nonexistent or misspelled host names;\n- temporary resolver failures;\n- stale cached records;\n- incorrect search domains;\n- network access problems to the resolver;\n- records that resolve to unreachable addresses.\n\nDNS evidence should be separated from generic service-discovery evidence. A name-resolution error can originate in DNS, but some service discovery mechanisms do not use DNS directly.\n\nDuring investigation, compare:\n\n- the configured service name;\n- resolver error messages;\n- actual DNS lookup results;\n- container or host search-domain configuration;\n- whether other clients can resolve the same name;\n- whether a server span exists downstream.\n\nIf an RPC client reports that resolution produced no addresses, DNS is one hypothesis, not an automatic conclusion. Endpoint configuration or discovery state can produce a similar symptom.",
+          "support": null,
+          "note": ""
+        },
+        {
+          "source_id": "service-discovery.md",
+          "source_text": "# Service Discovery\n\nDistributed applications need a mechanism for locating service instances.\n\nA client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses. The resulting addresses are then used to establish a connection to the downstream service.\n\nService discovery failures can occur because of:\n\n- an invalid service name;\n- incorrect endpoint configuration;\n- failed DNS or name resolution;\n- no available service instances;\n- stale or incomplete discovery data.\n\nA discovery failure can prevent an RPC from reaching the downstream application at all. In traces, this may appear as a failing client span with no corresponding server span.\n\nMessages such as \"name resolver error\", \"produced zero addresses\", or equivalent resolver diagnostics strongly suggest that the client could not obtain a usable destination.\n\nService discovery is related to, but distinct from, DNS. DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.\n\nFor incident investigation, compare the client-side error with service endpoint configuration, DNS behavior, and the presence or absence of a downstream server span.",
+          "support": null,
+          "note": ""
+        }
+      ],
+      "human_label": "full",
+      "human_note": ""
+    },
+    {
+      "annotation_id": "dev-022:claim-05",
+      "query_id": "dev-022",
+      "claim_index": 5,
+      "category": "multi_document",
+      "query": "How can I determine whether high request latency comes from retries or from a slow downstream dependency?",
+      "claim": "A DEADLINE_EXCEEDED error indicates that the request exceeded a deadline but does not identify the underlying latency mechanism, so traces and metrics are required to determine the cause.",
+      "citations": [
+        {
+          "source_id": "latency-troubleshooting.md",
+          "source_text": "# Latency Troubleshooting\n\nHigh end-to-end latency can result from a slow service, retries, queueing, network delay, resource saturation, or several moderate delays on the critical path.\n\nStart with latency metrics such as p50, p95, and p99. A percentile increase shows that the latency distribution changed but does not identify the responsible operation.\n\nThen inspect representative traces.\n\nImportant rules:\n\n- parent span duration includes child execution time;\n- parallel spans can overlap;\n- summing all span durations overestimates request latency;\n- the longest span is not automatically the root cause;\n- retries can create repeated spans and extend total latency.\n\nCompare failing or slow traces against a healthy baseline.\n\nCheck whether latency is concentrated in:\n\n- one downstream RPC;\n- repeated retry attempts;\n- a gap between operations;\n- internal processing;\n- several dependencies on the critical path.\n\n`DEADLINE_EXCEEDED` indicates that the request exceeded a deadline, not why. The underlying latency mechanism still requires evidence.\n\nFor RootLens, latency conclusions should identify the operation contributing to the critical path and cite the relevant spans and metrics.",
+          "support": null,
+          "note": ""
+        },
+        {
+          "source_id": "timeout-and-retry-guidance.md",
+          "source_text": "# Timeout and Retry Guidance\n\nTimeouts and retries protect distributed systems from waiting indefinitely on dependencies, but poor retry policy can amplify incidents.\n\nA request that exceeds its configured deadline may surface as `DEADLINE_EXCEEDED`. Investigators should determine where the time was actually spent instead of assuming the slowest-looking span is the root cause.\n\nRetries can help with transient failures such as temporary connection errors, but retries may also:\n\n- increase downstream load;\n- extend end-to-end latency;\n- create retry storms;\n- duplicate non-idempotent operations;\n- hide the original failure pattern.\n\nRetry policies should consider idempotency, backoff, jitter, maximum attempts, and total time budget.\n\nFor diagnosis, inspect:\n\n- caller deadline;\n- number of attempts;\n- per-attempt latency;\n- downstream server spans;\n- total parent-span duration;\n- whether retry attempts overlap or occur sequentially.\n\nA `DEADLINE_EXCEEDED` error does not automatically imply a network failure. It means the deadline expired; traces and metrics are needed to identify why.",
+          "support": null,
+          "note": ""
+        }
+      ],
+      "human_label": "full",
+      "human_note": ""
+    },
+    {
+      "annotation_id": "dev-014:claim-05",
+      "query_id": "dev-014",
+      "claim_index": 5,
+      "category": "troubleshooting",
+      "query": "What does DEADLINE_EXCEEDED tell me, and what does it not tell me about root cause?",
+      "claim": "DEADLINE_EXCEEDED does not identify the specific operation contributing to the critical path or the root cause; investigators must determine where time was actually spent rather than assuming the slowest-looking span is the root cause.",
+      "citations": [
+        {
+          "source_id": "timeout-and-retry-guidance.md",
+          "source_text": "# Timeout and Retry Guidance\n\nTimeouts and retries protect distributed systems from waiting indefinitely on dependencies, but poor retry policy can amplify incidents.\n\nA request that exceeds its configured deadline may surface as `DEADLINE_EXCEEDED`. Investigators should determine where the time was actually spent instead of assuming the slowest-looking span is the root cause.\n\nRetries can help with transient failures such as temporary connection errors, but retries may also:\n\n- increase downstream load;\n- extend end-to-end latency;\n- create retry storms;\n- duplicate non-idempotent operations;\n- hide the original failure pattern.\n\nRetry policies should consider idempotency, backoff, jitter, maximum attempts, and total time budget.\n\nFor diagnosis, inspect:\n\n- caller deadline;\n- number of attempts;\n- per-attempt latency;\n- downstream server spans;\n- total parent-span duration;\n- whether retry attempts overlap or occur sequentially.\n\nA `DEADLINE_EXCEEDED` error does not automatically imply a network failure. It means the deadline expired; traces and metrics are needed to identify why.",
+          "support": null,
+          "note": ""
+        },
+        {
+          "source_id": "latency-troubleshooting.md",
+          "source_text": "# Latency Troubleshooting\n\nHigh end-to-end latency can result from a slow service, retries, queueing, network delay, resource saturation, or several moderate delays on the critical path.\n\nStart with latency metrics such as p50, p95, and p99. A percentile increase shows that the latency distribution changed but does not identify the responsible operation.\n\nThen inspect representative traces.\n\nImportant rules:\n\n- parent span duration includes child execution time;\n- parallel spans can overlap;\n- summing all span durations overestimates request latency;\n- the longest span is not automatically the root cause;\n- retries can create repeated spans and extend total latency.\n\nCompare failing or slow traces against a healthy baseline.\n\nCheck whether latency is concentrated in:\n\n- one downstream RPC;\n- repeated retry attempts;\n- a gap between operations;\n- internal processing;\n- several dependencies on the critical path.\n\n`DEADLINE_EXCEEDED` indicates that the request exceeded a deadline, not why. The underlying latency mechanism still requires evidence.\n\nFor RootLens, latency conclusions should identify the operation contributing to the critical path and cite the relevant spans and metrics.",
+          "support": null,
+          "note": ""
+        }
+      ],
+      "human_label": "full",
+      "human_note": ""
+    },
+    {
+      "annotation_id": "dev-021:claim-03",
+      "query_id": "dev-021",
+      "claim_index": 3,
+      "category": "multi_document",
+      "query": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "claim": "To move from detection to request-level evidence, locate the first meaningful failure on the request path by checking gRPC status, status description, and whether earlier dependencies completed successfully, rather than assuming the final Checkout error is the root cause.",
+      "citations": [
+        {
+          "source_id": "incident-response-guide.md",
+          "source_text": "# Incident Response Guide\n\nRoot-cause analysis should separate observations, interpretations, hypotheses, and conclusions.\n\nAn observation is directly supported by evidence:\n\n```text\nCheckout error rate increased from the healthy baseline.\n```\n\nAn interpretation summarizes what the observation means:\n\n```text\nThe incident affects order placement.\n```\n\nA hypothesis proposes a possible mechanism:\n\n```text\nA downstream dependency may be unavailable.\n```\n\nA conclusion should be supported by multiple consistent pieces of evidence.\n\nA practical investigation workflow is:\n\n1. Define the user-visible symptom.\n2. Quantify the incident with metrics.\n3. Identify representative failing traces.\n4. Locate the first meaningful failure on the request path.\n5. Correlate logs and configuration.\n6. Generate competing hypotheses.\n7. Reject hypotheses contradicted by evidence.\n8. State the best-supported root cause or abstain if evidence is insufficient.\n\nAn error should not automatically be considered the root cause. Investigators should verify that it lies on the failing request path and explains the symptom.\n\nRootLens should follow the discipline:\n\n```text\nclaim → evidence → source\n```\n\nUnsupported certainty is worse than an explicit abstention.",
+          "support": null,
+          "note": ""
+        },
+        {
+          "source_id": "checkout-runbook.md",
+          "source_text": "# Checkout Runbook\n\nUse this runbook when users cannot complete checkout or `/api/checkout` returns errors.\n\n## 1. Confirm impact\n\nCheck:\n\n- `oteldemo.CheckoutService/PlaceOrder` request rate;\n- error rate;\n- p50, p95, and p99 latency;\n- whether the failure is global or intermittent.\n\n## 2. Select a failing request\n\nOpen a failing distributed trace and inspect Checkout and its downstream calls.\n\nExpected dependencies can include:\n\n- Cart;\n- Product Catalog;\n- Currency;\n- Shipping;\n- Payment.\n\n## 3. Identify the first failing dependency\n\nDo not assume the final Checkout error is the root cause.\n\nFor each failing client span, check:\n\n- gRPC status;\n- status description;\n- whether a matching server span exists;\n- whether earlier dependencies completed successfully.\n\n## 4. Correlate logs\n\nSearch logs using the full trace ID. Look for application errors in services on the failing path.\n\n## 5. Compare with healthy behavior\n\nA healthy trace provides a useful reference for normal dependency ordering and approximate latency.\n\n## 6. Check configuration only after localization\n\nIf the trace indicates connection or resolution failure, inspect endpoint and service-discovery configuration.\n\nIf the request reached the downstream server, investigate that service's application logs.\n\nRecord the final conclusion with explicit evidence and rejected alternatives.",
+          "support": null,
+          "note": ""
+        }
+      ],
+      "human_label": "full",
+      "human_note": ""
+    },
+    {
+      "annotation_id": "dev-008:claim-01",
+      "query_id": "dev-008",
+      "claim_index": 1,
+      "category": "semantic_paraphrase",
+      "query": "Why is a browser HTTP 500 not enough to identify which backend component is faulty?",
+      "claim": "An HTTP 500 error only establishes that the user request failed, but it does not identify the backend root cause.",
+      "citations": [
+        {
+          "source_id": "frontend-service.md",
+          "source_text": "# Frontend Service\n\nThe Frontend service exposes the user-facing application and translates browser interactions into backend requests.\n\nDuring checkout, the browser may call an endpoint such as `/api/checkout`. The Frontend then invokes backend services, including Checkout.\n\nA browser-visible HTTP 500 establishes that the user request failed, but it does not identify the backend root cause. Investigators should correlate the failing frontend request with the distributed trace and downstream service spans.\n\nUseful frontend evidence includes:\n\n- HTTP route and status code;\n- frontend logs such as checkout failure messages;\n- the trace ID associated with the request;\n- timing of the request;\n- the downstream Checkout span.\n\nA Frontend error can be a symptom of a deeper backend failure. For example, a Checkout RPC may return an error to Frontend after a dependency failure. In that case, the frontend HTTP 500 is evidence of impact, not necessarily the underlying cause.",
+          "support": null,
+          "note": ""
+        }
+      ],
+      "human_label": "full",
+      "human_note": ""
+    },
+    {
+      "annotation_id": "dev-015:claim-01",
+      "query_id": "dev-015",
+      "claim_index": 1,
+      "category": "troubleshooting",
+      "query": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+      "claim": "To distinguish between a failure to reach PaymentService and a PaymentService business logic failure, investigators must first determine if the request actually reached the service by inspecting the distributed trace for the presence of a Payment server span.",
+      "citations": [
+        {
+          "source_id": "payment-runbook.md",
+          "source_text": "# Payment Runbook\n\nUse this runbook when a checkout investigation points toward the Payment dependency.\n\nFirst determine whether the request actually reached PaymentService.\n\n## Client span exists, server span missing\n\nThis pattern suggests failure before PaymentService handled the request.\n\nInvestigate:\n\n- service name and endpoint configuration;\n- name resolution;\n- service discovery;\n- network connectivity;\n- gRPC status and status description.\n\n`UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\n\n## Payment server span exists\n\nIf the server span exists, inspect PaymentService itself.\n\nCheck:\n\n- Payment application logs;\n- gRPC server status;\n- charge-processing errors;\n- latency;\n- downstream calls made by PaymentService.\n\n## Distinguish symptom from cause\n\nA frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure.\n\nLikewise, a Payment-related error elsewhere in telemetry is not causal unless it belongs to the failing request path.\n\nA useful final report should state whether the failure occurred:\n\n```text\nbefore PaymentService\ninside PaymentService\nafter PaymentService returned\n```\n\nand cite the trace and logs supporting that conclusion.",
+          "support": null,
+          "note": ""
+        }
+      ],
+      "human_label": "full",
+      "human_note": ""
+    }
+  ]
+}
