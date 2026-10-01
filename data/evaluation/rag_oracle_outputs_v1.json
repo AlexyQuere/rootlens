@@ -1,0 +1,682 @@
+{
+  "metadata": {
+    "experiment": "014E",
+    "version": "v1",
+    "condition": "qrel_enriched_top5",
+    "target_query_ids": [
+      "dev-008",
+      "dev-015",
+      "dev-020",
+      "dev-021",
+      "dev-022",
+      "dev-023"
+    ],
+    "top_k": 5,
+    "context_budget_matched": true,
+    "qrels_visible_to_llm": false,
+    "qrels_used_by_orchestrator": true,
+    "intervention_policy": "qrel-positive documents ordered by grade, then original Dense top-5 used to fill remaining slots",
+    "dev_file_sha256": "cbfb9c9d907e2218c3c18639aea37a294bee6aaac397b9e0342fed92ea41ae88",
+    "baseline_file_sha256": "5982889190b8fedb503fad129b6ec2218e489b45a366bb70ad71073d6879a713",
+    "llm_model": "qwen-3.6-35b-instruct",
+    "rag_prompt_version": "v1"
+  },
+  "items": [
+    {
+      "query_id": "dev-008",
+      "query": "Why is a browser HTTP 500 not enough to identify which backend component is faulty?",
+      "category": "semantic_paraphrase",
+      "intervention": {
+        "baseline_ids": [
+          "frontend-service.md",
+          "payment-runbook.md",
+          "checkout-runbook.md",
+          "service-discovery.md",
+          "dns-troubleshooting.md"
+        ],
+        "enriched_ids": [
+          "frontend-service.md",
+          "checkout-runbook.md",
+          "incident-response-guide.md",
+          "payment-runbook.md",
+          "service-discovery.md"
+        ],
+        "positive_qrel_ids": [
+          "frontend-service.md",
+          "checkout-runbook.md",
+          "incident-response-guide.md"
+        ],
+        "recovered_qrel_ids": [
+          "incident-response-guide.md"
+        ],
+        "dropped_baseline_ids": [
+          "dns-troubleshooting.md"
+        ],
+        "omitted_positive_qrel_ids": []
+      },
+      "evidence": [
+        {
+          "source_id": "frontend-service.md",
+          "rank": 1,
+          "selection_score": 5.0
+        },
+        {
+          "source_id": "checkout-runbook.md",
+          "rank": 2,
+          "selection_score": 4.0
+        },
+        {
+          "source_id": "incident-response-guide.md",
+          "rank": 3,
+          "selection_score": 3.0
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 4,
+          "selection_score": 2.0
+        },
+        {
+          "source_id": "service-discovery.md",
+          "rank": 5,
+          "selection_score": 1.0
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "A browser-visible HTTP 500 establishes that the user request failed but does not identify the backend root cause.",
+            "sources": [
+              "frontend-service.md"
+            ]
+          },
+          {
+            "text": "A Frontend error can be a symptom of a deeper backend failure, such as a Checkout RPC returning an error to Frontend after a dependency failure.",
+            "sources": [
+              "frontend-service.md"
+            ]
+          },
+          {
+            "text": "A frontend HTTP 500 may be a propagated symptom rather than the original failure, such as a payment failure.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "An error should not automatically be considered the root cause; investigators must verify that it lies on the failing request path and explains the symptom.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "Investigators must correlate the failing frontend request with the distributed trace and downstream service spans to identify the specific faulty component.",
+            "sources": [
+              "frontend-service.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2171.087707974948,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"A browser-visible HTTP 500 establishes that the user request failed but does not identify the backend root cause.\",\n      \"sources\": [\n        \"frontend-service.md\"\n      ]\n    },\n    {\n      \"text\": \"A Frontend error can be a symptom of a deeper backend failure, such as a Checkout RPC returning an error to Frontend after a dependency failure.\",\n      \"sources\": [\n        \"frontend-service.md\"\n      ]\n    },\n    {\n      \"text\": \"A frontend HTTP 500 may be a propagated symptom rather than the original failure, such as a payment failure.\",\n      \"sources\": [\n        \"payment-runbook.md\"\n      ]\n    },\n    {\n      \"text\": \"An error should not automatically be considered the root cause; investigators must verify that it lies on the failing request path and explains the symptom.\",\n      \"sources\": [\n        \"incident-response-guide.md\"\n      ]\n    },\n    {\n      \"text\": \"Investigators must correlate the failing frontend request with the distributed trace and downstream service spans to identify the specific faulty component.\",\n      \"sources\": [\n        \"frontend-service.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    },
+    {
+      "query_id": "dev-015",
+      "query": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+      "category": "troubleshooting",
+      "intervention": {
+        "baseline_ids": [
+          "payment-service.md",
+          "payment-runbook.md",
+          "payment-monitoring.md",
+          "cart-service.md",
+          "checkout-runbook.md"
+        ],
+        "enriched_ids": [
+          "payment-service.md",
+          "payment-runbook.md",
+          "grpc-troubleshooting.md",
+          "service-discovery.md",
+          "payment-monitoring.md"
+        ],
+        "positive_qrel_ids": [
+          "payment-service.md",
+          "payment-runbook.md",
+          "grpc-troubleshooting.md",
+          "service-discovery.md"
+        ],
+        "recovered_qrel_ids": [
+          "grpc-troubleshooting.md",
+          "service-discovery.md"
+        ],
+        "dropped_baseline_ids": [
+          "cart-service.md",
+          "checkout-runbook.md"
+        ],
+        "omitted_positive_qrel_ids": []
+      },
+      "evidence": [
+        {
+          "source_id": "payment-service.md",
+          "rank": 1,
+          "selection_score": 5.0
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 2,
+          "selection_score": 4.0
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "rank": 3,
+          "selection_score": 3.0
+        },
+        {
+          "source_id": "service-discovery.md",
+          "rank": 4,
+          "selection_score": 2.0
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "rank": 5,
+          "selection_score": 1.0
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "To distinguish between a failure to reach PaymentService and a business logic failure, investigators must first determine if the request actually reached the service by checking for the presence of a corresponding Payment server span in the distributed trace.",
+            "sources": [
+              "payment-runbook.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "A failure to reach PaymentService is indicated by the presence of a failing Checkout client span but the absence of a matching Payment server span.",
+            "sources": [
+              "payment-runbook.md",
+              "payment-service.md",
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Connectivity-oriented gRPC status codes, such as `UNAVAILABLE`, combined with the absence of a server span, suggest the failure occurred before the request arrived at PaymentService.",
+            "sources": [
+              "payment-service.md",
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "If a Payment server span exists, the failure occurred inside PaymentService, and investigators should inspect Payment application logs, gRPC server status, charge-processing errors, and downstream calls to identify business logic issues.",
+            "sources": [
+              "payment-runbook.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "Service discovery failures, such as invalid service names, incorrect endpoint configuration, or DNS resolution failures, can prevent an RPC from reaching the downstream application, resulting in a client span failure without a server span.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "A Payment-related error in telemetry is not causal unless it belongs to the failing request path, and the causal path must be verified using trace IDs shared between Checkout and Payment logs.",
+            "sources": [
+              "payment-runbook.md",
+              "payment-service.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2460.9599160030484,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"To distinguish between a failure to reach PaymentService and a business logic failure, investigators must first determine if the request actually reached the service by checking for the presence of a corresponding Payment server span in the distributed trace.\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"payment-service.md\"\n      ]\n    },\n    {\n      \"text\": \"A failure to reach PaymentService is indicated by the presence of a failing Checkout client span but the absence of a matching Payment server span.\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"payment-service.md\",\n        \"service-discovery.md\"\n      ]\n    },\n    {\n      \"text\": \"Connectivity-oriented gRPC status codes, such as `UNAVAILABLE`, combined with the absence of a server span, suggest the failure occurred before the request arrived at PaymentService.\",\n      \"sources\": [\n        \"payment-service.md\",\n        \"grpc-troubleshooting.md\"\n      ]\n    },\n    {\n      \"text\": \"If a Payment server span exists, the failure occurred inside PaymentService, and investigators should inspect Payment application logs, gRPC server status, charge-processing errors, and downstream calls to identify business logic issues.\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"payment-service.md\"\n      ]\n    },\n    {\n      \"text\": \"Service discovery failures, such as invalid service names, incorrect endpoint configuration, or DNS resolution failures, can prevent an RPC from reaching the downstream application, resulting in a client span failure without a server span.\",\n      \"sources\": [\n        \"service-discovery.md\"\n      ]\n    },\n    {\n      \"text\": \"A Payment-related error in telemetry is not causal unless it belongs to the failing request path, and the causal path must be verified using trace IDs shared between Checkout and Payment logs.\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"payment-service.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    },
+    {
+      "query_id": "dev-020",
+      "query": "What evidence distinguishes a network or resolution failure from an application-level payment failure?",
+      "category": "multi_document",
+      "intervention": {
+        "baseline_ids": [
+          "payment-runbook.md",
+          "service-discovery.md",
+          "payment-service.md",
+          "dns-troubleshooting.md",
+          "payment-monitoring.md"
+        ],
+        "enriched_ids": [
+          "payment-runbook.md",
+          "service-discovery.md",
+          "payment-service.md",
+          "grpc-troubleshooting.md",
+          "dns-troubleshooting.md"
+        ],
+        "positive_qrel_ids": [
+          "payment-runbook.md",
+          "service-discovery.md",
+          "payment-service.md",
+          "grpc-troubleshooting.md"
+        ],
+        "recovered_qrel_ids": [
+          "grpc-troubleshooting.md"
+        ],
+        "dropped_baseline_ids": [
+          "payment-monitoring.md"
+        ],
+        "omitted_positive_qrel_ids": []
+      },
+      "evidence": [
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 1,
+          "selection_score": 5.0
+        },
+        {
+          "source_id": "service-discovery.md",
+          "rank": 2,
+          "selection_score": 4.0
+        },
+        {
+          "source_id": "payment-service.md",
+          "rank": 3,
+          "selection_score": 3.0
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "rank": 4,
+          "selection_score": 2.0
+        },
+        {
+          "source_id": "dns-troubleshooting.md",
+          "rank": 5,
+          "selection_score": 1.0
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "A network or resolution failure is distinguished by the presence of a client span without a corresponding server span, indicating the request did not reach the PaymentService.",
+            "sources": [
+              "payment-runbook.md",
+              "service-discovery.md",
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "Network or resolution failures are often associated with gRPC status codes such as `UNAVAILABLE`, which indicates transport or connectivity issues like unreachable endpoints, connection failures, or name-resolution failures.",
+            "sources": [
+              "payment-runbook.md",
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "Specific diagnostic messages such as \"name resolver error\", \"produced zero addresses\", or resolver-oriented diagnostics strongly suggest that the client could not obtain a usable destination, pointing to resolution or network issues.",
+            "sources": [
+              "service-discovery.md",
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "An application-level payment failure is distinguished by the presence of a server span, indicating the request reached PaymentService, where the failure occurs within the application logic (e.g., charge-processing errors, application logs, or gRPC server status).",
+            "sources": [
+              "payment-runbook.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "Application-level failures may result in status codes such as `INTERNAL` (representing internal application failure or upstream translation of lower-level failures) or specific charge-processing errors, whereas network failures are primarily connectivity-oriented.",
+            "sources": [
+              "grpc-troubleshooting.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "The causal path must be verified by checking if a failing client span reports a connectivity-oriented status with no matching server span (network/resolution failure) versus inspecting Payment logs and span attributes when the server span exists (application failure).",
+            "sources": [
+              "payment-service.md",
+              "grpc-troubleshooting.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3451.003749971278,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"A network or resolution failure is distinguished by the presence of a client span without a corresponding server span, indicating the request did not reach the PaymentService.\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"service-discovery.md\",\n        \"grpc-troubleshooting.md\"\n      ]\n    },\n    {\n      \"text\": \"Network or resolution failures are often associated with gRPC status codes such as `UNAVAILABLE`, which indicates transport or connectivity issues like unreachable endpoints, connection failures, or name-resolution failures.\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"grpc-troubleshooting.md\"\n      ]\n    },\n    {\n      \"text\": \"Specific diagnostic messages such as \\\"name resolver error\\\", \\\"produced zero addresses\\\", or resolver-oriented diagnostics strongly suggest that the client could not obtain a usable destination, pointing to resolution or network issues.\",\n      \"sources\": [\n        \"service-discovery.md\",\n        \"payment-runbook.md\"\n      ]\n    },\n    {\n      \"text\": \"An application-level payment failure is distinguished by the presence of a server span, indicating the request reached PaymentService, where the failure occurs within the application logic (e.g., charge-processing errors, application logs, or gRPC server status).\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"payment-service.md\"\n      ]\n    },\n    {\n      \"text\": \"Application-level failures may result in status codes such as `INTERNAL` (representing internal application failure or upstream translation of lower-level failures) or specific charge-processing errors, whereas network failures are primarily connectivity-oriented.\",\n      \"sources\": [\n        \"grpc-troubleshooting.md\",\n        \"payment-service.md\"\n      ]\n    },\n    {\n      \"text\": \"The causal path must be verified by checking if a failing client span reports a connectivity-oriented status with no matching server span (network/resolution failure) versus inspecting Payment logs and span attributes when the server span exists (application failure).\",\n      \"sources\": [\n        \"payment-service.md\",\n        \"grpc-troubleshooting.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    },
+    {
+      "query_id": "dev-021",
+      "query": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "category": "multi_document",
+      "intervention": {
+        "baseline_ids": [
+          "incident-response-guide.md",
+          "checkout-runbook.md",
+          "frontend-service.md",
+          "payment-monitoring.md",
+          "currency-service.md"
+        ],
+        "enriched_ids": [
+          "checkout-runbook.md",
+          "distributed-tracing-guide.md",
+          "metrics-guide.md",
+          "telemetry-correlation.md",
+          "incident-response-guide.md"
+        ],
+        "positive_qrel_ids": [
+          "checkout-runbook.md",
+          "distributed-tracing-guide.md",
+          "metrics-guide.md",
+          "telemetry-correlation.md"
+        ],
+        "recovered_qrel_ids": [
+          "distributed-tracing-guide.md",
+          "metrics-guide.md",
+          "telemetry-correlation.md"
+        ],
+        "dropped_baseline_ids": [
+          "frontend-service.md",
+          "payment-monitoring.md",
+          "currency-service.md"
+        ],
+        "omitted_positive_qrel_ids": []
+      },
+      "evidence": [
+        {
+          "source_id": "checkout-runbook.md",
+          "rank": 1,
+          "selection_score": 5.0
+        },
+        {
+          "source_id": "distributed-tracing-guide.md",
+          "rank": 2,
+          "selection_score": 4.0
+        },
+        {
+          "source_id": "metrics-guide.md",
+          "rank": 3,
+          "selection_score": 3.0
+        },
+        {
+          "source_id": "telemetry-correlation.md",
+          "rank": 4,
+          "selection_score": 2.0
+        },
+        {
+          "source_id": "incident-response-guide.md",
+          "rank": 5,
+          "selection_score": 1.0
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "Begin by quantifying the incident using metrics to confirm the elevated error rate, latency (p50, p95, p99), and request rate for `oteldemo.CheckoutService/PlaceOrder`, while determining if the failure is global or intermittent.",
+            "sources": [
+              "checkout-runbook.md",
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "Select a specific failing distributed trace from the affected time window to investigate request-level evidence, as metrics alone cannot identify the exact downstream call that failed.",
+            "sources": [
+              "checkout-runbook.md",
+              "metrics-guide.md",
+              "telemetry-correlation.md"
+            ]
+          },
+          {
+            "text": "Inspect the failing trace to identify the first failing dependency by comparing client spans with corresponding server spans; a client error with no downstream server span suggests the request failed before reaching the service.",
+            "sources": [
+              "checkout-runbook.md",
+              "distributed-tracing-guide.md"
+            ]
+          },
+          {
+            "text": "Correlate logs by searching with the full TraceId to find application errors in services on the failing path, ensuring the log message is consistent with the failing span and lies on the causal path.",
+            "sources": [
+              "checkout-runbook.md",
+              "telemetry-correlation.md"
+            ]
+          },
+          {
+            "text": "Compare the failing trace with a healthy trace to establish a reference for normal dependency ordering and approximate latency.",
+            "sources": [
+              "checkout-runbook.md",
+              "telemetry-correlation.md"
+            ]
+          },
+          {
+            "text": "If the trace indicates a connection or resolution failure, inspect endpoint and service-discovery configuration; if the request reached the downstream server, investigate that service's application logs.",
+            "sources": [
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "Generate competing hypotheses and reject those contradicted by evidence, recording the final conclusion with explicit evidence and rejected alternatives to support the root cause claim.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2351.4981670305133,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"Begin by quantifying the incident using metrics to confirm the elevated error rate, latency (p50, p95, p99), and request rate for `oteldemo.CheckoutService/PlaceOrder`, while determining if the failure is global or intermittent.\",\n      \"sources\": [\n        \"checkout-runbook.md\",\n        \"incident-response-guide.md\"\n      ]\n    },\n    {\n      \"text\": \"Select a specific failing distributed trace from the affected time window to investigate request-level evidence, as metrics alone cannot identify the exact downstream call that failed.\",\n      \"sources\": [\n        \"checkout-runbook.md\",\n        \"metrics-guide.md\",\n        \"telemetry-correlation.md\"\n      ]\n    },\n    {\n      \"text\": \"Inspect the failing trace to identify the first failing dependency by comparing client spans with corresponding server spans; a client error with no downstream server span suggests the request failed before reaching the service.\",\n      \"sources\": [\n        \"checkout-runbook.md\",\n        \"distributed-tracing-guide.md\"\n      ]\n    },\n    {\n      \"text\": \"Correlate logs by searching with the full TraceId to find application errors in services on the failing path, ensuring the log message is consistent with the failing span and lies on the causal path.\",\n      \"sources\": [\n        \"checkout-runbook.md\",\n        \"telemetry-correlation.md\"\n      ]\n    },\n    {\n      \"text\": \"Compare the failing trace with a healthy trace to establish a reference for normal dependency ordering and approximate latency.\",\n      \"sources\": [\n        \"checkout-runbook.md\",\n        \"telemetry-correlation.md\"\n      ]\n    },\n    {\n      \"text\": \"If the trace indicates a connection or resolution failure, inspect endpoint and service-discovery configuration; if the request reached the downstream server, investigate that service's application logs.\",\n      \"sources\": [\n        \"checkout-runbook.md\"\n      ]\n    },\n    {\n      \"text\": \"Generate competing hypotheses and reject those contradicted by evidence, recording the final conclusion with explicit evidence and rejected alternatives to support the root cause claim.\",\n      \"sources\": [\n        \"incident-response-guide.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    },
+    {
+      "query_id": "dev-022",
+      "query": "How can I determine whether high request latency comes from retries or from a slow downstream dependency?",
+      "category": "multi_document",
+      "intervention": {
+        "baseline_ids": [
+          "latency-troubleshooting.md",
+          "timeout-and-retry-guidance.md",
+          "observability-guide.md",
+          "telemetry-correlation.md",
+          "distributed-tracing-guide.md"
+        ],
+        "enriched_ids": [
+          "latency-troubleshooting.md",
+          "timeout-and-retry-guidance.md",
+          "distributed-tracing-guide.md",
+          "metrics-guide.md",
+          "observability-guide.md"
+        ],
+        "positive_qrel_ids": [
+          "latency-troubleshooting.md",
+          "timeout-and-retry-guidance.md",
+          "distributed-tracing-guide.md",
+          "metrics-guide.md"
+        ],
+        "recovered_qrel_ids": [
+          "metrics-guide.md"
+        ],
+        "dropped_baseline_ids": [
+          "telemetry-correlation.md"
+        ],
+        "omitted_positive_qrel_ids": []
+      },
+      "evidence": [
+        {
+          "source_id": "latency-troubleshooting.md",
+          "rank": 1,
+          "selection_score": 5.0
+        },
+        {
+          "source_id": "timeout-and-retry-guidance.md",
+          "rank": 2,
+          "selection_score": 4.0
+        },
+        {
+          "source_id": "distributed-tracing-guide.md",
+          "rank": 3,
+          "selection_score": 3.0
+        },
+        {
+          "source_id": "metrics-guide.md",
+          "rank": 4,
+          "selection_score": 2.0
+        },
+        {
+          "source_id": "observability-guide.md",
+          "rank": 5,
+          "selection_score": 1.0
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "To determine whether high latency is caused by retries or a slow downstream dependency, you should inspect representative traces and compare failing or slow traces against a healthy baseline.",
+            "sources": [
+              "latency-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "When analyzing traces, check if the latency is concentrated in repeated retry attempts versus a single downstream RPC.",
+            "sources": [
+              "latency-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "For diagnosis, inspect the number of attempts, per-attempt latency, and whether retry attempts overlap or occur sequentially.",
+            "sources": [
+              "timeout-and-retry-guidance.md"
+            ]
+          },
+          {
+            "text": "Inspect downstream server spans to identify if the delay is in the downstream service itself.",
+            "sources": [
+              "timeout-and-retry-guidance.md"
+            ]
+          },
+          {
+            "text": "Examine the total parent-span duration to understand the cumulative time spent, noting that parent span duration includes child execution time.",
+            "sources": [
+              "latency-troubleshooting.md",
+              "timeout-and-retry-guidance.md"
+            ]
+          },
+          {
+            "text": "Do not sum all span durations to estimate total request latency, as this overestimates the time due to parallel spans and nested parent-child relationships.",
+            "sources": [
+              "latency-troubleshooting.md",
+              "distributed-tracing-guide.md"
+            ]
+          },
+          {
+            "text": "Identify the operation contributing to the critical path rather than assuming the longest span is the root cause.",
+            "sources": [
+              "latency-troubleshooting.md",
+              "distributed-tracing-guide.md"
+            ]
+          },
+          {
+            "text": "Metrics such as p50, p95, and p99 can show that latency distribution has changed but cannot identify the specific responsible operation; traces are needed for request-level evidence.",
+            "sources": [
+              "latency-troubleshooting.md",
+              "metrics-guide.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 2,
+      "latency_ms": 5325.899334042333,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"To determine whether high latency is caused by retries or a slow downstream dependency, you should inspect representative traces and compare failing or slow traces against a healthy baseline.\",\n      \"sources\": [\n        \"latency-troubleshooting.md\"\n      ]\n    },\n    {\n      \"text\": \"When analyzing traces, check if the latency is concentrated in repeated retry attempts versus a single downstream RPC.\",\n      \"sources\": [\n        \"latency-troubleshooting.md\"\n      ]\n    },\n    {\n      \"text\": \"For diagnosis, inspect the number of attempts, per-attempt latency, and whether retry attempts overlap or occur sequentially.\",\n      \"sources\": [\n        \"timeout-and-retry-guidance.md\"\n      ]\n    },\n    {\n      \"text\": \"Inspect downstream server spans to identify if the delay is in the downstream service itself.\",\n      \"sources\": [\n        \"timeout-and-retry-guidance.md\"\n      ]\n    },\n    {\n      \"text\": \"Examine the total parent-span duration to understand the cumulative time spent, noting that parent span duration includes child execution time.\",\n      \"sources\": [\n        \"latency-troubleshooting.md\",\n        \"timeout-and-retry-guidance.md\"\n      ]\n    },\n    {\n      \"text\": \"Do not sum all span durations to estimate total request latency, as this overestimates the time due to parallel spans and nested parent-child relationships.\",\n      \"sources\": [\n        \"latency-troubleshooting.md\",\n        \"distributed-tracing-guide.md\"\n      ]\n    },\n    {\n      \"text\": \"Identify the operation contributing to the critical path rather than assuming the longest span is the root cause.\",\n      \"sources\": [\n        \"latency-troubleshooting.md\",\n        \"distributed-tracing-guide.md\"\n      ]\n    },\n    {\n      \"text\": \"Metrics such as p50, p95, and p99 can show that latency distribution has changed but cannot identify the specific responsible operation; traces are needed for request-level evidence.\",\n      \"sources\": [\n        \"latency-troubleshooting.md\",\n        \"metrics-guide.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    },
+    {
+      "query_id": "dev-023",
+      "query": "Which document should I use to design PaymentService dashboards and alerts rather than debug one request?",
+      "category": "hard_negative",
+      "intervention": {
+        "baseline_ids": [
+          "payment-monitoring.md",
+          "payment-runbook.md",
+          "payment-service.md",
+          "telemetry-correlation.md",
+          "checkout-runbook.md"
+        ],
+        "enriched_ids": [
+          "payment-monitoring.md",
+          "metrics-guide.md",
+          "payment-runbook.md",
+          "payment-service.md",
+          "telemetry-correlation.md"
+        ],
+        "positive_qrel_ids": [
+          "payment-monitoring.md",
+          "metrics-guide.md"
+        ],
+        "recovered_qrel_ids": [
+          "metrics-guide.md"
+        ],
+        "dropped_baseline_ids": [
+          "checkout-runbook.md"
+        ],
+        "omitted_positive_qrel_ids": []
+      },
+      "evidence": [
+        {
+          "source_id": "payment-monitoring.md",
+          "rank": 1,
+          "selection_score": 5.0
+        },
+        {
+          "source_id": "metrics-guide.md",
+          "rank": 2,
+          "selection_score": 4.0
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 3,
+          "selection_score": 3.0
+        },
+        {
+          "source_id": "payment-service.md",
+          "rank": 4,
+          "selection_score": 2.0
+        },
+        {
+          "source_id": "telemetry-correlation.md",
+          "rank": 5,
+          "selection_score": 1.0
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "You should use the document 'payment-monitoring.md' to design PaymentService dashboards and alerts.",
+            "sources": [
+              "payment-monitoring.md"
+            ]
+          },
+          {
+            "text": "The 'payment-monitoring.md' document is explicitly intended for dashboard and alert design rather than diagnosing a specific request path.",
+            "sources": [
+              "payment-monitoring.md"
+            ]
+          },
+          {
+            "text": "For debugging a single request, you should inspect the distributed trace and look for corresponding Payment server spans instead of relying on monitoring dashboards.",
+            "sources": [
+              "payment-monitoring.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2200.2774589927867,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"You should use the document 'payment-monitoring.md' to design PaymentService dashboards and alerts.\",\n      \"sources\": [\n        \"SOURCE: payment-monitoring.md\"\n      ]\n    },\n    {\n      \"text\": \"The 'payment-monitoring.md' document is explicitly intended for dashboard and alert design rather than diagnosing a specific request path.\",\n      \"sources\": [\n        \"SOURCE: payment-monitoring.md\"\n      ]\n    },\n    {\n      \"text\": \"For debugging a single request, you should inspect the distributed trace and look for corresponding Payment server spans instead of relying on monitoring dashboards.\",\n      \"sources\": [\n        \"SOURCE: payment-monitoring.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    }
+  ]
+}
