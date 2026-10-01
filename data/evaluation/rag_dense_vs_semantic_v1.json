@@ -1,0 +1,1581 @@
+{
+  "metadata": {
+    "experiment": "014F",
+    "version": "v1",
+    "comparison": "Dense vs Semantic Multi-Query RRF",
+    "dense_file": "dev_rag_outputs_v1.json",
+    "semantic_file": "dev_rag_outputs_semantic_v1.json",
+    "context_budget": 5,
+    "dense_retrieval_queries_per_question": 1,
+    "semantic_retrieval_queries_per_question": 4,
+    "important_note": "Qrel metrics measure benchmark relevance, not answer correctness or claim entailment."
+  },
+  "aggregate": {
+    "retrieval_qrel_recall": {
+      "dense": 0.8298611111111112,
+      "semantic": 0.8194444444444444,
+      "delta": -0.01041666666666674
+    },
+    "citation_qrel_precision": {
+      "dense": 0.9375,
+      "semantic": 0.8784722222222222,
+      "delta": -0.05902777777777779
+    },
+    "citation_qrel_recall": {
+      "dense": 0.673611111111111,
+      "semantic": 0.6805555555555556,
+      "delta": 0.006944444444444531
+    },
+    "relevant_evidence_retention": {
+      "dense": 0.8402777777777778,
+      "semantic": 0.8472222222222222,
+      "delta": 0.00694444444444442
+    },
+    "source_utilization": {
+      "dense": 0.4166666666666667,
+      "semantic": 0.45833333333333337,
+      "delta": 0.041666666666666685
+    },
+    "claim_count": {
+      "dense": 4.833333333333333,
+      "semantic": 4.625,
+      "delta": -0.20833333333333304
+    }
+  },
+  "evidence_composition": {
+    "changed_context_queries": 15,
+    "relevant_docs_added": 1,
+    "relevant_docs_lost": 2,
+    "mean_evidence_jaccard": 0.7445436507936508
+  },
+  "runtime": {
+    "dense_mean_rag_latency_ms": 2087.604959922222,
+    "semantic_mean_rag_latency_ms": 2265.6124530379507,
+    "rag_latency_delta_ms": 178.00749311572872,
+    "semantic_mean_retrieval_latency_ms": 64.51804162255333,
+    "semantic_schema_retry_count": 5
+  },
+  "by_category": {
+    "architecture": {
+      "dense_retrieval_recall": 1.0,
+      "semantic_retrieval_recall": 1.0,
+      "dense_citation_recall": 0.6666666666666666,
+      "semantic_citation_recall": 0.7916666666666666
+    },
+    "exact_identifier": {
+      "dense_retrieval_recall": 0.9166666666666666,
+      "semantic_retrieval_recall": 0.9166666666666666,
+      "dense_citation_recall": 0.6666666666666666,
+      "semantic_citation_recall": 0.6666666666666666
+    },
+    "hard_negative": {
+      "dense_retrieval_recall": 0.75,
+      "semantic_retrieval_recall": 0.75,
+      "dense_citation_recall": 0.5,
+      "semantic_citation_recall": 0.5
+    },
+    "multi_document": {
+      "dense_retrieval_recall": 0.5833333333333334,
+      "semantic_retrieval_recall": 0.5,
+      "dense_citation_recall": 0.5,
+      "semantic_citation_recall": 0.5
+    },
+    "observability": {
+      "dense_retrieval_recall": 1.0,
+      "semantic_retrieval_recall": 0.8888888888888888,
+      "dense_citation_recall": 0.8888888888888888,
+      "semantic_citation_recall": 0.7777777777777778
+    },
+    "semantic_paraphrase": {
+      "dense_retrieval_recall": 0.625,
+      "semantic_retrieval_recall": 0.7083333333333333,
+      "dense_citation_recall": 0.625,
+      "semantic_citation_recall": 0.625
+    },
+    "troubleshooting": {
+      "dense_retrieval_recall": 0.875,
+      "semantic_retrieval_recall": 0.875,
+      "dense_citation_recall": 0.7916666666666666,
+      "semantic_citation_recall": 0.7916666666666666
+    }
+  },
+  "queries": [
+    {
+      "query_id": "dev-001",
+      "category": "exact_identifier",
+      "question": "Which service owns the oteldemo.PaymentService/Charge operation?",
+      "dense_evidence": [
+        "payment-service.md",
+        "checkout-architecture.md",
+        "checkout-payment-flow.md",
+        "payment-monitoring.md",
+        "checkout-runbook.md"
+      ],
+      "semantic_evidence": [
+        "payment-service.md",
+        "checkout-architecture.md",
+        "checkout-payment-flow.md",
+        "payment-monitoring.md",
+        "checkout-runbook.md"
+      ],
+      "evidence_jaccard": 1.0,
+      "semantic_added": [],
+      "semantic_dropped": [],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "payment-service.md"
+      ],
+      "semantic_cited_sources": [
+        "payment-service.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 0.5,
+        "source_utilization": 0.2,
+        "claim_count": 1.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 0.5,
+        "source_utilization": 0.2,
+        "claim_count": 1.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.0,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-002",
+      "category": "exact_identifier",
+      "question": "What should I inspect when rpc.response.status_code is UNAVAILABLE on a client span?",
+      "dense_evidence": [
+        "grpc-troubleshooting.md",
+        "payment-runbook.md",
+        "payment-service.md",
+        "shipping-service.md",
+        "latency-troubleshooting.md"
+      ],
+      "semantic_evidence": [
+        "grpc-troubleshooting.md",
+        "payment-runbook.md",
+        "payment-service.md",
+        "shipping-service.md",
+        "distributed-tracing-guide.md"
+      ],
+      "evidence_jaccard": 0.6666666666666666,
+      "semantic_added": [
+        "distributed-tracing-guide.md"
+      ],
+      "semantic_dropped": [
+        "latency-troubleshooting.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "grpc-troubleshooting.md",
+        "payment-runbook.md"
+      ],
+      "semantic_cited_sources": [
+        "distributed-tracing-guide.md",
+        "grpc-troubleshooting.md",
+        "payment-runbook.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 0.6666666666666666,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.4,
+        "claim_count": 5.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 0.6666666666666666,
+        "citation_qrel_precision": 0.6666666666666666,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.6,
+        "claim_count": 6.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": -0.33333333333333337,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.19999999999999996,
+        "claim_count": 1.0
+      }
+    },
+    {
+      "query_id": "dev-003",
+      "category": "exact_identifier",
+      "question": "What is the purpose of oteldemo.CheckoutService/PlaceOrder?",
+      "dense_evidence": [
+        "checkout-architecture.md",
+        "checkout-runbook.md",
+        "payment-service.md",
+        "checkout-payment-flow.md",
+        "currency-service.md"
+      ],
+      "semantic_evidence": [
+        "checkout-architecture.md",
+        "checkout-runbook.md",
+        "checkout-payment-flow.md",
+        "payment-service.md",
+        "metrics-guide.md"
+      ],
+      "evidence_jaccard": 0.6666666666666666,
+      "semantic_added": [
+        "metrics-guide.md"
+      ],
+      "semantic_dropped": [
+        "currency-service.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "checkout-architecture.md"
+      ],
+      "semantic_cited_sources": [
+        "checkout-architecture.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 0.5,
+        "source_utilization": 0.2,
+        "claim_count": 3.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 0.5,
+        "source_utilization": 0.2,
+        "claim_count": 2.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.0,
+        "claim_count": -1.0
+      }
+    },
+    {
+      "query_id": "dev-004",
+      "category": "exact_identifier",
+      "question": "How are TraceId and SpanId different?",
+      "dense_evidence": [
+        "distributed-tracing-guide.md",
+        "telemetry-correlation.md",
+        "structured-logging-guide.md",
+        "latency-troubleshooting.md",
+        "checkout-architecture.md"
+      ],
+      "semantic_evidence": [
+        "distributed-tracing-guide.md",
+        "telemetry-correlation.md",
+        "structured-logging-guide.md",
+        "latency-troubleshooting.md",
+        "payment-runbook.md"
+      ],
+      "evidence_jaccard": 0.6666666666666666,
+      "semantic_added": [
+        "payment-runbook.md"
+      ],
+      "semantic_dropped": [
+        "checkout-architecture.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "distributed-tracing-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "semantic_cited_sources": [
+        "distributed-tracing-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.4,
+        "claim_count": 3.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.4,
+        "claim_count": 3.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.0,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-005",
+      "category": "semantic_paraphrase",
+      "question": "How does an application find the network destination of another backend service?",
+      "dense_evidence": [
+        "service-discovery.md",
+        "distributed-tracing-guide.md",
+        "frontend-service.md",
+        "observability-guide.md",
+        "otel-collector.md"
+      ],
+      "semantic_evidence": [
+        "service-discovery.md",
+        "frontend-service.md",
+        "payment-runbook.md",
+        "checkout-architecture.md",
+        "distributed-tracing-guide.md"
+      ],
+      "evidence_jaccard": 0.42857142857142855,
+      "semantic_added": [
+        "checkout-architecture.md",
+        "payment-runbook.md"
+      ],
+      "semantic_dropped": [
+        "observability-guide.md",
+        "otel-collector.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "service-discovery.md"
+      ],
+      "semantic_cited_sources": [
+        "service-discovery.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 0.5,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.2,
+        "claim_count": 5.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 0.5,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.2,
+        "claim_count": 5.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.0,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-006",
+      "category": "semantic_paraphrase",
+      "question": "How can I tie messages emitted by several services to the same user transaction?",
+      "dense_evidence": [
+        "structured-logging-guide.md",
+        "telemetry-correlation.md",
+        "payment-service.md",
+        "observability-guide.md",
+        "checkout-architecture.md"
+      ],
+      "semantic_evidence": [
+        "structured-logging-guide.md",
+        "telemetry-correlation.md",
+        "distributed-tracing-guide.md",
+        "payment-runbook.md",
+        "service-discovery.md"
+      ],
+      "evidence_jaccard": 0.25,
+      "semantic_added": [
+        "distributed-tracing-guide.md",
+        "payment-runbook.md",
+        "service-discovery.md"
+      ],
+      "semantic_dropped": [
+        "checkout-architecture.md",
+        "observability-guide.md",
+        "payment-service.md"
+      ],
+      "semantic_added_relevant": [
+        "distributed-tracing-guide.md"
+      ],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "structured-logging-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "semantic_cited_sources": [
+        "distributed-tracing-guide.md",
+        "structured-logging-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 0.6666666666666666,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.4,
+        "claim_count": 3.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.6,
+        "claim_count": 4.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.33333333333333337,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.33333333333333337,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.19999999999999996,
+        "claim_count": 1.0
+      }
+    },
+    {
+      "query_id": "dev-007",
+      "category": "semantic_paraphrase",
+      "question": "What can make an RPC fail before the remote application ever sees the request?",
+      "dense_evidence": [
+        "grpc-troubleshooting.md",
+        "service-discovery.md",
+        "timeout-and-retry-guidance.md",
+        "cart-service.md",
+        "frontend-service.md"
+      ],
+      "semantic_evidence": [
+        "grpc-troubleshooting.md",
+        "service-discovery.md",
+        "payment-service.md",
+        "cart-service.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "evidence_jaccard": 0.6666666666666666,
+      "semantic_added": [
+        "payment-service.md"
+      ],
+      "semantic_dropped": [
+        "frontend-service.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "grpc-troubleshooting.md",
+        "service-discovery.md"
+      ],
+      "semantic_cited_sources": [
+        "grpc-troubleshooting.md",
+        "payment-service.md",
+        "service-discovery.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 0.6666666666666666,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.4,
+        "claim_count": 3.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 0.6666666666666666,
+        "citation_qrel_precision": 0.6666666666666666,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.6,
+        "claim_count": 8.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": -0.33333333333333337,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.19999999999999996,
+        "claim_count": 5.0
+      }
+    },
+    {
+      "query_id": "dev-008",
+      "category": "semantic_paraphrase",
+      "question": "Why is a browser HTTP 500 not enough to identify which backend component is faulty?",
+      "dense_evidence": [
+        "frontend-service.md",
+        "payment-runbook.md",
+        "checkout-runbook.md",
+        "service-discovery.md",
+        "dns-troubleshooting.md"
+      ],
+      "semantic_evidence": [
+        "frontend-service.md",
+        "checkout-runbook.md",
+        "payment-runbook.md",
+        "timeout-and-retry-guidance.md",
+        "grpc-troubleshooting.md"
+      ],
+      "evidence_jaccard": 0.42857142857142855,
+      "semantic_added": [
+        "grpc-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "semantic_dropped": [
+        "dns-troubleshooting.md",
+        "service-discovery.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "checkout-runbook.md",
+        "frontend-service.md",
+        "payment-runbook.md"
+      ],
+      "semantic_cited_sources": [
+        "frontend-service.md",
+        "payment-runbook.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 0.6666666666666666,
+        "citation_qrel_precision": 0.6666666666666666,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.6,
+        "claim_count": 4.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 0.6666666666666666,
+        "citation_qrel_precision": 0.5,
+        "citation_qrel_recall": 0.3333333333333333,
+        "relevant_evidence_retention": 0.5,
+        "source_utilization": 0.4,
+        "claim_count": 4.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": -0.16666666666666663,
+        "citation_qrel_recall": -0.3333333333333333,
+        "relevant_evidence_retention": -0.5,
+        "source_utilization": -0.19999999999999996,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-009",
+      "category": "architecture",
+      "question": "Which downstream dependencies participate in placing an order?",
+      "dense_evidence": [
+        "checkout-architecture.md",
+        "checkout-payment-flow.md",
+        "cart-service.md",
+        "checkout-runbook.md",
+        "incident-response-guide.md"
+      ],
+      "semantic_evidence": [
+        "checkout-architecture.md",
+        "checkout-payment-flow.md",
+        "cart-service.md",
+        "incident-response-guide.md",
+        "checkout-runbook.md"
+      ],
+      "evidence_jaccard": 1.0,
+      "semantic_added": [],
+      "semantic_dropped": [],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "checkout-architecture.md",
+        "checkout-payment-flow.md"
+      ],
+      "semantic_cited_sources": [
+        "checkout-architecture.md",
+        "checkout-runbook.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.4,
+        "claim_count": 6.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 0.5,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 0.5,
+        "source_utilization": 0.4,
+        "claim_count": 6.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": -0.5,
+        "citation_qrel_recall": -0.5,
+        "relevant_evidence_retention": -0.5,
+        "source_utilization": 0.0,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-010",
+      "category": "architecture",
+      "question": "What is the difference between the responsibility of CurrencyService and PaymentService?",
+      "dense_evidence": [
+        "payment-service.md",
+        "currency-service.md",
+        "payment-monitoring.md",
+        "payment-runbook.md",
+        "checkout-architecture.md"
+      ],
+      "semantic_evidence": [
+        "payment-service.md",
+        "currency-service.md",
+        "payment-monitoring.md",
+        "payment-runbook.md",
+        "checkout-architecture.md"
+      ],
+      "evidence_jaccard": 1.0,
+      "semantic_added": [],
+      "semantic_dropped": [],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "currency-service.md",
+        "payment-service.md"
+      ],
+      "semantic_cited_sources": [
+        "currency-service.md",
+        "payment-service.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 0.6666666666666666,
+        "source_utilization": 0.4,
+        "claim_count": 4.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 0.6666666666666666,
+        "source_utilization": 0.4,
+        "claim_count": 4.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.0,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-011",
+      "category": "architecture",
+      "question": "Which service calculates delivery cost before the customer is charged?",
+      "dense_evidence": [
+        "payment-service.md",
+        "shipping-service.md",
+        "checkout-architecture.md",
+        "checkout-payment-flow.md",
+        "payment-monitoring.md"
+      ],
+      "semantic_evidence": [
+        "payment-service.md",
+        "shipping-service.md",
+        "checkout-architecture.md",
+        "checkout-payment-flow.md",
+        "payment-monitoring.md"
+      ],
+      "evidence_jaccard": 1.0,
+      "semantic_added": [],
+      "semantic_dropped": [],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "shipping-service.md"
+      ],
+      "semantic_cited_sources": [
+        "checkout-architecture.md",
+        "checkout-payment-flow.md",
+        "payment-service.md",
+        "shipping-service.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.3333333333333333,
+        "relevant_evidence_retention": 0.3333333333333333,
+        "source_utilization": 0.2,
+        "claim_count": 2.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 0.75,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.8,
+        "claim_count": 3.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": -0.25,
+        "citation_qrel_recall": 0.6666666666666667,
+        "relevant_evidence_retention": 0.6666666666666667,
+        "source_utilization": 0.6000000000000001,
+        "claim_count": 1.0
+      }
+    },
+    {
+      "query_id": "dev-012",
+      "category": "architecture",
+      "question": "What is the expected successful sequence from the frontend to payment during checkout?",
+      "dense_evidence": [
+        "checkout-payment-flow.md",
+        "frontend-service.md",
+        "payment-service.md",
+        "checkout-architecture.md",
+        "checkout-runbook.md"
+      ],
+      "semantic_evidence": [
+        "checkout-payment-flow.md",
+        "frontend-service.md",
+        "checkout-architecture.md",
+        "payment-service.md",
+        "payment-runbook.md"
+      ],
+      "evidence_jaccard": 0.6666666666666666,
+      "semantic_added": [
+        "payment-runbook.md"
+      ],
+      "semantic_dropped": [
+        "checkout-runbook.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "checkout-payment-flow.md",
+        "frontend-service.md"
+      ],
+      "semantic_cited_sources": [
+        "checkout-architecture.md",
+        "checkout-payment-flow.md",
+        "frontend-service.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 0.6666666666666666,
+        "source_utilization": 0.4,
+        "claim_count": 4.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.6,
+        "claim_count": 4.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.33333333333333337,
+        "relevant_evidence_retention": 0.33333333333333337,
+        "source_utilization": 0.19999999999999996,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-013",
+      "category": "troubleshooting",
+      "question": "A client span returns UNAVAILABLE and there is no downstream server span. What should I investigate?",
+      "dense_evidence": [
+        "payment-runbook.md",
+        "grpc-troubleshooting.md",
+        "latency-troubleshooting.md",
+        "service-discovery.md",
+        "distributed-tracing-guide.md"
+      ],
+      "semantic_evidence": [
+        "grpc-troubleshooting.md",
+        "payment-runbook.md",
+        "service-discovery.md",
+        "latency-troubleshooting.md",
+        "observability-guide.md"
+      ],
+      "evidence_jaccard": 0.6666666666666666,
+      "semantic_added": [
+        "observability-guide.md"
+      ],
+      "semantic_dropped": [
+        "distributed-tracing-guide.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "distributed-tracing-guide.md",
+        "grpc-troubleshooting.md",
+        "payment-runbook.md",
+        "service-discovery.md"
+      ],
+      "semantic_cited_sources": [
+        "grpc-troubleshooting.md",
+        "payment-runbook.md",
+        "service-discovery.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 0.75,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.8,
+        "claim_count": 7.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.6,
+        "claim_count": 6.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.25,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": -0.20000000000000007,
+        "claim_count": -1.0
+      }
+    },
+    {
+      "query_id": "dev-014",
+      "category": "troubleshooting",
+      "question": "What does DEADLINE_EXCEEDED tell me, and what does it not tell me about root cause?",
+      "dense_evidence": [
+        "timeout-and-retry-guidance.md",
+        "latency-troubleshooting.md",
+        "grpc-troubleshooting.md",
+        "incident-response-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "semantic_evidence": [
+        "timeout-and-retry-guidance.md",
+        "latency-troubleshooting.md",
+        "incident-response-guide.md",
+        "grpc-troubleshooting.md",
+        "telemetry-correlation.md"
+      ],
+      "evidence_jaccard": 1.0,
+      "semantic_added": [],
+      "semantic_dropped": [],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "grpc-troubleshooting.md",
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "semantic_cited_sources": [
+        "grpc-troubleshooting.md",
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.6,
+        "claim_count": 5.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.6,
+        "claim_count": 5.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.0,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-015",
+      "category": "troubleshooting",
+      "question": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+      "dense_evidence": [
+        "payment-service.md",
+        "payment-runbook.md",
+        "payment-monitoring.md",
+        "cart-service.md",
+        "checkout-runbook.md"
+      ],
+      "semantic_evidence": [
+        "payment-service.md",
+        "payment-runbook.md",
+        "payment-monitoring.md",
+        "checkout-runbook.md",
+        "cart-service.md"
+      ],
+      "evidence_jaccard": 1.0,
+      "semantic_added": [],
+      "semantic_dropped": [],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "payment-runbook.md",
+        "payment-service.md"
+      ],
+      "semantic_cited_sources": [
+        "payment-runbook.md",
+        "payment-service.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 0.5,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.4,
+        "claim_count": 6.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 0.5,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.4,
+        "claim_count": 7.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.0,
+        "claim_count": 1.0
+      }
+    },
+    {
+      "query_id": "dev-016",
+      "category": "troubleshooting",
+      "question": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "dense_evidence": [
+        "dns-troubleshooting.md",
+        "service-discovery.md",
+        "grpc-troubleshooting.md",
+        "payment-runbook.md",
+        "incident-response-guide.md"
+      ],
+      "semantic_evidence": [
+        "dns-troubleshooting.md",
+        "service-discovery.md",
+        "payment-runbook.md",
+        "grpc-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "evidence_jaccard": 0.6666666666666666,
+      "semantic_added": [
+        "timeout-and-retry-guidance.md"
+      ],
+      "semantic_dropped": [
+        "incident-response-guide.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "dns-troubleshooting.md",
+        "service-discovery.md"
+      ],
+      "semantic_cited_sources": [
+        "dns-troubleshooting.md",
+        "service-discovery.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 0.6666666666666666,
+        "source_utilization": 0.4,
+        "claim_count": 13.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 0.6666666666666666,
+        "source_utilization": 0.4,
+        "claim_count": 4.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.0,
+        "claim_count": -9.0
+      }
+    },
+    {
+      "query_id": "dev-017",
+      "category": "observability",
+      "question": "Which observability signal is best for detecting and quantifying an increase in checkout error rate?",
+      "dense_evidence": [
+        "observability-guide.md",
+        "payment-monitoring.md",
+        "metrics-guide.md",
+        "checkout-runbook.md",
+        "feature-flags.md"
+      ],
+      "semantic_evidence": [
+        "payment-monitoring.md",
+        "metrics-guide.md",
+        "checkout-runbook.md",
+        "currency-service.md",
+        "payment-runbook.md"
+      ],
+      "evidence_jaccard": 0.42857142857142855,
+      "semantic_added": [
+        "currency-service.md",
+        "payment-runbook.md"
+      ],
+      "semantic_dropped": [
+        "feature-flags.md",
+        "observability-guide.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [
+        "observability-guide.md"
+      ],
+      "dense_cited_sources": [
+        "metrics-guide.md",
+        "observability-guide.md"
+      ],
+      "semantic_cited_sources": [
+        "metrics-guide.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.6666666666666666,
+        "relevant_evidence_retention": 0.6666666666666666,
+        "source_utilization": 0.4,
+        "claim_count": 3.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 0.6666666666666666,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.3333333333333333,
+        "relevant_evidence_retention": 0.5,
+        "source_utilization": 0.2,
+        "claim_count": 3.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": -0.33333333333333337,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": -0.3333333333333333,
+        "relevant_evidence_retention": -0.16666666666666663,
+        "source_utilization": -0.2,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-018",
+      "category": "observability",
+      "question": "Which telemetry signal should I use to identify where one distributed request failed?",
+      "dense_evidence": [
+        "observability-guide.md",
+        "telemetry-correlation.md",
+        "distributed-tracing-guide.md",
+        "timeout-and-retry-guidance.md",
+        "otel-collector.md"
+      ],
+      "semantic_evidence": [
+        "observability-guide.md",
+        "telemetry-correlation.md",
+        "timeout-and-retry-guidance.md",
+        "service-discovery.md",
+        "distributed-tracing-guide.md"
+      ],
+      "evidence_jaccard": 0.6666666666666666,
+      "semantic_added": [
+        "service-discovery.md"
+      ],
+      "semantic_dropped": [
+        "otel-collector.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "distributed-tracing-guide.md",
+        "observability-guide.md"
+      ],
+      "semantic_cited_sources": [
+        "distributed-tracing-guide.md",
+        "observability-guide.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.4,
+        "claim_count": 3.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.4,
+        "claim_count": 4.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.0,
+        "claim_count": 1.0
+      }
+    },
+    {
+      "query_id": "dev-019",
+      "category": "observability",
+      "question": "What evidence should I require before treating an error log as causal for an incident?",
+      "dense_evidence": [
+        "incident-response-guide.md",
+        "telemetry-correlation.md",
+        "structured-logging-guide.md",
+        "checkout-runbook.md",
+        "observability-guide.md"
+      ],
+      "semantic_evidence": [
+        "incident-response-guide.md",
+        "telemetry-correlation.md",
+        "structured-logging-guide.md",
+        "observability-guide.md",
+        "checkout-runbook.md"
+      ],
+      "evidence_jaccard": 1.0,
+      "semantic_added": [],
+      "semantic_dropped": [],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "incident-response-guide.md",
+        "structured-logging-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "semantic_cited_sources": [
+        "checkout-runbook.md",
+        "incident-response-guide.md",
+        "structured-logging-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.6,
+        "claim_count": 13.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 0.75,
+        "citation_qrel_recall": 1.0,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.8,
+        "claim_count": 7.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": -0.25,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.20000000000000007,
+        "claim_count": -6.0
+      }
+    },
+    {
+      "query_id": "dev-020",
+      "category": "multi_document",
+      "question": "What evidence distinguishes a network or resolution failure from an application-level payment failure?",
+      "dense_evidence": [
+        "payment-runbook.md",
+        "service-discovery.md",
+        "payment-service.md",
+        "dns-troubleshooting.md",
+        "payment-monitoring.md"
+      ],
+      "semantic_evidence": [
+        "payment-runbook.md",
+        "service-discovery.md",
+        "payment-monitoring.md",
+        "payment-service.md",
+        "dns-troubleshooting.md"
+      ],
+      "evidence_jaccard": 1.0,
+      "semantic_added": [],
+      "semantic_dropped": [],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "dns-troubleshooting.md",
+        "payment-runbook.md",
+        "payment-service.md",
+        "service-discovery.md"
+      ],
+      "semantic_cited_sources": [
+        "payment-runbook.md",
+        "payment-service.md",
+        "service-discovery.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 0.75,
+        "citation_qrel_precision": 0.75,
+        "citation_qrel_recall": 0.75,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.8,
+        "claim_count": 5.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 0.75,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.75,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.6,
+        "claim_count": 5.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.25,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": -0.20000000000000007,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-021",
+      "category": "multi_document",
+      "question": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "dense_evidence": [
+        "incident-response-guide.md",
+        "checkout-runbook.md",
+        "frontend-service.md",
+        "payment-monitoring.md",
+        "currency-service.md"
+      ],
+      "semantic_evidence": [
+        "checkout-runbook.md",
+        "incident-response-guide.md",
+        "payment-monitoring.md",
+        "payment-runbook.md",
+        "frontend-service.md"
+      ],
+      "evidence_jaccard": 0.6666666666666666,
+      "semantic_added": [
+        "payment-runbook.md"
+      ],
+      "semantic_dropped": [
+        "currency-service.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "checkout-runbook.md",
+        "frontend-service.md",
+        "incident-response-guide.md"
+      ],
+      "semantic_cited_sources": [
+        "checkout-runbook.md",
+        "incident-response-guide.md",
+        "payment-monitoring.md",
+        "payment-runbook.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 0.25,
+        "citation_qrel_precision": 0.3333333333333333,
+        "citation_qrel_recall": 0.25,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.6,
+        "claim_count": 8.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 0.25,
+        "citation_qrel_precision": 0.25,
+        "citation_qrel_recall": 0.25,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.8,
+        "claim_count": 10.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": -0.08333333333333331,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.20000000000000007,
+        "claim_count": 2.0
+      }
+    },
+    {
+      "query_id": "dev-022",
+      "category": "multi_document",
+      "question": "How can I determine whether high request latency comes from retries or from a slow downstream dependency?",
+      "dense_evidence": [
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md",
+        "observability-guide.md",
+        "telemetry-correlation.md",
+        "distributed-tracing-guide.md"
+      ],
+      "semantic_evidence": [
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md",
+        "observability-guide.md",
+        "grpc-troubleshooting.md",
+        "telemetry-correlation.md"
+      ],
+      "evidence_jaccard": 0.6666666666666666,
+      "semantic_added": [
+        "grpc-troubleshooting.md"
+      ],
+      "semantic_dropped": [
+        "distributed-tracing-guide.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [
+        "distributed-tracing-guide.md"
+      ],
+      "dense_cited_sources": [
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "semantic_cited_sources": [
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 0.75,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 0.6666666666666666,
+        "source_utilization": 0.4,
+        "claim_count": 5.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 0.5,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.4,
+        "claim_count": 5.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": -0.25,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.33333333333333337,
+        "source_utilization": 0.0,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-023",
+      "category": "hard_negative",
+      "question": "Which document should I use to design PaymentService dashboards and alerts rather than debug one request?",
+      "dense_evidence": [
+        "payment-monitoring.md",
+        "payment-runbook.md",
+        "payment-service.md",
+        "telemetry-correlation.md",
+        "checkout-runbook.md"
+      ],
+      "semantic_evidence": [
+        "payment-monitoring.md",
+        "payment-runbook.md",
+        "payment-service.md",
+        "telemetry-correlation.md",
+        "checkout-runbook.md"
+      ],
+      "evidence_jaccard": 1.0,
+      "semantic_added": [],
+      "semantic_dropped": [],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "payment-monitoring.md"
+      ],
+      "semantic_cited_sources": [
+        "payment-monitoring.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 0.5,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.2,
+        "claim_count": 3.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 0.5,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 1.0,
+        "source_utilization": 0.2,
+        "claim_count": 3.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.0,
+        "claim_count": 0.0
+      }
+    },
+    {
+      "query_id": "dev-024",
+      "category": "hard_negative",
+      "question": "Which guidance explains how injected fault flags should be handled without leaking benchmark ground truth?",
+      "dense_evidence": [
+        "feature-flags.md",
+        "observability-guide.md",
+        "incident-response-guide.md",
+        "timeout-and-retry-guidance.md",
+        "checkout-runbook.md"
+      ],
+      "semantic_evidence": [
+        "feature-flags.md",
+        "observability-guide.md",
+        "incident-response-guide.md",
+        "structured-logging-guide.md",
+        "checkout-runbook.md"
+      ],
+      "evidence_jaccard": 0.6666666666666666,
+      "semantic_added": [
+        "structured-logging-guide.md"
+      ],
+      "semantic_dropped": [
+        "timeout-and-retry-guidance.md"
+      ],
+      "semantic_added_relevant": [],
+      "semantic_dropped_relevant": [],
+      "dense_cited_sources": [
+        "feature-flags.md"
+      ],
+      "semantic_cited_sources": [
+        "feature-flags.md"
+      ],
+      "dense_status": "answered",
+      "semantic_status": "answered",
+      "dense_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 0.5,
+        "source_utilization": 0.2,
+        "claim_count": 2.0
+      },
+      "semantic_metrics": {
+        "retrieval_qrel_recall": 1.0,
+        "citation_qrel_precision": 1.0,
+        "citation_qrel_recall": 0.5,
+        "relevant_evidence_retention": 0.5,
+        "source_utilization": 0.2,
+        "claim_count": 2.0
+      },
+      "delta": {
+        "retrieval_qrel_recall": 0.0,
+        "citation_qrel_precision": 0.0,
+        "citation_qrel_recall": 0.0,
+        "relevant_evidence_retention": 0.0,
+        "source_utilization": 0.0,
+        "claim_count": 0.0
+      }
+    }
+  ]
+}

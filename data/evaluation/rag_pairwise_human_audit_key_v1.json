@@ -1,0 +1,132 @@
+{
+  "metadata": {
+    "experiment": "014F",
+    "evaluation": "human_audit_blind_key",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "query_id": "dev-002",
+      "answer_a_system": "semantic",
+      "answer_b_system": "dense",
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ]
+    },
+    {
+      "query_id": "dev-003",
+      "answer_a_system": "dense",
+      "answer_b_system": "semantic",
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ]
+    },
+    {
+      "query_id": "dev-006",
+      "answer_a_system": "semantic",
+      "answer_b_system": "dense",
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ]
+    },
+    {
+      "query_id": "dev-007",
+      "answer_a_system": "dense",
+      "answer_b_system": "semantic",
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ]
+    },
+    {
+      "query_id": "dev-008",
+      "answer_a_system": "semantic",
+      "answer_b_system": "dense",
+      "audit_reasons": [
+        "cross_judge_disagreement"
+      ]
+    },
+    {
+      "query_id": "dev-009",
+      "answer_a_system": "semantic",
+      "answer_b_system": "dense",
+      "audit_reasons": [
+        "cross_judge_disagreement",
+        "negative_control_non_tie"
+      ]
+    },
+    {
+      "query_id": "dev-011",
+      "answer_a_system": "dense",
+      "answer_b_system": "semantic",
+      "audit_reasons": [
+        "cross_judge_disagreement",
+        "negative_control_non_tie"
+      ]
+    },
+    {
+      "query_id": "dev-013",
+      "answer_a_system": "dense",
+      "answer_b_system": "semantic",
+      "audit_reasons": [
+        "cross_judge_disagreement"
+      ]
+    },
+    {
+      "query_id": "dev-015",
+      "answer_a_system": "dense",
+      "answer_b_system": "semantic",
+      "audit_reasons": [
+        "cross_judge_disagreement",
+        "negative_control_non_tie"
+      ]
+    },
+    {
+      "query_id": "dev-016",
+      "answer_a_system": "dense",
+      "answer_b_system": "semantic",
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ]
+    },
+    {
+      "query_id": "dev-017",
+      "answer_a_system": "dense",
+      "answer_b_system": "semantic",
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ]
+    },
+    {
+      "query_id": "dev-018",
+      "answer_a_system": "dense",
+      "answer_b_system": "semantic",
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ]
+    },
+    {
+      "query_id": "dev-019",
+      "answer_a_system": "dense",
+      "answer_b_system": "semantic",
+      "audit_reasons": [
+        "negative_control_non_tie"
+      ]
+    },
+    {
+      "query_id": "dev-020",
+      "answer_a_system": "dense",
+      "answer_b_system": "semantic",
+      "audit_reasons": [
+        "negative_control_non_tie"
+      ]
+    },
+    {
+      "query_id": "dev-021",
+      "answer_a_system": "dense",
+      "answer_b_system": "semantic",
+      "audit_reasons": [
+        "cross_judge_disagreement"
+      ]
+    }
+  ]
+}
