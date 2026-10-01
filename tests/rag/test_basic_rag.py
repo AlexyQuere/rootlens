@@ -228,7 +228,7 @@ def test_unknown_citation_is_rejected():
 
     with pytest.raises(
         ValueError,
-        match="were not retrieved",
+        match="not retrieved",
     ):
         rag.answer(
             "Where are payments stored?"
@@ -505,3 +505,89 @@ def test_duplicate_citations_are_normalized():
             "payment-service.md",
         )
     )
+
+def test_source_prefix_is_normalized():
+
+    rag, _ = build_rag(
+        """
+        {
+          "status": "answered",
+          "claims": [
+            {
+              "text": "PaymentService handles payment charging.",
+              "sources": [
+                "SOURCE: payment-service.md"
+              ]
+            }
+          ],
+          "limitation": null
+        }
+        """
+    )
+
+    result = rag.answer(
+        "Who handles payments?"
+    )
+
+    assert (
+        result.answer.claims[
+            0
+        ].sources
+        == (
+            "payment-service.md",
+        )
+    )
+
+def test_bracketed_source_marker_is_normalized():
+
+    rag, _ = build_rag(
+        """
+        {
+          "status": "answered",
+          "claims": [
+            {
+              "text": "PaymentService handles payment charging.",
+              "sources": [
+                "[SOURCE: payment-service.md]"
+              ]
+            }
+          ],
+          "limitation": null
+        }
+        """
+    )
+
+    result = rag.answer(
+        "Who handles payments?"
+    )
+
+    assert (
+        result.answer.claims[
+            0
+        ].sources
+        == (
+            "payment-service.md",
+        )
+    )
+
+def test_non_object_claim_is_rejected():
+
+    rag, _ = build_rag(
+        """
+        {
+          "status": "answered",
+          "claims": [
+            "PaymentService handles payments."
+          ],
+          "limitation": null
+        }
+        """
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="must be a JSON object",
+    ):
+        rag.answer(
+            "Who handles payments?"
+        )

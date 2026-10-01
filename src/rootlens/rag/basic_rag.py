@@ -20,6 +20,18 @@ AnswerStatus = Literal[
 ]
 
 
+class RAGOutputError(ValueError):
+    """Base class for invalid LLM RAG outputs."""
+
+
+class RAGSchemaError(RAGOutputError):
+    """The LLM output violates the structured answer contract."""
+
+
+class RAGCitationError(RAGOutputError):
+    """The LLM cites evidence that was not retrieved."""
+
+
 class Retriever(Protocol):
 
     def search(
@@ -52,10 +64,12 @@ class GroundedClaim:
 class GroundedAnswer:
 
     status: AnswerStatus
+
     claims: tuple[
         GroundedClaim,
         ...
     ]
+
     limitation: str | None
 
 
@@ -73,10 +87,14 @@ class RAGResult:
 
     raw_model_output: str
 
+    generation_attempts: int
+
 
 class BasicGroundedRAG:
 
     PROMPT_VERSION = "v1"
+
+    SCHEMA_RETRY_VERSION = "v1"
 
     VALID_STATUSES = {
         "answered",
@@ -93,11 +111,18 @@ class BasicGroundedRAG:
         retriever: Retriever,
         provider: LLMProvider,
         top_k: int = 5,
+        max_schema_retries: int = 1,
     ) -> None:
 
         if top_k <= 0:
             raise ValueError(
                 "top_k must be positive."
+            )
+
+        if max_schema_retries < 0:
+            raise ValueError(
+                "max_schema_retries "
+                "cannot be negative."
             )
 
         if not documents:
@@ -113,6 +138,10 @@ class BasicGroundedRAG:
         self.provider = provider
         self.top_k = top_k
 
+        self.max_schema_retries = (
+            max_schema_retries
+        )
+
     def answer(
         self,
         question: str,
@@ -127,6 +156,13 @@ class BasicGroundedRAG:
                 "question cannot be empty."
             )
 
+        #
+        # Retrieval is performed once.
+        #
+        # If structured generation fails,
+        # the retry receives exactly the
+        # same evidence.
+        #
         evidence = (
             self._retrieve(
                 question
@@ -139,37 +175,130 @@ class BasicGroundedRAG:
             )
         )
 
-        raw_output = (
-            self.provider.generate(
-                self._system_prompt(),
-                self._user_prompt(
-                    question=question,
-                    context=context,
+        allowed_sources = {
+            item.source_id
+            for item in evidence
+        }
+
+        previous_output = None
+        previous_error = None
+
+        total_attempts = (
+            1
+            + self.max_schema_retries
+        )
+
+        for attempt_index in range(
+            total_attempts
+        ):
+
+            if attempt_index == 0:
+
+                system_prompt = (
+                    self._system_prompt()
+                )
+
+                user_prompt = (
+                    self._user_prompt(
+                        question=question,
+                        context=context,
+                    )
+                )
+
+            else:
+
+                if (
+                    previous_output is None
+                    or previous_error is None
+                ):
+                    raise RuntimeError(
+                        "Schema retry requested "
+                        "without previous failure."
+                    )
+
+                system_prompt = (
+                    self._schema_retry_system_prompt()
+                )
+
+                user_prompt = (
+                    self._schema_retry_user_prompt(
+                        question=question,
+                        context=context,
+                        previous_output=(
+                            previous_output
+                        ),
+                        validation_error=(
+                            str(
+                                previous_error
+                            )
+                        ),
+                    )
+                )
+
+            raw_output = (
+                self.provider.generate(
+                    system_prompt,
+                    user_prompt,
+                    max_tokens=768,
+                    temperature=0.0,
+                )
+            )
+
+            try:
+
+                answer = (
+                    self._parse_answer(
+                        raw_output=raw_output,
+                        allowed_sources=(
+                            allowed_sources
+                        ),
+                    )
+                )
+
+            except RAGCitationError:
+
+                #
+                # Do not repair or regenerate an
+                # invented citation.
+                #
+                # This is not a harmless schema
+                # problem.
+                #
+                raise
+
+            except RAGSchemaError as exc:
+
+                previous_output = (
+                    raw_output
+                )
+
+                previous_error = exc
+
+                if (
+                    attempt_index
+                    >= self.max_schema_retries
+                ):
+                    raise
+
+                continue
+
+            return RAGResult(
+                question=question,
+                evidence=tuple(
+                    evidence
                 ),
-                max_tokens=768,
-                temperature=0.0,
+                answer=answer,
+                raw_model_output=(
+                    raw_output
+                ),
+                generation_attempts=(
+                    attempt_index + 1
+                ),
             )
-        )
 
-        answer = (
-            self._parse_answer(
-                raw_output=raw_output,
-                allowed_sources={
-                    item.source_id
-                    for item in evidence
-                },
-            )
-        )
-
-        return RAGResult(
-            question=question,
-            evidence=tuple(
-                evidence
-            ),
-            answer=answer,
-            raw_model_output=(
-                raw_output
-            ),
+        raise RuntimeError(
+            "Generation loop terminated "
+            "unexpectedly."
         )
 
     def _retrieve(
@@ -193,7 +322,6 @@ class BasicGroundedRAG:
             )
 
         evidence = []
-
         seen = set()
 
         for rank, (
@@ -358,6 +486,134 @@ class BasicGroundedRAG:
             "structured answer."
         )
 
+    @staticmethod
+    def _schema_retry_system_prompt() -> str:
+
+        return (
+            "You are repairing a structured "
+            "evidence-grounded answer that "
+            "failed validation.\n\n"
+
+            "Use ONLY the evidence supplied "
+            "in this retry request.\n\n"
+
+            "Do not use external knowledge.\n\n"
+
+            "Do not invent source identifiers.\n\n"
+
+            "Every claim MUST be a JSON object "
+            "with exactly two fields:\n"
+            '- "text": a non-empty string\n'
+            '- "sources": a non-empty array '
+            "of source identifiers that appear "
+            "in the supplied evidence.\n\n"
+
+            "If evidence does not support a "
+            "claim, omit that claim.\n\n"
+
+            "Return ONLY valid JSON using "
+            "exactly this schema:\n\n"
+
+            "{\n"
+            '  "status": '
+            '"answered | partial | abstained",\n'
+            '  "claims": [\n'
+            "    {\n"
+            '      "text": "supported claim",\n'
+            '      "sources": '
+            '["source-id"]\n'
+            "    }\n"
+            "  ],\n"
+            '  "limitation": '
+            '"string or null"\n'
+            "}\n"
+        )
+
+    @staticmethod
+    def _schema_retry_user_prompt(
+        question: str,
+        context: str,
+        previous_output: str,
+        validation_error: str,
+    ) -> str:
+
+        return (
+            "The previous answer violated "
+            "the required output contract.\n\n"
+
+            "VALIDATION ERROR\n"
+            "----------------\n"
+            f"{validation_error}\n\n"
+
+            "QUESTION\n"
+            "--------\n"
+            f"{question}\n\n"
+
+            "EVIDENCE\n"
+            "--------\n"
+            f"{context}\n\n"
+
+            "PREVIOUS INVALID OUTPUT\n"
+            "-----------------------\n"
+            f"{previous_output}\n\n"
+
+            "Regenerate the answer using the "
+            "same evidence while respecting "
+            "the required JSON schema."
+        )
+
+    @staticmethod
+    def _normalize_source_id(
+        source: str,
+        allowed_sources: set[str],
+    ) -> str:
+
+        candidate = (
+            source.strip()
+        )
+
+        #
+        # Preferred canonical form.
+        #
+        if candidate in allowed_sources:
+            return candidate
+
+        #
+        # Accept harmless formatting that
+        # mirrors the context markers.
+        #
+        # Examples:
+        #
+        # SOURCE: payment-service.md
+        # [SOURCE: payment-service.md]
+        #
+        match = re.fullmatch(
+            (
+                r"\[?\s*SOURCE\s*:\s*"
+                r"([^\]]+?)\s*\]?"
+            ),
+            candidate,
+            flags=re.IGNORECASE,
+        )
+
+        if match is not None:
+
+            normalized = (
+                match.group(1)
+                .strip()
+            )
+
+            if normalized in (
+                allowed_sources
+            ):
+                return normalized
+
+        raise RAGCitationError(
+            "Model cited source that "
+            "was not retrieved: "
+            f"{source!r}"
+        )
+
     @classmethod
     def _parse_answer(
         cls,
@@ -375,7 +631,7 @@ class BasicGroundedRAG:
             data,
             dict,
         ):
-            raise ValueError(
+            raise RAGSchemaError(
                 "Model output must be "
                 "a JSON object."
             )
@@ -387,7 +643,7 @@ class BasicGroundedRAG:
         }
 
         if set(data) != expected_keys:
-            raise ValueError(
+            raise RAGSchemaError(
                 "Model output must contain "
                 "exactly the keys: "
                 "status, claims, limitation."
@@ -400,7 +656,7 @@ class BasicGroundedRAG:
         if status not in (
             cls.VALID_STATUSES
         ):
-            raise ValueError(
+            raise RAGSchemaError(
                 "Invalid answer status: "
                 f"{status!r}"
             )
@@ -413,7 +669,7 @@ class BasicGroundedRAG:
             raw_claims,
             list,
         ):
-            raise ValueError(
+            raise RAGSchemaError(
                 "claims must be a list."
             )
 
@@ -425,9 +681,12 @@ class BasicGroundedRAG:
                 raw_claim,
                 dict,
             ):
-                raise ValueError(
+                raise RAGSchemaError(
                     "Each claim must be "
-                    "a JSON object."
+                    "a JSON object. "
+                    "Received "
+                    f"{type(raw_claim).__name__}: "
+                    f"{raw_claim!r}"
                 )
 
             if set(
@@ -436,7 +695,7 @@ class BasicGroundedRAG:
                 "text",
                 "sources",
             }:
-                raise ValueError(
+                raise RAGSchemaError(
                     "Each claim must contain "
                     "exactly text and sources."
                 )
@@ -456,7 +715,7 @@ class BasicGroundedRAG:
                 )
                 or not text.strip()
             ):
-                raise ValueError(
+                raise RAGSchemaError(
                     "Claim text must be "
                     "a non-empty string."
                 )
@@ -468,7 +727,7 @@ class BasicGroundedRAG:
                 )
                 or not sources
             ):
-                raise ValueError(
+                raise RAGSchemaError(
                     "Every claim must cite "
                     "at least one source."
                 )
@@ -478,30 +737,35 @@ class BasicGroundedRAG:
                     source,
                     str,
                 )
-                and source
+                and source.strip()
                 for source
                 in sources
             ):
-                raise ValueError(
+                raise RAGSchemaError(
                     "Claim sources must be "
                     "non-empty strings."
                 )
 
-            unknown_sources = (
-                set(sources)
-                - allowed_sources
-            )
+            normalized_sources = []
 
-            if unknown_sources:
-                raise ValueError(
-                    "Model cited source(s) "
-                    "that were not retrieved: "
-                    f"{sorted(unknown_sources)}"
+            for source in sources:
+
+                normalized_source = (
+                    cls._normalize_source_id(
+                        source=source,
+                        allowed_sources=(
+                            allowed_sources
+                        ),
+                    )
+                )
+
+                normalized_sources.append(
+                    normalized_source
                 )
 
             unique_sources = tuple(
                 dict.fromkeys(
-                    sources
+                    normalized_sources
                 )
             )
 
@@ -525,7 +789,7 @@ class BasicGroundedRAG:
                 str,
             )
         ):
-            raise ValueError(
+            raise RAGSchemaError(
                 "limitation must be "
                 "a string or null."
             )
@@ -534,6 +798,7 @@ class BasicGroundedRAG:
             limitation,
             str,
         ):
+
             limitation = (
                 limitation.strip()
             )
@@ -567,14 +832,14 @@ class BasicGroundedRAG:
         if status == "answered":
 
             if not claims:
-                raise ValueError(
+                raise RAGSchemaError(
                     "An answered response "
                     "must contain at least "
                     "one claim."
                 )
 
             if limitation is not None:
-                raise ValueError(
+                raise RAGSchemaError(
                     "An answered response "
                     "must not contain a "
                     "limitation."
@@ -585,14 +850,14 @@ class BasicGroundedRAG:
         if status == "partial":
 
             if not claims:
-                raise ValueError(
+                raise RAGSchemaError(
                     "A partial response must "
                     "contain at least one "
                     "supported claim."
                 )
 
             if limitation is None:
-                raise ValueError(
+                raise RAGSchemaError(
                     "A partial response must "
                     "explain the missing "
                     "evidence."
@@ -603,13 +868,13 @@ class BasicGroundedRAG:
         if status == "abstained":
 
             if claims:
-                raise ValueError(
+                raise RAGSchemaError(
                     "An abstained response "
                     "must not contain claims."
                 )
 
             if limitation is None:
-                raise ValueError(
+                raise RAGSchemaError(
                     "An abstained response "
                     "must explain why the "
                     "evidence is insufficient."
@@ -617,8 +882,8 @@ class BasicGroundedRAG:
 
             return
 
-        raise ValueError(
-            f"Unsupported status: "
+        raise RAGSchemaError(
+            "Unsupported status: "
             f"{status}"
         )
 
@@ -632,7 +897,7 @@ class BasicGroundedRAG:
         )
 
         if not cleaned:
-            raise ValueError(
+            raise RAGSchemaError(
                 "Model returned "
                 "an empty response."
             )
@@ -640,6 +905,7 @@ class BasicGroundedRAG:
         if cleaned.startswith(
             "```"
         ):
+
             cleaned = re.sub(
                 r"^```(?:json)?\s*",
                 "",
@@ -658,7 +924,7 @@ class BasicGroundedRAG:
         )
 
         if start == -1:
-            raise ValueError(
+            raise RAGSchemaError(
                 "Model response does "
                 "not contain JSON."
             )
@@ -668,6 +934,7 @@ class BasicGroundedRAG:
         )
 
         try:
+
             data, _ = (
                 decoder.raw_decode(
                     cleaned[
@@ -677,7 +944,8 @@ class BasicGroundedRAG:
             )
 
         except json.JSONDecodeError as exc:
-            raise ValueError(
+
+            raise RAGSchemaError(
                 "Invalid JSON returned "
                 "by model."
             ) from exc
