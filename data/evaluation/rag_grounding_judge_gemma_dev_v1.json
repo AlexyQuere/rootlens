@@ -1,0 +1,2633 @@
+{
+  "metadata": {
+    "version": "v1",
+    "judge_prompt_version": "v1",
+    "input_file": "rag_grounding_dev_v1.json",
+    "input_sha256": "06d1b430e823e6b5263e9539240d33314332f9f6b111ba20e5bf59ad9b3a6f98",
+    "judge_model": "gemma-4-31b",
+    "judge_base_url": "https://llm.aristote.education/v1",
+    "generator_model": "qwen-3.6-35b-instruct",
+    "same_model_as_generator": false,
+    "qrels_visible_to_judge": false,
+    "evaluation_level": "claim",
+    "labels": [
+      "full",
+      "partial",
+      "none"
+    ]
+  },
+  "items": [
+    {
+      "annotation_id": "dev-001:claim-01",
+      "query_id": "dev-001",
+      "claim_index": 1,
+      "category": "exact_identifier",
+      "query": "Which service owns the oteldemo.PaymentService/Charge operation?",
+      "claim": "The oteldemo.PaymentService/Charge operation is owned by the Payment Service.",
+      "cited_sources": [
+        "payment-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that 'PaymentService is responsible for charging a customer' and that the main RPC used for this is 'oteldemo.PaymentService/Charge'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5531.530874897726,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-service.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that 'PaymentService is responsible for charging a customer' and that the main RPC used for this is 'oteldemo.PaymentService/Charge'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-002:claim-01",
+      "query_id": "dev-002",
+      "claim_index": 1,
+      "category": "exact_identifier",
+      "query": "What should I inspect when rpc.response.status_code is UNAVAILABLE on a client span?",
+      "claim": "When rpc.response.status_code is UNAVAILABLE, you should inspect whether a corresponding server span exists for the client span.",
+      "cited_sources": [
+        "grpc-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "grpc-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence states that when a client span fails, one should check whether a corresponding server span exists. Since 'UNAVAILABLE' is listed as a gRPC status code describing the outcome observed by an RPC caller (a failure), the instruction to check for a corresponding server span applies."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 8081.281000049785,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"grpc-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence states that when a client span fails, one should check whether a corresponding server span exists. Since 'UNAVAILABLE' is listed as a gRPC status code describing the outcome observed by an RPC caller (a failure), the instruction to check for a corresponding server span applies.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-002:claim-02",
+      "query_id": "dev-002",
+      "claim_index": 2,
+      "category": "exact_identifier",
+      "query": "What should I inspect when rpc.response.status_code is UNAVAILABLE on a client span?",
+      "claim": "You should inspect the RPC service and method, span status, status description, client/server span relationship, and trace ID.",
+      "cited_sources": [
+        "grpc-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "grpc-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'RPC service and method', 'span status', 'status description', 'client/server span relationship', and 'trace ID' as useful span fields to check when a client span fails. Since the claim asks what to inspect when a specific failure status code (UNAVAILABLE) occurs on a client span, these listed fields are directly supported."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5054.185625049286,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"grpc-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'RPC service and method', 'span status', 'status description', 'client/server span relationship', and 'trace ID' as useful span fields to check when a client span fails. Since the claim asks what to inspect when a specific failure status code (UNAVAILABLE) occurs on a client span, these listed fields are directly supported.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-002:claim-03",
+      "query_id": "dev-002",
+      "claim_index": 3,
+      "category": "exact_identifier",
+      "query": "What should I inspect when rpc.response.status_code is UNAVAILABLE on a client span?",
+      "claim": "If no server span exists, you should investigate service name and endpoint configuration, name resolution, service discovery, and network connectivity.",
+      "cited_sources": [
+        "payment-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that when a client span exists but a server span is missing, one should investigate service name and endpoint configuration, name resolution, service discovery, and network connectivity. It further notes that the 'UNAVAILABLE' status is especially relevant to this specific scenario."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5380.24808303453,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that when a client span exists but a server span is missing, one should investigate service name and endpoint configuration, name resolution, service discovery, and network connectivity. It further notes that the 'UNAVAILABLE' status is especially relevant to this specific scenario.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-002:claim-04",
+      "query_id": "dev-002",
+      "claim_index": 4,
+      "category": "exact_identifier",
+      "query": "What should I inspect when rpc.response.status_code is UNAVAILABLE on a client span?",
+      "claim": "You should check for causes such as unreachable endpoint, connection failure, name-resolution failure, unavailable service instance, or transient network failure.",
+      "cited_sources": [
+        "grpc-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "grpc-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'unreachable endpoint', 'connection failure', 'name-resolution failure', 'unavailable service instance', and 'transient network failure' as possible causes for the `UNAVAILABLE` status code."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4810.4020829778165,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"grpc-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'unreachable endpoint', 'connection failure', 'name-resolution failure', 'unavailable service instance', and 'transient network failure' as possible causes for the `UNAVAILABLE` status code.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-002:claim-05",
+      "query_id": "dev-002",
+      "claim_index": 5,
+      "category": "exact_identifier",
+      "query": "What should I inspect when rpc.response.status_code is UNAVAILABLE on a client span?",
+      "claim": "You should not diagnose the root cause from the status code alone, as the same code can result from several mechanisms.",
+      "cited_sources": [
+        "grpc-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "grpc-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The cited evidence explicitly states, 'Do not diagnose root cause from the status code alone. The same code can result from several mechanisms.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1775.2192500047386,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"grpc-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The cited evidence explicitly states, 'Do not diagnose root cause from the status code alone. The same code can result from several mechanisms.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-003:claim-01",
+      "query_id": "dev-003",
+      "claim_index": 1,
+      "category": "exact_identifier",
+      "query": "What is the purpose of oteldemo.CheckoutService/PlaceOrder?",
+      "claim": "The purpose of oteldemo.CheckoutService/PlaceOrder is to coordinate the order-placement workflow.",
+      "cited_sources": [
+        "checkout-architecture.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-architecture.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that 'The Checkout service coordinates the order-placement workflow' and that its 'main operation is oteldemo.CheckoutService/PlaceOrder'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3435.2620830759406,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-architecture.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that 'The Checkout service coordinates the order-placement workflow' and that its 'main operation is oteldemo.CheckoutService/PlaceOrder'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-003:claim-02",
+      "query_id": "dev-003",
+      "claim_index": 2,
+      "category": "exact_identifier",
+      "query": "What is the purpose of oteldemo.CheckoutService/PlaceOrder?",
+      "claim": "PlaceOrder orchestrates a sequence of steps including retrieving the customer's cart, resolving product information, converting prices when needed, obtaining a shipping quote, charging the customer, and creating the final order response.",
+      "cited_sources": [
+        "checkout-architecture.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-architecture.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that the main operation of the Checkout service is `oteldemo.CheckoutService/PlaceOrder` and describes a typical request as retrieving the customer's cart, resolving product information, converting prices, obtaining a shipping quote, charging the customer, and creating the final order response, characterizing it as an orchestration service."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 562.1203749906272,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-architecture.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that the main operation of the Checkout service is `oteldemo.CheckoutService/PlaceOrder` and describes a typical request as retrieving the customer's cart, resolving product information, converting prices, obtaining a shipping quote, charging the customer, and creating the final order response, characterizing it as an orchestration service.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-003:claim-03",
+      "query_id": "dev-003",
+      "claim_index": 3,
+      "category": "exact_identifier",
+      "query": "What is the purpose of oteldemo.CheckoutService/PlaceOrder?",
+      "claim": "PlaceOrder acts as an orchestration service that depends on downstream services such as the Cart service, Product Catalog, Currency service, Shipping service, and Payment service.",
+      "cited_sources": [
+        "checkout-architecture.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-architecture.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that Checkout is an 'orchestration service' and that its main operation is `oteldemo.CheckoutService/PlaceOrder`. It further lists the Cart service, Product Catalog, Currency service, Shipping service, and Payment service as the 'most important downstream calls'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4582.211875007488,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-architecture.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that Checkout is an 'orchestration service' and that its main operation is `oteldemo.CheckoutService/PlaceOrder`. It further lists the Cart service, Product Catalog, Currency service, Shipping service, and Payment service as the 'most important downstream calls'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-004:claim-01",
+      "query_id": "dev-004",
+      "claim_index": 1,
+      "category": "exact_identifier",
+      "query": "How are TraceId and SpanId different?",
+      "claim": "TraceId identifies the complete distributed request or groups the entire distributed request.",
+      "cited_sources": [
+        "distributed-tracing-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "distributed-tracing-guide.md",
+          "telemetry-correlation.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim states that TraceId identifies the complete distributed request or groups the entire distributed request. This is explicitly supported by distributed-tracing-guide.md ('TraceId: identifies the complete distributed request') and telemetry-correlation.md ('A trace ID groups the entire distributed request')."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1572.8592079831287,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"distributed-tracing-guide.md\",\n    \"telemetry-correlation.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim states that TraceId identifies the complete distributed request or groups the entire distributed request. This is explicitly supported by distributed-tracing-guide.md ('TraceId: identifies the complete distributed request') and telemetry-correlation.md ('A trace ID groups the entire distributed request').\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-004:claim-02",
+      "query_id": "dev-004",
+      "claim_index": 2,
+      "category": "exact_identifier",
+      "query": "How are TraceId and SpanId different?",
+      "claim": "SpanId identifies one specific operation inside a trace.",
+      "cited_sources": [
+        "distributed-tracing-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "distributed-tracing-guide.md",
+          "telemetry-correlation.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "Both sources explicitly state that the SpanId identifies one operation inside/within a trace."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3695.2893330017105,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"distributed-tracing-guide.md\",\n    \"telemetry-correlation.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"Both sources explicitly state that the SpanId identifies one operation inside/within a trace.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-004:claim-03",
+      "query_id": "dev-004",
+      "claim_index": 3,
+      "category": "exact_identifier",
+      "query": "How are TraceId and SpanId different?",
+      "claim": "Trace IDs are typically longer than span IDs.",
+      "cited_sources": [
+        "distributed-tracing-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "distributed-tracing-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly states: 'Trace IDs are typically longer than span IDs'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 405.8941249968484,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"distributed-tracing-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly states: 'Trace IDs are typically longer than span IDs'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-005:claim-01",
+      "query_id": "dev-005",
+      "claim_index": 1,
+      "category": "semantic_paraphrase",
+      "query": "How does an application find the network destination of another backend service?",
+      "claim": "An application finds the network destination of another backend service through a mechanism called service discovery.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that distributed applications need a mechanism for locating service instances and defines 'service discovery' as the broader process of finding a reachable service instance, which involves resolving a logical service name into usable network addresses."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4093.56754203327,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that distributed applications need a mechanism for locating service instances and defines 'service discovery' as the broader process of finding a reachable service instance, which involves resolving a logical service name into usable network addresses.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-005:claim-02",
+      "query_id": "dev-005",
+      "claim_index": 2,
+      "category": "semantic_paraphrase",
+      "query": "How does an application find the network destination of another backend service?",
+      "claim": "The process begins with a client using a logical service name or a configured endpoint.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that 'A client often begins with a logical service name or configured endpoint' as part of the process of locating service instances."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 510.18241699784994,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that 'A client often begins with a logical service name or configured endpoint' as part of the process of locating service instances.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-005:claim-03",
+      "query_id": "dev-005",
+      "claim_index": 3,
+      "category": "semantic_paraphrase",
+      "query": "How does an application find the network destination of another backend service?",
+      "claim": "The client resolves this logical name or endpoint into one or more usable network addresses.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states: 'A client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 6339.790541911498,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states: 'A client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-005:claim-04",
+      "query_id": "dev-005",
+      "claim_index": 4,
+      "category": "semantic_paraphrase",
+      "query": "How does an application find the network destination of another backend service?",
+      "claim": "The resulting addresses are then used by the client to establish a connection to the downstream service.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct paraphrase of the sentence in the evidence: 'The resulting addresses are then used to establish a connection to the downstream service.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4200.008333893493,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct paraphrase of the sentence in the evidence: 'The resulting addresses are then used to establish a connection to the downstream service.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-005:claim-05",
+      "query_id": "dev-005",
+      "claim_index": 5,
+      "category": "semantic_paraphrase",
+      "query": "How does an application find the network destination of another backend service?",
+      "claim": "Service discovery is a broader process than DNS, though DNS can be one mechanism used during the resolution.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly states that 'Service discovery is related to, but distinct from, DNS' and that 'DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 515.8131249481812,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly states that 'Service discovery is related to, but distinct from, DNS' and that 'DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-006:claim-01",
+      "query_id": "dev-006",
+      "claim_index": 1,
+      "category": "semantic_paraphrase",
+      "query": "How can I tie messages emitted by several services to the same user transaction?",
+      "claim": "To tie messages from several services to the same user transaction, you must use the trace ID, which groups the entire distributed request across service boundaries.",
+      "cited_sources": [
+        "structured-logging-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "telemetry-correlation.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that a 'trace ID groups the entire distributed request' and describes a workflow where the 'trace ID' is used to 'find logs emitted by services on that request path'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3888.5461250320077,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"telemetry-correlation.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that a 'trace ID groups the entire distributed request' and describes a workflow where the 'trace ID' is used to 'find logs emitted by services on that request path'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-006:claim-02",
+      "query_id": "dev-006",
+      "claim_index": 2,
+      "category": "semantic_paraphrase",
+      "query": "How can I tie messages emitted by several services to the same user transaction?",
+      "claim": "Services must emit the trace ID in their structured logs so that logs can be correlated with the distributed trace of the request.",
+      "cited_sources": [
+        "structured-logging-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "structured-logging-guide.md",
+          "telemetry-correlation.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that trace identifiers allow logs to be correlated with a distributed trace when emitted by the application (structured-logging-guide.md) and describes a workflow where the trace ID is used to find logs emitted by services on a request path (telemetry-correlation.md)."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1325.5427080439404,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"structured-logging-guide.md\",\n    \"telemetry-correlation.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that trace identifiers allow logs to be correlated with a distributed trace when emitted by the application (structured-logging-guide.md) and describes a workflow where the trace ID is used to find logs emitted by services on a request path (telemetry-correlation.md).\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-006:claim-03",
+      "query_id": "dev-006",
+      "claim_index": 3,
+      "category": "semantic_paraphrase",
+      "query": "How can I tie messages emitted by several services to the same user transaction?",
+      "claim": "You can use the trace ID to find logs emitted by all services on the specific request path associated with that transaction.",
+      "cited_sources": [
+        "telemetry-correlation.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "telemetry-correlation.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states in the correlation workflow (step 3) to 'Use the trace ID to find logs emitted by services on that request path' and further clarifies that 'A trace ID groups the entire distributed request'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1225.9399170288816,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"telemetry-correlation.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states in the correlation workflow (step 3) to 'Use the trace ID to find logs emitted by services on that request path' and further clarifies that 'A trace ID groups the entire distributed request'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-007:claim-01",
+      "query_id": "dev-007",
+      "claim_index": 1,
+      "category": "semantic_paraphrase",
+      "query": "What can make an RPC fail before the remote application ever sees the request?",
+      "claim": "An RPC can fail before the remote application sees the request if there is a service discovery failure, such as an invalid service name, incorrect endpoint configuration, failed DNS or name resolution, no available service instances, or stale/incomplete discovery data.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that a discovery failure can prevent an RPC from reaching the downstream application and lists the exact causes mentioned in the claim: invalid service name, incorrect endpoint configuration, failed DNS or name resolution, no available service instances, and stale or incomplete discovery data."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3918.7207089271396,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that a discovery failure can prevent an RPC from reaching the downstream application and lists the exact causes mentioned in the claim: invalid service name, incorrect endpoint configuration, failed DNS or name resolution, no available service instances, and stale or incomplete discovery data.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-007:claim-02",
+      "query_id": "dev-007",
+      "claim_index": 2,
+      "category": "semantic_paraphrase",
+      "query": "What can make an RPC fail before the remote application ever sees the request?",
+      "claim": "An RPC can fail before the remote application sees the request due to transport or connectivity level issues, including unreachable endpoints, connection failures, name-resolution failures, unavailable service instances, or transient network failures.",
+      "cited_sources": [
+        "grpc-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "grpc-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence states that if no server span exists, the failure may have occurred before the downstream application processed the request. It further specifies that the `UNAVAILABLE` status code indicates issues at the 'transport or connectivity level' and lists the exact causes mentioned in the claim: unreachable endpoint, connection failure, name-resolution failure, unavailable service instance, and transient network failure."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5598.002541926689,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"grpc-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence states that if no server span exists, the failure may have occurred before the downstream application processed the request. It further specifies that the `UNAVAILABLE` status code indicates issues at the 'transport or connectivity level' and lists the exact causes mentioned in the claim: unreachable endpoint, connection failure, name-resolution failure, unavailable service instance, and transient network failure.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-007:claim-03",
+      "query_id": "dev-007",
+      "claim_index": 3,
+      "category": "semantic_paraphrase",
+      "query": "What can make an RPC fail before the remote application ever sees the request?",
+      "claim": "A failure occurring before the downstream application processes the request is indicated by a failing client span with no corresponding server span in the traces.",
+      "cited_sources": [
+        "grpc-troubleshooting.md",
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "partial",
+        "supporting_sources": [
+          "grpc-troubleshooting.md",
+          "service-discovery.md"
+        ],
+        "unsupported_part": "is indicated by",
+        "rationale": "The evidence states that if no server span exists, the failure 'may have occurred' (grpc-troubleshooting.md) or 'may appear as' (service-discovery.md) a failure before the downstream application. The claim upgrades this possibility to a definitive indication ('is indicated by'), which is a stronger logical assertion than the provided text."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 753.201249986887,
+      "raw_model_output": "```json\n{\n  \"label\": \"partial\",\n  \"supporting_sources\": [\n    \"grpc-troubleshooting.md\",\n    \"service-discovery.md\"\n  ],\n  \"unsupported_part\": \"is indicated by\",\n  \"rationale\": \"The evidence states that if no server span exists, the failure 'may have occurred' (grpc-troubleshooting.md) or 'may appear as' (service-discovery.md) a failure before the downstream application. The claim upgrades this possibility to a definitive indication ('is indicated by'), which is a stronger logical assertion than the provided text.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-008:claim-01",
+      "query_id": "dev-008",
+      "claim_index": 1,
+      "category": "semantic_paraphrase",
+      "query": "Why is a browser HTTP 500 not enough to identify which backend component is faulty?",
+      "claim": "An HTTP 500 error only establishes that the user request failed, but it does not identify the backend root cause.",
+      "cited_sources": [
+        "frontend-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "frontend-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct quote from the provided evidence: 'A browser-visible HTTP 500 establishes that the user request failed, but it does not identify the backend root cause.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3348.905915976502,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"frontend-service.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct quote from the provided evidence: 'A browser-visible HTTP 500 establishes that the user request failed, but it does not identify the backend root cause.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-008:claim-02",
+      "query_id": "dev-008",
+      "claim_index": 2,
+      "category": "semantic_paraphrase",
+      "query": "Why is a browser HTTP 500 not enough to identify which backend component is faulty?",
+      "claim": "A frontend HTTP 500 can be a symptom of a deeper backend failure, such as a Checkout RPC returning an error to the Frontend after a dependency failure.",
+      "cited_sources": [
+        "frontend-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "frontend-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that 'A Frontend error can be a symptom of a deeper backend failure' and provides the exact example of a 'Checkout RPC may return an error to Frontend after a dependency failure'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1566.7767499107867,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"frontend-service.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that 'A Frontend error can be a symptom of a deeper backend failure' and provides the exact example of a 'Checkout RPC may return an error to Frontend after a dependency failure'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-008:claim-03",
+      "query_id": "dev-008",
+      "claim_index": 3,
+      "category": "semantic_paraphrase",
+      "query": "Why is a browser HTTP 500 not enough to identify which backend component is faulty?",
+      "claim": "A frontend HTTP 500 may be a propagated symptom rather than the original failure, meaning the error originated in a downstream service like Payment.",
+      "cited_sources": [
+        "payment-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that 'A frontend HTTP 500 or Checkout INTERNAL status may be a propagated symptom rather than the original payment failure,' which directly supports the claim."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3944.659708067775,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that 'A frontend HTTP 500 or Checkout INTERNAL status may be a propagated symptom rather than the original payment failure,' which directly supports the claim.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-008:claim-04",
+      "query_id": "dev-008",
+      "claim_index": 4,
+      "category": "semantic_paraphrase",
+      "query": "Why is a browser HTTP 500 not enough to identify which backend component is faulty?",
+      "claim": "The final error reported by a service like Checkout is not necessarily the root cause, as earlier dependencies may have failed.",
+      "cited_sources": [
+        "checkout-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states 'Do not assume the final Checkout error is the root cause' and instructs the user to identify the 'first failing dependency' and check 'whether earlier dependencies completed successfully', which directly supports the claim that the final error is not necessarily the root cause because earlier dependencies may have failed."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5015.480333007872,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states 'Do not assume the final Checkout error is the root cause' and instructs the user to identify the 'first failing dependency' and check 'whether earlier dependencies completed successfully', which directly supports the claim that the final error is not necessarily the root cause because earlier dependencies may have failed.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-009:claim-01",
+      "query_id": "dev-009",
+      "claim_index": 1,
+      "category": "architecture",
+      "query": "Which downstream dependencies participate in placing an order?",
+      "claim": "The downstream dependencies that participate in placing an order are the Cart service, Product Catalog, Currency service, Shipping service, and Payment service.",
+      "cited_sources": [
+        "checkout-architecture.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-architecture.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists the Cart service, Product Catalog, Currency service, Shipping service, and Payment service as the most important downstream calls for the PlaceOrder operation."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4295.6345829879865,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-architecture.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists the Cart service, Product Catalog, Currency service, Shipping service, and Payment service as the most important downstream calls for the PlaceOrder operation.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-009:claim-02",
+      "query_id": "dev-009",
+      "claim_index": 2,
+      "category": "architecture",
+      "query": "Which downstream dependencies participate in placing an order?",
+      "claim": "The Cart service is used to retrieve the customer's current basket.",
+      "cited_sources": [
+        "checkout-architecture.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-architecture.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that the Checkout service retrieves the customer's cart and lists the 'Cart service for the current basket' as one of the most important downstream calls."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5834.870958002284,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-architecture.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that the Checkout service retrieves the customer's cart and lists the 'Cart service for the current basket' as one of the most important downstream calls.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-009:claim-03",
+      "query_id": "dev-009",
+      "claim_index": 3,
+      "category": "architecture",
+      "query": "Which downstream dependencies participate in placing an order?",
+      "claim": "The Product Catalog is used to resolve product information and metadata.",
+      "cited_sources": [
+        "checkout-architecture.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-architecture.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that the Checkout service 'resolves product information' and lists the 'Product Catalog for product metadata' as one of the most important downstream calls."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 647.6058330154046,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"checkout-architecture.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that the Checkout service 'resolves product information' and lists the 'Product Catalog for product metadata' as one of the most important downstream calls.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-009:claim-04",
+      "query_id": "dev-009",
+      "claim_index": 4,
+      "category": "architecture",
+      "query": "Which downstream dependencies participate in placing an order?",
+      "claim": "The Currency service is used to convert prices when needed.",
+      "cited_sources": [
+        "checkout-architecture.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-architecture.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that the Checkout service 'converts prices when needed' and lists the 'Currency service for price conversion' as one of the most important downstream calls."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1496.5339170303196,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-architecture.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that the Checkout service 'converts prices when needed' and lists the 'Currency service for price conversion' as one of the most important downstream calls.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-009:claim-05",
+      "query_id": "dev-009",
+      "claim_index": 5,
+      "category": "architecture",
+      "query": "Which downstream dependencies participate in placing an order?",
+      "claim": "The Shipping service is used to obtain a shipping quote and delivery cost.",
+      "cited_sources": [
+        "checkout-architecture.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-architecture.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that the Checkout service 'obtains a shipping quote' and lists the 'Shipping service for delivery cost' as one of the most important downstream calls."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1329.536708071828,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"checkout-architecture.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that the Checkout service 'obtains a shipping quote' and lists the 'Shipping service for delivery cost' as one of the most important downstream calls.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-009:claim-06",
+      "query_id": "dev-009",
+      "claim_index": 6,
+      "category": "architecture",
+      "query": "Which downstream dependencies participate in placing an order?",
+      "claim": "The Payment service is used to charge the customer and process the final charge.",
+      "cited_sources": [
+        "checkout-architecture.md",
+        "checkout-payment-flow.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-architecture.md",
+          "checkout-payment-flow.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that the Payment service is used for the 'final charge' (checkout-architecture.md) and that the Checkout service invokes 'oteldemo.PaymentService/Charge' to 'process the charge' (checkout-payment-flow.md)."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 612.4869580380619,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"checkout-architecture.md\",\n    \"checkout-payment-flow.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that the Payment service is used for the 'final charge' (checkout-architecture.md) and that the Checkout service invokes 'oteldemo.PaymentService/Charge' to 'process the charge' (checkout-payment-flow.md).\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-010:claim-01",
+      "query_id": "dev-010",
+      "claim_index": 1,
+      "category": "architecture",
+      "query": "What is the difference between the responsibility of CurrencyService and PaymentService?",
+      "claim": "PaymentService is responsible for charging the customer as part of the checkout process.",
+      "cited_sources": [
+        "payment-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that 'PaymentService is responsible for charging a customer as part of checkout.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2865.3570000315085,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-service.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that 'PaymentService is responsible for charging a customer as part of checkout.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-010:claim-02",
+      "query_id": "dev-010",
+      "claim_index": 2,
+      "category": "architecture",
+      "query": "What is the difference between the responsibility of CurrencyService and PaymentService?",
+      "claim": "CurrencyService is responsible for converting monetary values between currencies used by the storefront and downstream checkout operations.",
+      "cited_sources": [
+        "currency-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "currency-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct verbatim quote from the first sentence of the provided evidence."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3888.1284160306677,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"currency-service.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct verbatim quote from the first sentence of the provided evidence.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-010:claim-03",
+      "query_id": "dev-010",
+      "claim_index": 3,
+      "category": "architecture",
+      "query": "What is the difference between the responsibility of CurrencyService and PaymentService?",
+      "claim": "CurrencyService transforms values, whereas PaymentService performs the charge.",
+      "cited_sources": [
+        "currency-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "currency-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states: 'Currency transforms values; Payment performs the charge.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3587.978750001639,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"currency-service.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states: 'Currency transforms values; Payment performs the charge.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-010:claim-04",
+      "query_id": "dev-010",
+      "claim_index": 4,
+      "category": "architecture",
+      "query": "What is the difference between the responsibility of CurrencyService and PaymentService?",
+      "claim": "Currency issues should be separated from Payment issues because similar monetary vocabulary in logs does not imply the same service responsibility.",
+      "cited_sources": [
+        "currency-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "currency-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct quote from the provided source, which explicitly states that currency issues should be separated from payment issues and that similar monetary vocabulary in logs does not imply the same service responsibility."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5027.052375022322,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"currency-service.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct quote from the provided source, which explicitly states that currency issues should be separated from payment issues and that similar monetary vocabulary in logs does not imply the same service responsibility.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-011:claim-01",
+      "query_id": "dev-011",
+      "claim_index": 1,
+      "category": "architecture",
+      "query": "Which service calculates delivery cost before the customer is charged?",
+      "claim": "The Shipping service calculates delivery quotes (delivery cost) before the customer is charged.",
+      "cited_sources": [
+        "shipping-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "shipping-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that the Shipping service 'calculates delivery quotes' and does so as part of the checkout workflow 'before payment is completed'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3538.091416005045,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"shipping-service.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that the Shipping service 'calculates delivery quotes' and does so as part of the checkout workflow 'before payment is completed'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-011:claim-02",
+      "query_id": "dev-011",
+      "claim_index": 2,
+      "category": "architecture",
+      "query": "Which service calculates delivery cost before the customer is charged?",
+      "claim": "The Shipping service participates in the checkout workflow before payment is completed.",
+      "cited_sources": [
+        "shipping-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "shipping-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that 'The Shipping service calculates delivery quotes and participates in the checkout workflow before payment is completed.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1457.184209022671,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"shipping-service.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that 'The Shipping service calculates delivery quotes and participates in the checkout workflow before payment is completed.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-012:claim-01",
+      "query_id": "dev-012",
+      "claim_index": 1,
+      "category": "architecture",
+      "query": "What is the expected successful sequence from the frontend to payment during checkout?",
+      "claim": "The expected successful sequence from the frontend to payment during checkout is: Frontend → Checkout → Cart → Product Catalog → Currency → Shipping → Payment → Checkout response → Frontend response.",
+      "cited_sources": [
+        "checkout-payment-flow.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-payment-flow.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The cited evidence explicitly lists the simplified successful order flow as: Frontend → Checkout → Cart → Product Catalog → Currency → Shipping → Payment → Checkout response → Frontend response, which matches the claim exactly."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1326.449541025795,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-payment-flow.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The cited evidence explicitly lists the simplified successful order flow as: Frontend → Checkout → Cart → Product Catalog → Currency → Shipping → Payment → Checkout response → Frontend response, which matches the claim exactly.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-012:claim-02",
+      "query_id": "dev-012",
+      "claim_index": 2,
+      "category": "architecture",
+      "query": "What is the expected successful sequence from the frontend to payment during checkout?",
+      "claim": "The Frontend service exposes the user-facing application and translates browser interactions into backend requests, invoking the Checkout service during checkout.",
+      "cited_sources": [
+        "frontend-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "frontend-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that the Frontend service exposes the user-facing application, translates browser interactions into backend requests, and invokes backend services including Checkout during checkout."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 897.9497090913355,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"frontend-service.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that the Frontend service exposes the user-facing application, translates browser interactions into backend requests, and invokes backend services including Checkout during checkout.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-012:claim-03",
+      "query_id": "dev-012",
+      "claim_index": 3,
+      "category": "architecture",
+      "query": "What is the expected successful sequence from the frontend to payment during checkout?",
+      "claim": "Checkout invokes the PaymentService/Charge RPC after it has enough information to calculate the final amount.",
+      "cited_sources": [
+        "checkout-payment-flow.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-payment-flow.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states: 'Checkout invokes `oteldemo.PaymentService/Charge` after it has enough information to calculate the final amount.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4519.842499983497,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-payment-flow.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states: 'Checkout invokes `oteldemo.PaymentService/Charge` after it has enough information to calculate the final amount.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-012:claim-04",
+      "query_id": "dev-012",
+      "claim_index": 4,
+      "category": "architecture",
+      "query": "What is the expected successful sequence from the frontend to payment during checkout?",
+      "claim": "On a successful request, the sequence involves: Checkout receives the order request, earlier dependencies complete successfully, Checkout calls PaymentService, PaymentService processes the charge, and Checkout completes the order and returns success.",
+      "cited_sources": [
+        "checkout-payment-flow.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-payment-flow.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a verbatim reproduction of the numbered list describing the successful request sequence in the provided source."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 528.811417054385,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-payment-flow.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a verbatim reproduction of the numbered list describing the successful request sequence in the provided source.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-013:claim-01",
+      "query_id": "dev-013",
+      "claim_index": 1,
+      "category": "troubleshooting",
+      "query": "A client span returns UNAVAILABLE and there is no downstream server span. What should I investigate?",
+      "claim": "A client span returning UNAVAILABLE with no downstream server span suggests the failure occurred before the request reached the PaymentService.",
+      "cited_sources": [
+        "payment-runbook.md",
+        "grpc-troubleshooting.md",
+        "distributed-tracing-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The payment-runbook.md explicitly states that the pattern 'Client span exists, server span missing' suggests 'failure before PaymentService handled the request' and specifically mentions that 'UNAVAILABLE' is especially relevant to this branch."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3913.819000008516,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The payment-runbook.md explicitly states that the pattern 'Client span exists, server span missing' suggests 'failure before PaymentService handled the request' and specifically mentions that 'UNAVAILABLE' is especially relevant to this branch.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-013:claim-02",
+      "query_id": "dev-013",
+      "claim_index": 2,
+      "category": "troubleshooting",
+      "query": "A client span returns UNAVAILABLE and there is no downstream server span. What should I investigate?",
+      "claim": "Investigation should focus on service name and endpoint configuration.",
+      "cited_sources": [
+        "payment-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that when a client span exists but a server span is missing (which matches the scenario of a client span returning UNAVAILABLE with no downstream server span), one should investigate 'service name and endpoint configuration'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1920.6269159913063,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that when a client span exists but a server span is missing (which matches the scenario of a client span returning UNAVAILABLE with no downstream server span), one should investigate 'service name and endpoint configuration'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-013:claim-03",
+      "query_id": "dev-013",
+      "claim_index": 3,
+      "category": "troubleshooting",
+      "query": "A client span returns UNAVAILABLE and there is no downstream server span. What should I investigate?",
+      "claim": "Investigation should check for name resolution failures.",
+      "cited_sources": [
+        "payment-runbook.md",
+        "grpc-troubleshooting.md",
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md",
+          "grpc-troubleshooting.md",
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence collectively supports the claim. payment-runbook.md explicitly states that when a client span exists but a server span is missing, one should investigate 'name resolution'. grpc-troubleshooting.md notes that 'UNAVAILABLE' status codes can be caused by 'name-resolution failure'. service-discovery.md confirms that 'failed DNS or name resolution' can result in a failing client span with no corresponding server span."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 6297.6360419997945,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"payment-runbook.md\",\n    \"grpc-troubleshooting.md\",\n    \"service-discovery.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence collectively supports the claim. payment-runbook.md explicitly states that when a client span exists but a server span is missing, one should investigate 'name resolution'. grpc-troubleshooting.md notes that 'UNAVAILABLE' status codes can be caused by 'name-resolution failure'. service-discovery.md confirms that 'failed DNS or name resolution' can result in a failing client span with no corresponding server span.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-013:claim-04",
+      "query_id": "dev-013",
+      "claim_index": 4,
+      "category": "troubleshooting",
+      "query": "A client span returns UNAVAILABLE and there is no downstream server span. What should I investigate?",
+      "claim": "Investigation should verify service discovery mechanisms and data.",
+      "cited_sources": [
+        "payment-runbook.md",
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md",
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The payment-runbook.md explicitly states that when a client span exists but a server span is missing (and UNAVAILABLE is returned), one should investigate 'service discovery'. The service-discovery.md further explains that service discovery failures can be caused by 'incorrect endpoint configuration' or 'stale or incomplete discovery data', supporting the need to verify both the mechanisms and the data."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 8202.564416103996,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"payment-runbook.md\",\n    \"service-discovery.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The payment-runbook.md explicitly states that when a client span exists but a server span is missing (and UNAVAILABLE is returned), one should investigate 'service discovery'. The service-discovery.md further explains that service discovery failures can be caused by 'incorrect endpoint configuration' or 'stale or incomplete discovery data', supporting the need to verify both the mechanisms and the data.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-013:claim-05",
+      "query_id": "dev-013",
+      "claim_index": 5,
+      "category": "troubleshooting",
+      "query": "A client span returns UNAVAILABLE and there is no downstream server span. What should I investigate?",
+      "claim": "Investigation should assess network connectivity.",
+      "cited_sources": [
+        "payment-runbook.md",
+        "grpc-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The payment-runbook.md explicitly states that when a 'Client span exists, server span missing' (which matches the scenario of a client span returning UNAVAILABLE with no downstream server span), one should investigate 'network connectivity'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 595.714999944903,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"payment-runbook.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The payment-runbook.md explicitly states that when a 'Client span exists, server span missing' (which matches the scenario of a client span returning UNAVAILABLE with no downstream server span), one should investigate 'network connectivity'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-013:claim-06",
+      "query_id": "dev-013",
+      "claim_index": 6,
+      "category": "troubleshooting",
+      "query": "A client span returns UNAVAILABLE and there is no downstream server span. What should I investigate?",
+      "claim": "Investigation should review gRPC status and status description for resolver-oriented diagnostics.",
+      "cited_sources": [
+        "payment-runbook.md",
+        "grpc-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The payment-runbook.md explicitly states that when a client span exists but a server span is missing, one should investigate 'gRPC status and status description' and notes that 'UNAVAILABLE with resolver-oriented diagnostics is especially relevant to this branch'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4109.620000002906,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The payment-runbook.md explicitly states that when a client span exists but a server span is missing, one should investigate 'gRPC status and status description' and notes that 'UNAVAILABLE with resolver-oriented diagnostics is especially relevant to this branch'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-013:claim-07",
+      "query_id": "dev-013",
+      "claim_index": 7,
+      "category": "troubleshooting",
+      "query": "A client span returns UNAVAILABLE and there is no downstream server span. What should I investigate?",
+      "claim": "Potential causes for UNAVAILABLE in this context include unreachable endpoints, connection failures, name-resolution failures, unavailable service instances, or transient network failures.",
+      "cited_sources": [
+        "grpc-troubleshooting.md",
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "grpc-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim lists five potential causes for the UNAVAILABLE status code (unreachable endpoints, connection failures, name-resolution failures, unavailable service instances, and transient network failures), all of which are explicitly listed as possible causes for `UNAVAILABLE` in source grpc-troubleshooting.md."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 722.5336250849068,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"grpc-troubleshooting.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim lists five potential causes for the UNAVAILABLE status code (unreachable endpoints, connection failures, name-resolution failures, unavailable service instances, and transient network failures), all of which are explicitly listed as possible causes for `UNAVAILABLE` in source grpc-troubleshooting.md.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-014:claim-01",
+      "query_id": "dev-014",
+      "claim_index": 1,
+      "category": "troubleshooting",
+      "query": "What does DEADLINE_EXCEEDED tell me, and what does it not tell me about root cause?",
+      "claim": "DEADLINE_EXCEEDED indicates that a request exceeded its configured deadline or that the operation did not complete before the caller's deadline.",
+      "cited_sources": [
+        "timeout-and-retry-guidance.md",
+        "grpc-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "timeout-and-retry-guidance.md",
+          "grpc-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is fully supported. 'timeout-and-retry-guidance.md' states that a request that exceeds its configured deadline may surface as DEADLINE_EXCEEDED, and 'grpc-troubleshooting.md' explicitly states that DEADLINE_EXCEEDED means the operation did not complete before the caller's deadline."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5402.948833070695,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"timeout-and-retry-guidance.md\",\n    \"grpc-troubleshooting.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is fully supported. 'timeout-and-retry-guidance.md' states that a request that exceeds its configured deadline may surface as DEADLINE_EXCEEDED, and 'grpc-troubleshooting.md' explicitly states that DEADLINE_EXCEEDED means the operation did not complete before the caller's deadline.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-014:claim-02",
+      "query_id": "dev-014",
+      "claim_index": 2,
+      "category": "troubleshooting",
+      "query": "What does DEADLINE_EXCEEDED tell me, and what does it not tell me about root cause?",
+      "claim": "DEADLINE_EXCEEDED does not automatically imply a network failure.",
+      "cited_sources": [
+        "timeout-and-retry-guidance.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "timeout-and-retry-guidance.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly states: 'A DEADLINE_EXCEEDED error does not automatically imply a network failure.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4037.5470420112833,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"timeout-and-retry-guidance.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly states: 'A DEADLINE_EXCEEDED error does not automatically imply a network failure.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-014:claim-03",
+      "query_id": "dev-014",
+      "claim_index": 3,
+      "category": "troubleshooting",
+      "query": "What does DEADLINE_EXCEEDED tell me, and what does it not tell me about root cause?",
+      "claim": "DEADLINE_EXCEEDED does not identify the underlying cause or why the deadline was exceeded; traces and metrics are required to determine the reason.",
+      "cited_sources": [
+        "timeout-and-retry-guidance.md",
+        "latency-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "timeout-and-retry-guidance.md",
+          "latency-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "Both sources explicitly state that DEADLINE_EXCEEDED indicates the deadline expired but does not identify why or the underlying cause. timeout-and-retry-guidance.md specifically states that 'traces and metrics are needed to identify why'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1430.7675840100273,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"timeout-and-retry-guidance.md\",\n    \"latency-troubleshooting.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"Both sources explicitly state that DEADLINE_EXCEEDED indicates the deadline expired but does not identify why or the underlying cause. timeout-and-retry-guidance.md specifically states that 'traces and metrics are needed to identify why'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-014:claim-04",
+      "query_id": "dev-014",
+      "claim_index": 4,
+      "category": "troubleshooting",
+      "query": "What does DEADLINE_EXCEEDED tell me, and what does it not tell me about root cause?",
+      "claim": "The underlying cause for a DEADLINE_EXCEEDED error may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.",
+      "cited_sources": [
+        "grpc-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "grpc-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct quote from the provided evidence, which explicitly lists slow downstream service, network delay, queueing, retries, and unrealistically short timeouts as possible underlying causes for a DEADLINE_EXCEEDED error."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2648.8249170361087,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"grpc-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct quote from the provided evidence, which explicitly lists slow downstream service, network delay, queueing, retries, and unrealistically short timeouts as possible underlying causes for a DEADLINE_EXCEEDED error.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-014:claim-05",
+      "query_id": "dev-014",
+      "claim_index": 5,
+      "category": "troubleshooting",
+      "query": "What does DEADLINE_EXCEEDED tell me, and what does it not tell me about root cause?",
+      "claim": "DEADLINE_EXCEEDED does not identify the specific operation contributing to the critical path or the root cause; investigators must determine where time was actually spent rather than assuming the slowest-looking span is the root cause.",
+      "cited_sources": [
+        "timeout-and-retry-guidance.md",
+        "latency-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "timeout-and-retry-guidance.md",
+          "latency-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that DEADLINE_EXCEEDED indicates the deadline expired but not 'why' (latency-troubleshooting.md) and that investigators should determine where time was spent instead of assuming the slowest-looking span is the root cause (timeout-and-retry-guidance.md). Additionally, latency-troubleshooting.md specifies that conclusions should identify the operation contributing to the critical path, implying that the error itself does not do so."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 7378.63237503916,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"timeout-and-retry-guidance.md\",\n    \"latency-troubleshooting.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that DEADLINE_EXCEEDED indicates the deadline expired but not 'why' (latency-troubleshooting.md) and that investigators should determine where time was spent instead of assuming the slowest-looking span is the root cause (timeout-and-retry-guidance.md). Additionally, latency-troubleshooting.md specifies that conclusions should identify the operation contributing to the critical path, implying that the error itself does not do so.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-015:claim-01",
+      "query_id": "dev-015",
+      "claim_index": 1,
+      "category": "troubleshooting",
+      "query": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+      "claim": "To distinguish between a failure to reach PaymentService and a PaymentService business logic failure, investigators must first determine if the request actually reached the service by inspecting the distributed trace for the presence of a Payment server span.",
+      "cited_sources": [
+        "payment-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states to 'First determine whether the request actually reached PaymentService' and provides two scenarios based on the presence or absence of a server span: if the server span is missing, it suggests failure before the service; if the server span exists, the investigator should inspect the service itself (which would include business logic failures like charge-processing errors)."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 814.468291006051,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states to 'First determine whether the request actually reached PaymentService' and provides two scenarios based on the presence or absence of a server span: if the server span is missing, it suggests failure before the service; if the server span exists, the investigator should inspect the service itself (which would include business logic failures like charge-processing errors).\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-015:claim-02",
+      "query_id": "dev-015",
+      "claim_index": 2,
+      "category": "troubleshooting",
+      "query": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+      "claim": "A failure to reach PaymentService is indicated when a client span exists but no matching Payment server span exists, suggesting the failure occurred before the request arrived at the service.",
+      "cited_sources": [
+        "payment-service.md",
+        "payment-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-service.md",
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is fully supported. payment-service.md states that if a client span reports a connectivity status and 'no matching Payment server span exists, the failure may have happened before the request arrived at PaymentService.' payment-runbook.md explicitly states that the pattern 'Client span exists, server span missing' suggests 'failure before PaymentService handled the request.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1428.9034589892253,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"payment-service.md\",\n    \"payment-runbook.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is fully supported. payment-service.md states that if a client span reports a connectivity status and 'no matching Payment server span exists, the failure may have happened before the request arrived at PaymentService.' payment-runbook.md explicitly states that the pattern 'Client span exists, server span missing' suggests 'failure before PaymentService handled the request.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-015:claim-03",
+      "query_id": "dev-015",
+      "claim_index": 3,
+      "category": "troubleshooting",
+      "query": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+      "claim": "Connectivity-oriented gRPC status codes such as `UNAVAILABLE` in the client span, especially when no server span is present, indicate that the failure likely happened before PaymentService processed the request.",
+      "cited_sources": [
+        "payment-service.md",
+        "payment-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-service.md",
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that if a client span reports a connectivity-oriented status such as 'UNAVAILABLE' and no matching server span exists, the failure 'may have happened before the request arrived at PaymentService' (payment-service.md). Additionally, the runbook confirms that the pattern of a client span existing while the server span is missing 'suggests failure before PaymentService handled the request' and specifically notes that 'UNAVAILABLE' is 'especially relevant to this branch' (payment-runbook.md). The claim's use of 'likely' aligns with the evidence's 'suggests' and 'may have'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 7470.606958959252,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"payment-service.md\",\n    \"payment-runbook.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that if a client span reports a connectivity-oriented status such as 'UNAVAILABLE' and no matching server span exists, the failure 'may have happened before the request arrived at PaymentService' (payment-service.md). Additionally, the runbook confirms that the pattern of a client span existing while the server span is missing 'suggests failure before PaymentService handled the request' and specifically notes that 'UNAVAILABLE' is 'especially relevant to this branch' (payment-runbook.md). The claim's use of 'likely' aligns with the evidence's 'suggests' and 'may have'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-015:claim-04",
+      "query_id": "dev-015",
+      "claim_index": 4,
+      "category": "troubleshooting",
+      "query": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+      "claim": "A PaymentService business logic failure is indicated when a Payment server span exists, meaning the request reached the service but failed during processing.",
+      "cited_sources": [
+        "payment-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that if a 'Payment server span exists', the user should 'inspect PaymentService itself' and check for 'charge-processing errors', and contrasts this with the scenario where a 'server span [is] missing', which suggests 'failure before PaymentService handled the request'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4295.519249979407,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that if a 'Payment server span exists', the user should 'inspect PaymentService itself' and check for 'charge-processing errors', and contrasts this with the scenario where a 'server span [is] missing', which suggests 'failure before PaymentService handled the request'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-015:claim-05",
+      "query_id": "dev-015",
+      "claim_index": 5,
+      "category": "troubleshooting",
+      "query": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+      "claim": "When a server span exists, the failure is attributed to business logic or processing errors, which should be investigated by inspecting Payment application logs, gRPC server status, charge-processing errors, and downstream calls made by PaymentService.",
+      "cited_sources": [
+        "payment-service.md",
+        "payment-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-service.md",
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that if the server span exists, the investigator should inspect PaymentService itself (payment-runbook.md). It lists the specific items to check: Payment application logs, gRPC server status, charge-processing errors, and downstream calls made by PaymentService. payment-service.md further supports this by stating that when the server span exists, one should inspect logs and attributes for the application-level mechanism."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1121.7946250690147,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"payment-service.md\",\n    \"payment-runbook.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that if the server span exists, the investigator should inspect PaymentService itself (payment-runbook.md). It lists the specific items to check: Payment application logs, gRPC server status, charge-processing errors, and downstream calls made by PaymentService. payment-service.md further supports this by stating that when the server span exists, one should inspect logs and attributes for the application-level mechanism.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-015:claim-06",
+      "query_id": "dev-015",
+      "claim_index": 6,
+      "category": "troubleshooting",
+      "query": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+      "claim": "The final conclusion should explicitly state whether the failure occurred before PaymentService, inside PaymentService, or after PaymentService returned, supported by specific trace and log evidence.",
+      "cited_sources": [
+        "payment-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that a useful final report should state whether the failure occurred 'before PaymentService', 'inside PaymentService', or 'after PaymentService returned', and should cite the trace and logs supporting that conclusion."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 442.06691696308553,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that a useful final report should state whether the failure occurred 'before PaymentService', 'inside PaymentService', or 'after PaymentService returned', and should cite the trace and logs supporting that conclusion.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-01",
+      "query_id": "dev-016",
+      "claim_index": 1,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "A resolver producing zero addresses indicates that the client could not obtain a usable destination.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that messages such as 'produced zero addresses' strongly suggest that the client could not obtain a usable destination."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3030.486000003293,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that messages such as 'produced zero addresses' strongly suggest that the client could not obtain a usable destination.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-02",
+      "query_id": "dev-016",
+      "claim_index": 2,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "Potential failure mechanisms include failed DNS or name resolution.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'failed DNS or name resolution' as a cause for service discovery failures, and it identifies 'produced zero addresses' as a message that suggests a client could not obtain a usable destination (a discovery failure)."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 731.5714169526473,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'failed DNS or name resolution' as a cause for service discovery failures, and it identifies 'produced zero addresses' as a message that suggests a client could not obtain a usable destination (a discovery failure).\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-03",
+      "query_id": "dev-016",
+      "claim_index": 3,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "Potential failure mechanisms include incorrect endpoint configuration.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'incorrect endpoint configuration' as a cause for service discovery failures, and it identifies 'produced zero addresses' as a message that strongly suggests a discovery failure."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1979.1936669498682,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'incorrect endpoint configuration' as a cause for service discovery failures, and it identifies 'produced zero addresses' as a message that strongly suggests a discovery failure.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-04",
+      "query_id": "dev-016",
+      "claim_index": 4,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "Potential failure mechanisms include no available service instances.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'no available service instances' as a cause for service discovery failures and states that messages such as 'produced zero addresses' strongly suggest the client could not obtain a usable destination, which is a discovery failure."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3727.9417919926345,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'no available service instances' as a cause for service discovery failures and states that messages such as 'produced zero addresses' strongly suggest the client could not obtain a usable destination, which is a discovery failure.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-05",
+      "query_id": "dev-016",
+      "claim_index": 5,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "Potential failure mechanisms include stale or incomplete discovery data.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'stale or incomplete discovery data' as a cause for service discovery failures and notes that messages such as 'produced zero addresses' strongly suggest the client could not obtain a usable destination, which is a discovery failure."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 608.9991249609739,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'stale or incomplete discovery data' as a cause for service discovery failures and notes that messages such as 'produced zero addresses' strongly suggest the client could not obtain a usable destination, which is a discovery failure.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-06",
+      "query_id": "dev-016",
+      "claim_index": 6,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "Potential failure mechanisms include an invalid service name.",
+      "cited_sources": [
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that messages such as 'produced zero addresses' suggest a discovery failure, and it lists 'an invalid service name' as one of the reasons why service discovery failures can occur."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 439.60629194043577,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"service-discovery.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that messages such as 'produced zero addresses' suggest a discovery failure, and it lists 'an invalid service name' as one of the reasons why service discovery failures can occur.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-07",
+      "query_id": "dev-016",
+      "claim_index": 7,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "DNS-specific failure modes to consider include nonexistent or misspelled host names.",
+      "cited_sources": [
+        "dns-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "dns-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'nonexistent or misspelled host names' as common DNS-related failure modes in the context of DNS troubleshooting."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2936.1809589900076,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"dns-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'nonexistent or misspelled host names' as common DNS-related failure modes in the context of DNS troubleshooting.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-08",
+      "query_id": "dev-016",
+      "claim_index": 8,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "DNS-specific failure modes to consider include temporary resolver failures.",
+      "cited_sources": [
+        "dns-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "dns-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'temporary resolver failures' as one of the 'Common DNS-related failure modes'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 489.130541915074,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"dns-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'temporary resolver failures' as one of the 'Common DNS-related failure modes'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-09",
+      "query_id": "dev-016",
+      "claim_index": 9,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "DNS-specific failure modes to consider include stale cached records.",
+      "cited_sources": [
+        "dns-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "dns-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'stale cached records' as one of the 'Common DNS-related failure modes' in the context of DNS troubleshooting."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1463.764583109878,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"dns-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'stale cached records' as one of the 'Common DNS-related failure modes' in the context of DNS troubleshooting.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-10",
+      "query_id": "dev-016",
+      "claim_index": 10,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "DNS-specific failure modes to consider include incorrect search domains.",
+      "cited_sources": [
+        "dns-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "dns-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'incorrect search domains' as one of the 'Common DNS-related failure modes'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2954.118874971755,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"dns-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'incorrect search domains' as one of the 'Common DNS-related failure modes'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-11",
+      "query_id": "dev-016",
+      "claim_index": 11,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "DNS-specific failure modes to consider include network access problems to the resolver.",
+      "cited_sources": [
+        "dns-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "dns-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly lists 'network access problems to the resolver' as one of the 'Common DNS-related failure modes'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1531.630292069167,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"dns-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly lists 'network access problems to the resolver' as one of the 'Common DNS-related failure modes'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-12",
+      "query_id": "dev-016",
+      "claim_index": 12,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "DNS-specific failure modes to consider include records that resolve to unreachable addresses.",
+      "cited_sources": [
+        "dns-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "dns-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly lists 'records that resolve to unreachable addresses' as one of the 'Common DNS-related failure modes'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1649.2604590021074,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"dns-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly lists 'records that resolve to unreachable addresses' as one of the 'Common DNS-related failure modes'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-016:claim-13",
+      "query_id": "dev-016",
+      "claim_index": 13,
+      "category": "troubleshooting",
+      "query": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "claim": "Endpoint configuration or discovery state can produce a similar symptom of zero addresses, so DNS is not the only hypothesis.",
+      "cited_sources": [
+        "dns-troubleshooting.md",
+        "service-discovery.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "dns-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source 'dns-troubleshooting.md' explicitly states: 'If an RPC client reports that resolution produced no addresses, DNS is one hypothesis, not an automatic conclusion. Endpoint configuration or discovery state can produce a similar symptom.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5321.3478330289945,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"dns-troubleshooting.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source 'dns-troubleshooting.md' explicitly states: 'If an RPC client reports that resolution produced no addresses, DNS is one hypothesis, not an automatic conclusion. Endpoint configuration or discovery state can produce a similar symptom.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-017:claim-01",
+      "query_id": "dev-017",
+      "claim_index": 1,
+      "category": "observability",
+      "query": "Which observability signal is best for detecting and quantifying an increase in checkout error rate?",
+      "claim": "Metrics are the best observability signal for detecting and quantifying an increase in checkout error rate.",
+      "cited_sources": [
+        "observability-guide.md",
+        "metrics-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "observability-guide.md",
+          "metrics-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that metrics answer the question 'Is error rate increasing?' (observability-guide.md) and that they are 'strongest for detection and quantification' (metrics-guide.md). Furthermore, it specifically mentions that when evaluating checkout behavior, metrics can show an elevated error rate (metrics-guide.md)."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1411.2862920155749,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"observability-guide.md\",\n    \"metrics-guide.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that metrics answer the question 'Is error rate increasing?' (observability-guide.md) and that they are 'strongest for detection and quantification' (metrics-guide.md). Furthermore, it specifically mentions that when evaluating checkout behavior, metrics can show an elevated error rate (metrics-guide.md).\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-017:claim-02",
+      "query_id": "dev-017",
+      "claim_index": 2,
+      "category": "observability",
+      "query": "Which observability signal is best for detecting and quantifying an increase in checkout error rate?",
+      "claim": "Metrics are explicitly described as being strongest for detection and quantification of system behavior.",
+      "cited_sources": [
+        "metrics-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "metrics-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly states, 'Metrics are strongest for detection and quantification'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1635.2669169427827,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"metrics-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly states, 'Metrics are strongest for detection and quantification'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-017:claim-03",
+      "query_id": "dev-017",
+      "claim_index": 3,
+      "category": "observability",
+      "query": "Which observability signal is best for detecting and quantifying an increase in checkout error rate?",
+      "claim": "In the typical investigation order, metrics are used to detect and quantify degradation, while traces and logs are used for localization and detailed mechanism identification.",
+      "cited_sources": [
+        "observability-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "observability-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that in a typical investigation, metrics are used to 'detect and quantify degradation', traces are used to 'localize the failing path', and logs are used to 'identify the detailed mechanism'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 6189.486749935895,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"observability-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that in a typical investigation, metrics are used to 'detect and quantify degradation', traces are used to 'localize the failing path', and logs are used to 'identify the detailed mechanism'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-018:claim-01",
+      "query_id": "dev-018",
+      "claim_index": 1,
+      "category": "observability",
+      "query": "Which telemetry signal should I use to identify where one distributed request failed?",
+      "claim": "Distributed traces should be used to identify where a distributed request failed, as they reconstruct the path of an individual request across service boundaries and are particularly useful for locating the dependency or operation where a failing request diverges from a healthy one.",
+      "cited_sources": [
+        "observability-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "observability-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that distributed traces 'reconstruct the path of an individual request across service boundaries' and are 'particularly useful for locating the dependency or operation where a failing request diverges from a healthy one.' It also lists traces as the signal used to 'localize the failing path.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1789.0455829910934,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"observability-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that distributed traces 'reconstruct the path of an individual request across service boundaries' and are 'particularly useful for locating the dependency or operation where a failing request diverges from a healthy one.' It also lists traces as the signal used to 'localize the failing path.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-018:claim-02",
+      "query_id": "dev-018",
+      "claim_index": 2,
+      "category": "observability",
+      "query": "Which telemetry signal should I use to identify where one distributed request failed?",
+      "claim": "Tracing is especially useful for distinguishing healthy upstream dependencies from the first failing dependency on a specific request path.",
+      "cited_sources": [
+        "distributed-tracing-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "distributed-tracing-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a verbatim quote from the provided source."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4910.747417015955,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"distributed-tracing-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a verbatim quote from the provided source.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-018:claim-03",
+      "query_id": "dev-018",
+      "claim_index": 3,
+      "category": "observability",
+      "query": "Which telemetry signal should I use to identify where one distributed request failed?",
+      "claim": "When diagnosing a failed RPC, investigators should compare the client span with the corresponding server span to determine if the request failed before reaching the downstream service.",
+      "cited_sources": [
+        "distributed-tracing-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "distributed-tracing-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states: 'When diagnosing a failed RPC, compare the client span with the corresponding server span. A client error with no downstream server span suggests that the request may have failed before reaching the service.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 529.1915000416338,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"distributed-tracing-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states: 'When diagnosing a failed RPC, compare the client span with the corresponding server span. A client error with no downstream server span suggests that the request may have failed before reaching the service.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-01",
+      "query_id": "dev-019",
+      "claim_index": 1,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "An error should not automatically be considered the root cause; investigators must verify that it lies on the failing request path and explains the observed symptom.",
+      "cited_sources": [
+        "incident-response-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "incident-response-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct quote from the provided source: 'An error should not automatically be considered the root cause. Investigators should verify that it lies on the failing request path and explains the symptom.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3864.667542045936,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"incident-response-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct quote from the provided source: 'An error should not automatically be considered the root cause. Investigators should verify that it lies on the failing request path and explains the symptom.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-02",
+      "query_id": "dev-019",
+      "claim_index": 2,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "Correlation does not establish causality by itself; evidence should explain the observed failure and occur on the relevant causal path.",
+      "cited_sources": [
+        "telemetry-correlation.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "telemetry-correlation.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct verbatim quote from the provided source, which explicitly states that correlation does not establish causality by itself and that evidence should explain the observed failure and occur on the relevant causal path."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1530.424208031036,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"telemetry-correlation.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct verbatim quote from the provided source, which explicitly states that correlation does not establish causality by itself and that evidence should explain the observed failure and occur on the relevant causal path.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-03",
+      "query_id": "dev-019",
+      "claim_index": 3,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "A log can share the correct trace ID and still describe a non-causal warning.",
+      "cited_sources": [
+        "telemetry-correlation.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "telemetry-correlation.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The cited evidence explicitly states: 'A log can share the correct trace ID and still describe a non-causal warning.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3082.664459012449,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"telemetry-correlation.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The cited evidence explicitly states: 'A log can share the correct trace ID and still describe a non-causal warning.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-04",
+      "query_id": "dev-019",
+      "claim_index": 4,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "Investigators should avoid searching only for the word 'error' and assuming every match is causal.",
+      "cited_sources": [
+        "structured-logging-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "structured-logging-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct quote from the provided source."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3869.883125065826,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"structured-logging-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct quote from the provided source.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-05",
+      "query_id": "dev-019",
+      "claim_index": 5,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "A relevant log should ideally occur in the incident time window.",
+      "cited_sources": [
+        "structured-logging-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "structured-logging-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly states that a relevant log should ideally satisfy several conditions, one of which is that 'it occurs in the incident time window'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3992.323749931529,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"structured-logging-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly states that a relevant log should ideally satisfy several conditions, one of which is that 'it occurs in the incident time window'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-06",
+      "query_id": "dev-019",
+      "claim_index": 6,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "A relevant log should belong to a service on the failing request path.",
+      "cited_sources": [
+        "structured-logging-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "structured-logging-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly states that a relevant log should ideally satisfy several conditions, one of which is that 'it belongs to a service on the failing request path'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2350.84587498568,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"structured-logging-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly states that a relevant log should ideally satisfy several conditions, one of which is that 'it belongs to a service on the failing request path'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-07",
+      "query_id": "dev-019",
+      "claim_index": 7,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "A relevant log should share the relevant trace ID when available.",
+      "cited_sources": [
+        "structured-logging-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "structured-logging-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly lists 'it shares the relevant trace ID when available' as one of the conditions a relevant log should ideally satisfy when determining if it is causal for an incident."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 582.6078749960288,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"structured-logging-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly lists 'it shares the relevant trace ID when available' as one of the conditions a relevant log should ideally satisfy when determining if it is causal for an incident.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-08",
+      "query_id": "dev-019",
+      "claim_index": 8,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "A relevant log's message should explain or support the observed failure.",
+      "cited_sources": [
+        "structured-logging-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "structured-logging-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly states that a relevant log should ideally satisfy several conditions, one of which is that 'its message explains or supports the observed failure.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1457.0148329949006,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"structured-logging-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly states that a relevant log should ideally satisfy several conditions, one of which is that 'its message explains or supports the observed failure.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-09",
+      "query_id": "dev-019",
+      "claim_index": 9,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "Root-cause analysis should separate observations, interpretations, hypotheses, and conclusions.",
+      "cited_sources": [
+        "incident-response-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "incident-response-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct verbatim quote from the provided source."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2566.7483750730753,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"incident-response-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct verbatim quote from the provided source.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-10",
+      "query_id": "dev-019",
+      "claim_index": 10,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "A conclusion should be supported by multiple consistent pieces of evidence.",
+      "cited_sources": [
+        "incident-response-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "incident-response-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The cited evidence explicitly states: 'A conclusion should be supported by multiple consistent pieces of evidence.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 460.4883330175653,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"incident-response-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The cited evidence explicitly states: 'A conclusion should be supported by multiple consistent pieces of evidence.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-11",
+      "query_id": "dev-019",
+      "claim_index": 11,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "Investigators should generate competing hypotheses and reject those contradicted by evidence.",
+      "cited_sources": [
+        "incident-response-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "incident-response-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The cited evidence explicitly lists 'Generate competing hypotheses' and 'Reject hypotheses contradicted by evidence' as steps 6 and 7 in the practical investigation workflow."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1033.1307910382748,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"incident-response-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The cited evidence explicitly lists 'Generate competing hypotheses' and 'Reject hypotheses contradicted by evidence' as steps 6 and 7 in the practical investigation workflow.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-12",
+      "query_id": "dev-019",
+      "claim_index": 12,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "The final conclusion should state the best-supported root cause or abstain if evidence is insufficient.",
+      "cited_sources": [
+        "incident-response-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "incident-response-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'State the best-supported root cause or abstain if evidence is insufficient' as the final step (step 8) of the practical investigation workflow."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3397.7808750933036,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"incident-response-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'State the best-supported root cause or abstain if evidence is insufficient' as the final step (step 8) of the practical investigation workflow.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-019:claim-13",
+      "query_id": "dev-019",
+      "claim_index": 13,
+      "category": "observability",
+      "query": "What evidence should I require before treating an error log as causal for an incident?",
+      "claim": "The investigation workflow should follow the discipline of 'claim → evidence → source'.",
+      "cited_sources": [
+        "incident-response-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "incident-response-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly states that 'RootLens should follow the discipline: claim → evidence → source'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1428.47541696392,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"incident-response-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly states that 'RootLens should follow the discipline: claim → evidence → source'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-020:claim-01",
+      "query_id": "dev-020",
+      "claim_index": 1,
+      "category": "multi_document",
+      "query": "What evidence distinguishes a network or resolution failure from an application-level payment failure?",
+      "claim": "A network or resolution failure is distinguished by the presence of a client span but the absence of a corresponding server span, indicating the request did not reach PaymentService.",
+      "cited_sources": [
+        "payment-runbook.md",
+        "service-discovery.md",
+        "payment-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md",
+          "service-discovery.md",
+          "payment-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence collectively supports the claim. payment-runbook.md explicitly states that the pattern 'Client span exists, server span missing' suggests failure before PaymentService handled the request and lists name resolution and network connectivity as investigation points. service-discovery.md confirms that discovery failures (like name resolution) can prevent an RPC from reaching the downstream application and appear as a failing client span with no corresponding server span. payment-service.md further notes that if a client span reports connectivity status and no matching server span exists, the failure may have happened before the request arrived at PaymentService."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 7377.4266669061035,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"payment-runbook.md\",\n    \"service-discovery.md\",\n    \"payment-service.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence collectively supports the claim. payment-runbook.md explicitly states that the pattern 'Client span exists, server span missing' suggests failure before PaymentService handled the request and lists name resolution and network connectivity as investigation points. service-discovery.md confirms that discovery failures (like name resolution) can prevent an RPC from reaching the downstream application and appear as a failing client span with no corresponding server span. payment-service.md further notes that if a client span reports connectivity status and no matching server span exists, the failure may have happened before the request arrived at PaymentService.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-020:claim-02",
+      "query_id": "dev-020",
+      "claim_index": 2,
+      "category": "multi_document",
+      "query": "What evidence distinguishes a network or resolution failure from an application-level payment failure?",
+      "claim": "Network or resolution failures are often associated with gRPC status `UNAVAILABLE` and resolver-oriented diagnostics such as 'name resolver error' or 'produced zero addresses'.",
+      "cited_sources": [
+        "payment-runbook.md",
+        "service-discovery.md",
+        "payment-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md",
+          "service-discovery.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is fully supported. payment-runbook.md states that 'UNAVAILABLE with resolver-oriented diagnostics' is especially relevant when a request fails before reaching the PaymentService (which includes name resolution and network connectivity). service-discovery.md explicitly identifies 'name resolver error' and 'produced zero addresses' as resolver diagnostics that strongly suggest the client could not obtain a usable destination."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 811.1550000030547,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"payment-runbook.md\",\n    \"service-discovery.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is fully supported. payment-runbook.md states that 'UNAVAILABLE with resolver-oriented diagnostics' is especially relevant when a request fails before reaching the PaymentService (which includes name resolution and network connectivity). service-discovery.md explicitly identifies 'name resolver error' and 'produced zero addresses' as resolver diagnostics that strongly suggest the client could not obtain a usable destination.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-020:claim-03",
+      "query_id": "dev-020",
+      "claim_index": 3,
+      "category": "multi_document",
+      "query": "What evidence distinguishes a network or resolution failure from an application-level payment failure?",
+      "claim": "An application-level payment failure is distinguished by the presence of a Payment server span, indicating the request reached PaymentService, where the failure occurs during charge processing or result handling.",
+      "cited_sources": [
+        "payment-runbook.md",
+        "payment-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md",
+          "payment-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence supports that a failure before PaymentService (network/resolution) is characterized by a missing server span (payment-runbook.md), whereas the presence of a server span indicates the request reached PaymentService (payment-runbook.md). Furthermore, payment-service.md specifies that when the server span exists, investigators should look for the 'application-level mechanism' and that failures can occur during charge processing or when the service rejects the charge."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 6957.151292008348,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"payment-runbook.md\",\n    \"payment-service.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence supports that a failure before PaymentService (network/resolution) is characterized by a missing server span (payment-runbook.md), whereas the presence of a server span indicates the request reached PaymentService (payment-runbook.md). Furthermore, payment-service.md specifies that when the server span exists, investigators should look for the 'application-level mechanism' and that failures can occur during charge processing or when the service rejects the charge.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-020:claim-04",
+      "query_id": "dev-020",
+      "claim_index": 4,
+      "category": "multi_document",
+      "query": "What evidence distinguishes a network or resolution failure from an application-level payment failure?",
+      "claim": "Evidence for application-level failures includes inspecting Payment application logs, gRPC server status, charge-processing errors, and span attributes like `rpc.response.status_code`.",
+      "cited_sources": [
+        "payment-runbook.md",
+        "payment-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md",
+          "payment-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'Payment application logs', 'gRPC server status', and 'charge-processing errors' as things to check when the server span exists (indicating the request reached the service) in payment-runbook.md. Additionally, payment-service.md states that when the server span exists, investigators should inspect 'span attributes' and specifically lists 'rpc.response.status_code' as useful evidence."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5831.2190839787945,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"payment-runbook.md\",\n    \"payment-service.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'Payment application logs', 'gRPC server status', and 'charge-processing errors' as things to check when the server span exists (indicating the request reached the service) in payment-runbook.md. Additionally, payment-service.md states that when the server span exists, investigators should inspect 'span attributes' and specifically lists 'rpc.response.status_code' as useful evidence.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-020:claim-05",
+      "query_id": "dev-020",
+      "claim_index": 5,
+      "category": "multi_document",
+      "query": "What evidence distinguishes a network or resolution failure from an application-level payment failure?",
+      "claim": "The causal path must be verified by checking if a server span exists downstream; if no server span exists, the failure likely occurred before the request arrived at PaymentService, whereas if a server span exists, the failure occurred inside or after PaymentService.",
+      "cited_sources": [
+        "payment-runbook.md",
+        "payment-service.md",
+        "dns-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-runbook.md",
+          "payment-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly supports the logic for distinguishing the failure location based on the server span. payment-runbook.md states that if the server span is missing, it 'suggests failure before PaymentService handled the request,' and if the server span exists, one should 'inspect PaymentService itself.' payment-service.md reinforces this, stating that if no matching Payment server span exists, the failure 'may have happened before the request arrived at PaymentService,' and if the server span exists, one should inspect logs for the 'application-level mechanism.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1546.5704590315,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"payment-runbook.md\",\n    \"payment-service.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly supports the logic for distinguishing the failure location based on the server span. payment-runbook.md states that if the server span is missing, it 'suggests failure before PaymentService handled the request,' and if the server span exists, one should 'inspect PaymentService itself.' payment-service.md reinforces this, stating that if no matching Payment server span exists, the failure 'may have happened before the request arrived at PaymentService,' and if the server span exists, one should inspect logs for the 'application-level mechanism.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-021:claim-01",
+      "query_id": "dev-021",
+      "claim_index": 1,
+      "category": "multi_document",
+      "query": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "claim": "The investigation should begin by defining the user-visible symptom, such as a browser-visible HTTP 500 or errors on `/api/checkout`, and quantifying the incident with metrics like error rate, request rate, and latency percentiles (p50, p95, p99).",
+      "cited_sources": [
+        "incident-response-guide.md",
+        "checkout-runbook.md",
+        "frontend-service.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "incident-response-guide.md",
+          "checkout-runbook.md",
+          "frontend-service.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is fully supported. 'incident-response-guide.md' establishes the workflow of first defining the user-visible symptom and then quantifying the incident with metrics. 'frontend-service.md' provides examples of user-visible symptoms such as browser-visible HTTP 500s or calls to `/api/checkout`. 'checkout-runbook.md' specifies the metrics used for quantification: error rate, request rate, and p50, p95, and p99 latency."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2596.51037491858,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"incident-response-guide.md\",\n    \"checkout-runbook.md\",\n    \"frontend-service.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is fully supported. 'incident-response-guide.md' establishes the workflow of first defining the user-visible symptom and then quantifying the incident with metrics. 'frontend-service.md' provides examples of user-visible symptoms such as browser-visible HTTP 500s or calls to `/api/checkout`. 'checkout-runbook.md' specifies the metrics used for quantification: error rate, request rate, and p50, p95, and p99 latency.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-021:claim-02",
+      "query_id": "dev-021",
+      "claim_index": 2,
+      "category": "multi_document",
+      "query": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "claim": "Investigators should identify representative failing traces by opening a failing distributed trace and inspecting the Checkout service and its downstream calls.",
+      "cited_sources": [
+        "incident-response-guide.md",
+        "checkout-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is directly supported by the 'Checkout Runbook' under section '2. Select a failing request', which explicitly instructs the investigator to 'Open a failing distributed trace and inspect Checkout and its downstream calls'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5042.231208994053,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"checkout-runbook.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is directly supported by the 'Checkout Runbook' under section '2. Select a failing request', which explicitly instructs the investigator to 'Open a failing distributed trace and inspect Checkout and its downstream calls'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-021:claim-03",
+      "query_id": "dev-021",
+      "claim_index": 3,
+      "category": "multi_document",
+      "query": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "claim": "To move from detection to request-level evidence, locate the first meaningful failure on the request path by checking gRPC status, status description, and whether earlier dependencies completed successfully, rather than assuming the final Checkout error is the root cause.",
+      "cited_sources": [
+        "incident-response-guide.md",
+        "checkout-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim accurately reflects the instructions in the Checkout Runbook. Specifically, Section 3 ('Identify the first failing dependency') explicitly states not to assume the final Checkout error is the root cause and instructs the investigator to check gRPC status, status description, and whether earlier dependencies completed successfully to locate the first failure."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4722.719500074163,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"checkout-runbook.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim accurately reflects the instructions in the Checkout Runbook. Specifically, Section 3 ('Identify the first failing dependency') explicitly states not to assume the final Checkout error is the root cause and instructs the investigator to check gRPC status, status description, and whether earlier dependencies completed successfully to locate the first failure.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-021:claim-04",
+      "query_id": "dev-021",
+      "claim_index": 4,
+      "category": "multi_document",
+      "query": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "claim": "Correlate logs using the full trace ID to look for application errors in services on the failing path.",
+      "cited_sources": [
+        "incident-response-guide.md",
+        "checkout-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is directly stated in section 4 of the checkout-runbook.md, which instructs the user to 'Search logs using the full trace ID' and 'Look for application errors in services on the failing path.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 606.7372499965131,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is directly stated in section 4 of the checkout-runbook.md, which instructs the user to 'Search logs using the full trace ID' and 'Look for application errors in services on the failing path.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-021:claim-05",
+      "query_id": "dev-021",
+      "claim_index": 5,
+      "category": "multi_document",
+      "query": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "claim": "Compare the failing trace with a healthy trace to establish a reference for normal dependency ordering and approximate latency.",
+      "cited_sources": [
+        "checkout-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is directly supported by section 5 of the provided runbook, which states that 'A healthy trace provides a useful reference for normal dependency ordering and approximate latency.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3268.7847079942003,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is directly supported by section 5 of the provided runbook, which states that 'A healthy trace provides a useful reference for normal dependency ordering and approximate latency.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-021:claim-06",
+      "query_id": "dev-021",
+      "claim_index": 6,
+      "category": "multi_document",
+      "query": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "claim": "If the trace indicates a connection or resolution failure, inspect endpoint and service-discovery configuration; if the request reached the downstream server, investigate that service's application logs.",
+      "cited_sources": [
+        "checkout-runbook.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "checkout-runbook.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct verbatim repetition of the instructions provided in section 6 of the cited runbook."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 511.6549578960985,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"checkout-runbook.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct verbatim repetition of the instructions provided in section 6 of the cited runbook.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-021:claim-07",
+      "query_id": "dev-021",
+      "claim_index": 7,
+      "category": "multi_document",
+      "query": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "claim": "Generate competing hypotheses and reject those contradicted by evidence, ensuring that any identified error lies on the failing request path and explains the symptom.",
+      "cited_sources": [
+        "incident-response-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "incident-response-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'Generate competing hypotheses' (step 6) and 'Reject hypotheses contradicted by evidence' (step 7) as part of the investigation workflow. It also explicitly states that investigators should 'verify that [an error] lies on the failing request path and explains the symptom'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4191.990124993026,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"incident-response-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'Generate competing hypotheses' (step 6) and 'Reject hypotheses contradicted by evidence' (step 7) as part of the investigation workflow. It also explicitly states that investigators should 'verify that [an error] lies on the failing request path and explains the symptom'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-021:claim-08",
+      "query_id": "dev-021",
+      "claim_index": 8,
+      "category": "multi_document",
+      "query": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "claim": "State the best-supported root cause or abstain if evidence is insufficient, following the discipline of 'claim → evidence → source'.",
+      "cited_sources": [
+        "incident-response-guide.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "incident-response-guide.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly lists 'State the best-supported root cause or abstain if evidence is insufficient' as step 8 of the investigation workflow and specifies that RootLens should follow the discipline of 'claim → evidence → source'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 717.431457946077,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"incident-response-guide.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly lists 'State the best-supported root cause or abstain if evidence is insufficient' as step 8 of the investigation workflow and specifies that RootLens should follow the discipline of 'claim → evidence → source'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-022:claim-01",
+      "query_id": "dev-022",
+      "claim_index": 1,
+      "category": "multi_document",
+      "query": "How can I determine whether high request latency comes from retries or from a slow downstream dependency?",
+      "claim": "To determine whether high latency is caused by retries or a slow downstream dependency, you should inspect representative traces and compare failing or slow traces against a healthy baseline.",
+      "cited_sources": [
+        "latency-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "latency-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that to troubleshoot high latency (which can result from a slow service or retries), one should 'inspect representative traces' and 'Compare failing or slow traces against a healthy baseline' to check if latency is concentrated in 'one downstream RPC' or 'repeated retry attempts'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 629.9100000178441,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"latency-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that to troubleshoot high latency (which can result from a slow service or retries), one should 'inspect representative traces' and 'Compare failing or slow traces against a healthy baseline' to check if latency is concentrated in 'one downstream RPC' or 'repeated retry attempts'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-022:claim-02",
+      "query_id": "dev-022",
+      "claim_index": 2,
+      "category": "multi_document",
+      "query": "How can I determine whether high request latency comes from retries or from a slow downstream dependency?",
+      "claim": "You should check whether the latency is concentrated in one downstream RPC, repeated retry attempts, a gap between operations, internal processing, or several dependencies on the critical path.",
+      "cited_sources": [
+        "latency-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "latency-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct verbatim repetition of the checklist provided in the evidence under the section 'Check whether latency is concentrated in:'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3045.885125058703,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"latency-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct verbatim repetition of the checklist provided in the evidence under the section 'Check whether latency is concentrated in:'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-022:claim-03",
+      "query_id": "dev-022",
+      "claim_index": 3,
+      "category": "multi_document",
+      "query": "How can I determine whether high request latency comes from retries or from a slow downstream dependency?",
+      "claim": "For diagnosis, you should inspect the caller deadline, number of attempts, per-attempt latency, downstream server spans, total parent-span duration, and whether retry attempts overlap or occur sequentially.",
+      "cited_sources": [
+        "timeout-and-retry-guidance.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "timeout-and-retry-guidance.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct verbatim list of the items the source recommends inspecting for diagnosis in the context of timeouts and retries."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 715.2467080159113,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"timeout-and-retry-guidance.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct verbatim list of the items the source recommends inspecting for diagnosis in the context of timeouts and retries.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-022:claim-04",
+      "query_id": "dev-022",
+      "claim_index": 4,
+      "category": "multi_document",
+      "query": "How can I determine whether high request latency comes from retries or from a slow downstream dependency?",
+      "claim": "Retries can create repeated spans and extend total latency, and the longest span is not automatically the root cause.",
+      "cited_sources": [
+        "latency-troubleshooting.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "latency-troubleshooting.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states both parts of the claim: 'retries can create repeated spans and extend total latency' and 'the longest span is not automatically the root cause'."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2518.5242500156164,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"latency-troubleshooting.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states both parts of the claim: 'retries can create repeated spans and extend total latency' and 'the longest span is not automatically the root cause'.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-022:claim-05",
+      "query_id": "dev-022",
+      "claim_index": 5,
+      "category": "multi_document",
+      "query": "How can I determine whether high request latency comes from retries or from a slow downstream dependency?",
+      "claim": "A DEADLINE_EXCEEDED error indicates that the request exceeded a deadline but does not identify the underlying latency mechanism, so traces and metrics are required to determine the cause.",
+      "cited_sources": [
+        "latency-troubleshooting.md",
+        "timeout-and-retry-guidance.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "latency-troubleshooting.md",
+          "timeout-and-retry-guidance.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that 'DEADLINE_EXCEEDED indicates that the request exceeded a deadline, not why' (latency-troubleshooting.md) and that 'traces and metrics are needed to identify why' (timeout-and-retry-guidance.md)."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4848.7774169771,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\n    \"latency-troubleshooting.md\",\n    \"timeout-and-retry-guidance.md\"\n  ],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that 'DEADLINE_EXCEEDED indicates that the request exceeded a deadline, not why' (latency-troubleshooting.md) and that 'traces and metrics are needed to identify why' (timeout-and-retry-guidance.md).\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-023:claim-01",
+      "query_id": "dev-023",
+      "claim_index": 1,
+      "category": "hard_negative",
+      "query": "Which document should I use to design PaymentService dashboards and alerts rather than debug one request?",
+      "claim": "You should use the document 'payment-monitoring.md' to design PaymentService dashboards and alerts.",
+      "cited_sources": [
+        "payment-monitoring.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-monitoring.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The document 'payment-monitoring.md' explicitly states that its purpose is 'dashboard and alert design rather than diagnosing a specific request path' and provides specific recommendations for dashboards and alerts for PaymentService."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4802.515666000545,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-monitoring.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The document 'payment-monitoring.md' explicitly states that its purpose is 'dashboard and alert design rather than diagnosing a specific request path' and provides specific recommendations for dashboards and alerts for PaymentService.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-023:claim-02",
+      "query_id": "dev-023",
+      "claim_index": 2,
+      "category": "hard_negative",
+      "query": "Which document should I use to design PaymentService dashboards and alerts rather than debug one request?",
+      "claim": "The 'payment-monitoring.md' document is explicitly intended for dashboard and alert design rather than diagnosing a specific request path.",
+      "cited_sources": [
+        "payment-monitoring.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-monitoring.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly states that its 'purpose is dashboard and alert design rather than diagnosing a specific request path.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 547.0600000116974,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-monitoring.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly states that its 'purpose is dashboard and alert design rather than diagnosing a specific request path.'\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-023:claim-03",
+      "query_id": "dev-023",
+      "claim_index": 3,
+      "category": "hard_negative",
+      "query": "Which document should I use to design PaymentService dashboards and alerts rather than debug one request?",
+      "claim": "For debugging a single request, you should inspect the distributed trace and look for corresponding Payment server spans, as monitoring does not determine whether an individual request reached PaymentService.",
+      "cited_sources": [
+        "payment-monitoring.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "payment-monitoring.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The evidence explicitly states that monitoring does not determine if an individual request reached PaymentService and directs the user to inspect the distributed trace and look for corresponding Payment server spans for request-level diagnosis."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 5728.937624953687,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"payment-monitoring.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The evidence explicitly states that monitoring does not determine if an individual request reached PaymentService and directs the user to inspect the distributed trace and look for corresponding Payment server spans for request-level diagnosis.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-024:claim-01",
+      "query_id": "dev-024",
+      "claim_index": 1,
+      "category": "hard_negative",
+      "query": "Which guidance explains how injected fault flags should be handled without leaking benchmark ground truth?",
+      "claim": "For RootLens evaluation, ground-truth fault configuration should be kept separate from the operational knowledge available to the retriever.",
+      "cited_sources": [
+        "feature-flags.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "feature-flags.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The claim is a direct quote from the provided source."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2424.174791900441,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"feature-flags.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The claim is a direct quote from the provided source.\"\n}\n```"
+    },
+    {
+      "annotation_id": "dev-024:claim-02",
+      "query_id": "dev-024",
+      "claim_index": 2,
+      "category": "hard_negative",
+      "query": "Which guidance explains how injected fault flags should be handled without leaking benchmark ground truth?",
+      "claim": "A benchmark intended to test blind root-cause analysis should avoid exposing the injected fault name directly to the investigator.",
+      "cited_sources": [
+        "feature-flags.md"
+      ],
+      "judgment": {
+        "label": "full",
+        "supporting_sources": [
+          "feature-flags.md"
+        ],
+        "unsupported_part": null,
+        "rationale": "The source explicitly states: 'A benchmark intended to test blind root-cause analysis should avoid exposing the injected fault name directly to the investigator.'"
+      },
+      "generation_attempts": 1,
+      "latency_ms": 669.1442501032725,
+      "raw_model_output": "```json\n{\n  \"label\": \"full\",\n  \"supporting_sources\": [\"feature-flags.md\"],\n  \"unsupported_part\": null,\n  \"rationale\": \"The source explicitly states: 'A benchmark intended to test blind root-cause analysis should avoid exposing the injected fault name directly to the investigator.'\"\n}\n```"
+    }
+  ]
+}
