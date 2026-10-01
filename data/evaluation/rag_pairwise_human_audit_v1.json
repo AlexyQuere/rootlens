@@ -1,0 +1,1701 @@
+{
+  "metadata": {
+    "experiment": "014F",
+    "evaluation": "targeted_blind_human_audit",
+    "version": "v1",
+    "candidate_count": 15,
+    "system_identity_visible": false,
+    "judge_outputs_visible": false,
+    "reference_evidence": "union of Dense and Semantic top-5 evidence"
+  },
+  "items": [
+    {
+      "query_id": "dev-002",
+      "question": "What should I inspect when rpc.response.status_code is UNAVAILABLE on a client span?",
+      "evidence": [
+        {
+          "source_id": "distributed-tracing-guide.md",
+          "content": "# Distributed Tracing Guide\n\nA distributed trace represents the execution path of one request across multiple services.\n\nA trace contains spans. Each span represents an operation such as an HTTP request, gRPC call, database query, or internal computation.\n\nImportant identifiers include:\n\n- `TraceId`: identifies the complete distributed request;\n- `SpanId`: identifies one operation inside the trace;\n- parent span ID: links a child operation to its caller.\n\nTrace IDs are typically longer than span IDs and should not be confused when correlating telemetry.\n\nSpan kinds commonly include:\n\n- SERVER;\n- CLIENT;\n- INTERNAL;\n- PRODUCER;\n- CONSUMER.\n\nWhen diagnosing a failed RPC, compare the client span with the corresponding server span. A client error with no downstream server span suggests that the request may have failed before reaching the service.\n\nDo not sum span durations to estimate total request time. Parent spans include child time, and parallel spans can overlap.\n\nThe critical path is more informative for latency analysis than simply selecting the longest visible span.\n\nTracing is especially useful for distinguishing healthy upstream dependencies from the first failing dependency on a specific request path."
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "content": "# gRPC Troubleshooting\n\ngRPC status codes describe the outcome observed by an RPC caller. They should be interpreted together with traces, logs, and service topology.\n\n`UNAVAILABLE` usually indicates that the service is currently unavailable at the transport or connectivity level. Possible causes include:\n\n- unreachable endpoint;\n- connection failure;\n- name-resolution failure;\n- unavailable service instance;\n- transient network failure.\n\n`DEADLINE_EXCEEDED` means that the operation did not complete before the caller's deadline. The underlying cause may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.\n\n`INTERNAL` is broader. It can represent an internal application failure or an upstream service translating a lower-level dependency failure into a generic error.\n\nWhen a client span fails, check whether a corresponding server span exists. If no server span exists, the failure may have occurred before the downstream application processed the request.\n\nUseful span fields include:\n\n- RPC service and method;\n- `rpc.response.status_code`;\n- span status;\n- status description;\n- client/server span relationship;\n- trace ID.\n\nDo not diagnose root cause from the status code alone. The same code can result from several mechanisms."
+        },
+        {
+          "source_id": "latency-troubleshooting.md",
+          "content": "# Latency Troubleshooting\n\nHigh end-to-end latency can result from a slow service, retries, queueing, network delay, resource saturation, or several moderate delays on the critical path.\n\nStart with latency metrics such as p50, p95, and p99. A percentile increase shows that the latency distribution changed but does not identify the responsible operation.\n\nThen inspect representative traces.\n\nImportant rules:\n\n- parent span duration includes child execution time;\n- parallel spans can overlap;\n- summing all span durations overestimates request latency;\n- the longest span is not automatically the root cause;\n- retries can create repeated spans and extend total latency.\n\nCompare failing or slow traces against a healthy baseline.\n\nCheck whether latency is concentrated in:\n\n- one downstream RPC;\n- repeated retry attempts;\n- a gap between operations;\n- internal processing;\n- several dependencies on the critical path.\n\n`DEADLINE_EXCEEDED` indicates that the request exceeded a deadline, not why. The underlying latency mechanism still requires evidence.\n\nFor RootLens, latency conclusions should identify the operation contributing to the critical path and cite the relevant spans and metrics."
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "content": "# Payment Runbook\n\nUse this runbook when a checkout investigation points toward the Payment dependency.\n\nFirst determine whether the request actually reached PaymentService.\n\n## Client span exists, server span missing\n\nThis pattern suggests failure before PaymentService handled the request.\n\nInvestigate:\n\n- service name and endpoint configuration;\n- name resolution;\n- service discovery;\n- network connectivity;\n- gRPC status and status description.\n\n`UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\n\n## Payment server span exists\n\nIf the server span exists, inspect PaymentService itself.\n\nCheck:\n\n- Payment application logs;\n- gRPC server status;\n- charge-processing errors;\n- latency;\n- downstream calls made by PaymentService.\n\n## Distinguish symptom from cause\n\nA frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure.\n\nLikewise, a Payment-related error elsewhere in telemetry is not causal unless it belongs to the failing request path.\n\nA useful final report should state whether the failure occurred:\n\n```text\nbefore PaymentService\ninside PaymentService\nafter PaymentService returned\n```\n\nand cite the trace and logs supporting that conclusion."
+        },
+        {
+          "source_id": "payment-service.md",
+          "content": "# Payment Service\n\nPaymentService is responsible for charging a customer as part of checkout. The main RPC used by Checkout is `oteldemo.PaymentService/Charge`.\n\nA successful payment request reaches the Payment service, executes the charge logic, and returns a successful gRPC status to the caller. A payment-related checkout failure can occur at several different layers, so investigators should distinguish them carefully.\n\nExamples include:\n\n1. The Checkout client cannot resolve or connect to PaymentService.\n2. The RPC reaches PaymentService but fails before charge processing completes.\n3. PaymentService executes normally but rejects or cannot process the charge.\n4. PaymentService is healthy, but Checkout mishandles the returned result.\n\nThe presence of a failing Checkout → Payment client span does not prove that PaymentService processed the request. If the client span reports a connectivity-oriented status such as `UNAVAILABLE` and no matching Payment server span exists, the failure may have happened before the request arrived at PaymentService.\n\nWhen the server span exists, inspect Payment logs and span attributes for the application-level mechanism.\n\nUseful evidence includes:\n\n- `oteldemo.PaymentService/Charge`;\n- client and server span pairing;\n- `rpc.response.status_code`;\n- trace IDs shared between Checkout and Payment logs;\n- Payment request rate, error rate, and latency.\n\nPaymentService should not be blamed solely because a failing trace contains the word \"payment\"; the causal path must be verified."
+        },
+        {
+          "source_id": "shipping-service.md",
+          "content": "# Shipping Service\n\nThe Shipping service calculates delivery quotes and participates in the checkout workflow before payment is completed.\n\nCheckout asks Shipping for the cost of delivering the current cart. A shipping failure may cause order placement to fail even when Cart, Currency, Product Catalog, and Payment are healthy.\n\nWhen investigating a Shipping problem, determine whether the request reached the Shipping service. A client-side gRPC error without a corresponding Shipping server span can indicate a transport, resolution, or connectivity problem rather than faulty shipping business logic.\n\nRelevant evidence includes:\n\n- Shipping client and server spans;\n- the gRPC method name for the quote request;\n- `rpc.response.status_code`;\n- Shipping logs correlated by trace ID;\n- request latency and error rate;\n- upstream Checkout behavior.\n\nDo not confuse shipping latency with end-to-end checkout latency. The parent Checkout span includes time spent in multiple dependencies and orchestration work.\n\nIf the Shipping call completes successfully before a later Payment failure, Shipping should usually be treated as evidence of a healthy earlier dependency rather than as the root cause."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "When rpc.response.status_code is UNAVAILABLE, inspect whether a corresponding server span exists for the client span.",
+            "sources": [
+              "grpc-troubleshooting.md",
+              "distributed-tracing-guide.md"
+            ]
+          },
+          {
+            "text": "If no server span exists, the failure likely occurred before the downstream application processed the request, indicating a transport or connectivity level issue.",
+            "sources": [
+              "grpc-troubleshooting.md",
+              "distributed-tracing-guide.md"
+            ]
+          },
+          {
+            "text": "Inspect the following useful span fields: RPC service and method, rpc.response.status_code, span status, status description, client/server span relationship, and trace ID.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "Investigate potential causes such as unreachable endpoint, connection failure, name-resolution failure, unavailable service instance, or transient network failure.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "If the target is a specific service like PaymentService, investigate service name and endpoint configuration, name resolution, service discovery, and network connectivity.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "Do not diagnose the root cause from the status code alone, as the same code can result from several mechanisms.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "When rpc.response.status_code is UNAVAILABLE, you should inspect whether a corresponding server span exists for the client span.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "You should inspect the RPC service and method, span status, status description, client/server span relationship, and trace ID.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "If no server span exists, you should investigate service name and endpoint configuration, name resolution, service discovery, and network connectivity.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "You should check for causes such as unreachable endpoint, connection failure, name-resolution failure, unavailable service instance, or transient network failure.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "You should not diagnose the root cause from the status code alone, as the same code can result from several mechanisms.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "A",
+      "human_rationale": "use distributed tracing guide as source"
+    },
+    {
+      "query_id": "dev-003",
+      "question": "What is the purpose of oteldemo.CheckoutService/PlaceOrder?",
+      "evidence": [
+        {
+          "source_id": "checkout-architecture.md",
+          "content": "# Checkout Architecture\n\nThe Checkout service coordinates the order-placement workflow. Its main operation is `oteldemo.CheckoutService/PlaceOrder`.\n\nA typical checkout request retrieves the customer's cart, resolves product information, converts prices when needed, obtains a shipping quote, charges the customer, and creates the final order response. Checkout is therefore an orchestration service: a failure in one downstream dependency can make `PlaceOrder` fail even when the Checkout process itself is healthy.\n\nThe most important downstream calls are:\n\n- Cart service for the current basket;\n- Product Catalog for product metadata;\n- Currency service for price conversion;\n- Shipping service for delivery cost;\n- Payment service for the final charge.\n\nMost service-to-service calls use gRPC. A distributed trace is the best source for determining which dependency was reached and which call failed for a specific request.\n\nA failed child span should not automatically be interpreted as a downstream application failure. For example, a client span may fail before a corresponding server span exists. That pattern can indicate service discovery, DNS, connection, or transport problems.\n\nUseful evidence during investigation includes:\n\n- the `oteldemo.CheckoutService/PlaceOrder` server span;\n- child spans for downstream RPC calls;\n- `rpc.response.status_code`;\n- trace-correlated Checkout logs;\n- the error rate and latency of `PlaceOrder`.\n\nCheckout owns orchestration logic, but it does not own payment authorization, product catalog data, or shipping calculation logic."
+        },
+        {
+          "source_id": "checkout-payment-flow.md",
+          "content": "# Checkout Payment Flow\n\nThis document describes the normal business sequence between Checkout and Payment.\n\nA simplified successful order flow is:\n\n```text\nFrontend\n→ Checkout\n→ Cart\n→ Product Catalog\n→ Currency\n→ Shipping\n→ Payment\n→ Checkout response\n→ Frontend response\n```\n\nCheckout invokes `oteldemo.PaymentService/Charge` after it has enough information to calculate the final amount.\n\nOn a successful request:\n\n1. Checkout receives the order request.\n2. Earlier dependencies complete successfully.\n3. Checkout calls PaymentService.\n4. PaymentService processes the charge.\n5. Checkout completes the order and returns success.\n\nThis document is useful for understanding expected control flow and dependency ordering.\n\nIt is not a troubleshooting guide. It does not enumerate network-resolution failure modes, retry policy, or detailed gRPC error interpretation.\n\nBecause it contains terms such as Checkout, PaymentService, `Charge`, frontend, shipping, and order, it can act as a hard negative for questions that require a specific troubleshooting or observability explanation rather than a description of the normal business workflow."
+        },
+        {
+          "source_id": "checkout-runbook.md",
+          "content": "# Checkout Runbook\n\nUse this runbook when users cannot complete checkout or `/api/checkout` returns errors.\n\n## 1. Confirm impact\n\nCheck:\n\n- `oteldemo.CheckoutService/PlaceOrder` request rate;\n- error rate;\n- p50, p95, and p99 latency;\n- whether the failure is global or intermittent.\n\n## 2. Select a failing request\n\nOpen a failing distributed trace and inspect Checkout and its downstream calls.\n\nExpected dependencies can include:\n\n- Cart;\n- Product Catalog;\n- Currency;\n- Shipping;\n- Payment.\n\n## 3. Identify the first failing dependency\n\nDo not assume the final Checkout error is the root cause.\n\nFor each failing client span, check:\n\n- gRPC status;\n- status description;\n- whether a matching server span exists;\n- whether earlier dependencies completed successfully.\n\n## 4. Correlate logs\n\nSearch logs using the full trace ID. Look for application errors in services on the failing path.\n\n## 5. Compare with healthy behavior\n\nA healthy trace provides a useful reference for normal dependency ordering and approximate latency.\n\n## 6. Check configuration only after localization\n\nIf the trace indicates connection or resolution failure, inspect endpoint and service-discovery configuration.\n\nIf the request reached the downstream server, investigate that service's application logs.\n\nRecord the final conclusion with explicit evidence and rejected alternatives."
+        },
+        {
+          "source_id": "currency-service.md",
+          "content": "# Currency Service\n\nThe Currency service converts monetary values between currencies used by the storefront and downstream checkout operations.\n\nCheckout or the frontend may request currency conversion during an order. Currency failures can affect displayed prices or prevent an order from completing, depending on where the failure occurs.\n\nUseful investigation evidence includes:\n\n- Currency client/server spans;\n- requested source and destination currencies;\n- gRPC status codes;\n- Currency service logs;\n- request latency and error-rate metrics.\n\nA successful Currency span on a failing checkout trace is useful negative evidence: it helps rule out currency conversion as the causal step for that request.\n\nCurrency issues should be separated from Payment issues. Currency transforms values; Payment performs the charge. Similar monetary vocabulary in logs does not imply the same service responsibility."
+        },
+        {
+          "source_id": "metrics-guide.md",
+          "content": "# Metrics Guide\n\nMetrics summarize system behavior over time.\n\nCommon metric types include counters, gauges, and histograms.\n\nA counter increases cumulatively. Request counters are usually converted into rates using a function such as `rate(counter[5m])`.\n\nA gauge can move up or down and is useful for quantities such as queue depth, memory usage, or active connections.\n\nHistograms aggregate observations into buckets and can be used to estimate latency percentiles such as p50, p95, and p99.\n\nFor service health, useful signals include:\n\n- traffic;\n- error rate;\n- latency;\n- saturation.\n\nThese are closely related to the SRE \"golden signals\".\n\nWhen evaluating checkout behavior, metrics can show that `oteldemo.CheckoutService/PlaceOrder` has an elevated error rate or latency. Metrics alone normally cannot identify the exact downstream call that failed for an individual request.\n\nAlways distinguish zero from missing data. An absent series may mean that no metric exists or no samples were emitted, not that the measured value is zero.\n\nMetrics are strongest for detection and quantification; traces and logs are usually needed for request-level root-cause evidence."
+        },
+        {
+          "source_id": "payment-service.md",
+          "content": "# Payment Service\n\nPaymentService is responsible for charging a customer as part of checkout. The main RPC used by Checkout is `oteldemo.PaymentService/Charge`.\n\nA successful payment request reaches the Payment service, executes the charge logic, and returns a successful gRPC status to the caller. A payment-related checkout failure can occur at several different layers, so investigators should distinguish them carefully.\n\nExamples include:\n\n1. The Checkout client cannot resolve or connect to PaymentService.\n2. The RPC reaches PaymentService but fails before charge processing completes.\n3. PaymentService executes normally but rejects or cannot process the charge.\n4. PaymentService is healthy, but Checkout mishandles the returned result.\n\nThe presence of a failing Checkout → Payment client span does not prove that PaymentService processed the request. If the client span reports a connectivity-oriented status such as `UNAVAILABLE` and no matching Payment server span exists, the failure may have happened before the request arrived at PaymentService.\n\nWhen the server span exists, inspect Payment logs and span attributes for the application-level mechanism.\n\nUseful evidence includes:\n\n- `oteldemo.PaymentService/Charge`;\n- client and server span pairing;\n- `rpc.response.status_code`;\n- trace IDs shared between Checkout and Payment logs;\n- Payment request rate, error rate, and latency.\n\nPaymentService should not be blamed solely because a failing trace contains the word \"payment\"; the causal path must be verified."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "The purpose of oteldemo.CheckoutService/PlaceOrder is to coordinate the order-placement workflow.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "PlaceOrder orchestrates a sequence of steps including retrieving the customer's cart, resolving product information, converting prices when needed, obtaining a shipping quote, charging the customer, and creating the final order response.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "PlaceOrder acts as an orchestration service that depends on downstream services such as the Cart service, Product Catalog, Currency service, Shipping service, and Payment service.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "The purpose of oteldemo.CheckoutService/PlaceOrder is to coordinate the order-placement workflow.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "PlaceOrder functions as an orchestration service that retrieves the customer's cart, resolves product information, converts prices when needed, obtains a shipping quote, charges the customer, and creates the final order response.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "A",
+      "human_rationale": "more precise"
+    },
+    {
+      "query_id": "dev-006",
+      "question": "How can I tie messages emitted by several services to the same user transaction?",
+      "evidence": [
+        {
+          "source_id": "checkout-architecture.md",
+          "content": "# Checkout Architecture\n\nThe Checkout service coordinates the order-placement workflow. Its main operation is `oteldemo.CheckoutService/PlaceOrder`.\n\nA typical checkout request retrieves the customer's cart, resolves product information, converts prices when needed, obtains a shipping quote, charges the customer, and creates the final order response. Checkout is therefore an orchestration service: a failure in one downstream dependency can make `PlaceOrder` fail even when the Checkout process itself is healthy.\n\nThe most important downstream calls are:\n\n- Cart service for the current basket;\n- Product Catalog for product metadata;\n- Currency service for price conversion;\n- Shipping service for delivery cost;\n- Payment service for the final charge.\n\nMost service-to-service calls use gRPC. A distributed trace is the best source for determining which dependency was reached and which call failed for a specific request.\n\nA failed child span should not automatically be interpreted as a downstream application failure. For example, a client span may fail before a corresponding server span exists. That pattern can indicate service discovery, DNS, connection, or transport problems.\n\nUseful evidence during investigation includes:\n\n- the `oteldemo.CheckoutService/PlaceOrder` server span;\n- child spans for downstream RPC calls;\n- `rpc.response.status_code`;\n- trace-correlated Checkout logs;\n- the error rate and latency of `PlaceOrder`.\n\nCheckout owns orchestration logic, but it does not own payment authorization, product catalog data, or shipping calculation logic."
+        },
+        {
+          "source_id": "distributed-tracing-guide.md",
+          "content": "# Distributed Tracing Guide\n\nA distributed trace represents the execution path of one request across multiple services.\n\nA trace contains spans. Each span represents an operation such as an HTTP request, gRPC call, database query, or internal computation.\n\nImportant identifiers include:\n\n- `TraceId`: identifies the complete distributed request;\n- `SpanId`: identifies one operation inside the trace;\n- parent span ID: links a child operation to its caller.\n\nTrace IDs are typically longer than span IDs and should not be confused when correlating telemetry.\n\nSpan kinds commonly include:\n\n- SERVER;\n- CLIENT;\n- INTERNAL;\n- PRODUCER;\n- CONSUMER.\n\nWhen diagnosing a failed RPC, compare the client span with the corresponding server span. A client error with no downstream server span suggests that the request may have failed before reaching the service.\n\nDo not sum span durations to estimate total request time. Parent spans include child time, and parallel spans can overlap.\n\nThe critical path is more informative for latency analysis than simply selecting the longest visible span.\n\nTracing is especially useful for distinguishing healthy upstream dependencies from the first failing dependency on a specific request path."
+        },
+        {
+          "source_id": "observability-guide.md",
+          "content": "# Observability Guide\n\nObservability combines multiple telemetry signals to understand the internal behavior of a distributed system from its external outputs.\n\nThe three primary signals used by RootLens are metrics, traces, and logs.\n\nMetrics answer questions such as:\n\n- Is error rate increasing?\n- Is latency degrading?\n- How much traffic is affected?\n- Is a resource saturated?\n\nDistributed traces reconstruct the path of an individual request across service boundaries. They are particularly useful for locating the dependency or operation where a failing request diverges from a healthy one.\n\nLogs provide detailed events emitted during execution. Structured logs can include service names, error fields, trace IDs, span IDs, and application-specific context.\n\nA typical investigation may proceed from aggregate symptoms to request-level evidence:\n\n```text\nmetrics\n→ detect and quantify degradation\n\ntraces\n→ localize the failing path\n\nlogs\n→ identify the detailed mechanism\n```\n\nThis order is useful but not mandatory.\n\nObservability evidence should be interpreted causally. An error in telemetry is not necessarily the root cause simply because it is visible."
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "content": "# Payment Runbook\n\nUse this runbook when a checkout investigation points toward the Payment dependency.\n\nFirst determine whether the request actually reached PaymentService.\n\n## Client span exists, server span missing\n\nThis pattern suggests failure before PaymentService handled the request.\n\nInvestigate:\n\n- service name and endpoint configuration;\n- name resolution;\n- service discovery;\n- network connectivity;\n- gRPC status and status description.\n\n`UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\n\n## Payment server span exists\n\nIf the server span exists, inspect PaymentService itself.\n\nCheck:\n\n- Payment application logs;\n- gRPC server status;\n- charge-processing errors;\n- latency;\n- downstream calls made by PaymentService.\n\n## Distinguish symptom from cause\n\nA frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure.\n\nLikewise, a Payment-related error elsewhere in telemetry is not causal unless it belongs to the failing request path.\n\nA useful final report should state whether the failure occurred:\n\n```text\nbefore PaymentService\ninside PaymentService\nafter PaymentService returned\n```\n\nand cite the trace and logs supporting that conclusion."
+        },
+        {
+          "source_id": "payment-service.md",
+          "content": "# Payment Service\n\nPaymentService is responsible for charging a customer as part of checkout. The main RPC used by Checkout is `oteldemo.PaymentService/Charge`.\n\nA successful payment request reaches the Payment service, executes the charge logic, and returns a successful gRPC status to the caller. A payment-related checkout failure can occur at several different layers, so investigators should distinguish them carefully.\n\nExamples include:\n\n1. The Checkout client cannot resolve or connect to PaymentService.\n2. The RPC reaches PaymentService but fails before charge processing completes.\n3. PaymentService executes normally but rejects or cannot process the charge.\n4. PaymentService is healthy, but Checkout mishandles the returned result.\n\nThe presence of a failing Checkout → Payment client span does not prove that PaymentService processed the request. If the client span reports a connectivity-oriented status such as `UNAVAILABLE` and no matching Payment server span exists, the failure may have happened before the request arrived at PaymentService.\n\nWhen the server span exists, inspect Payment logs and span attributes for the application-level mechanism.\n\nUseful evidence includes:\n\n- `oteldemo.PaymentService/Charge`;\n- client and server span pairing;\n- `rpc.response.status_code`;\n- trace IDs shared between Checkout and Payment logs;\n- Payment request rate, error rate, and latency.\n\nPaymentService should not be blamed solely because a failing trace contains the word \"payment\"; the causal path must be verified."
+        },
+        {
+          "source_id": "service-discovery.md",
+          "content": "# Service Discovery\n\nDistributed applications need a mechanism for locating service instances.\n\nA client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses. The resulting addresses are then used to establish a connection to the downstream service.\n\nService discovery failures can occur because of:\n\n- an invalid service name;\n- incorrect endpoint configuration;\n- failed DNS or name resolution;\n- no available service instances;\n- stale or incomplete discovery data.\n\nA discovery failure can prevent an RPC from reaching the downstream application at all. In traces, this may appear as a failing client span with no corresponding server span.\n\nMessages such as \"name resolver error\", \"produced zero addresses\", or equivalent resolver diagnostics strongly suggest that the client could not obtain a usable destination.\n\nService discovery is related to, but distinct from, DNS. DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.\n\nFor incident investigation, compare the client-side error with service endpoint configuration, DNS behavior, and the presence or absence of a downstream server span."
+        },
+        {
+          "source_id": "structured-logging-guide.md",
+          "content": "# Structured Logging Guide\n\nStructured logs represent events using fields rather than relying only on free-form text.\n\nA structured log entry may contain:\n\n- timestamp;\n- severity;\n- message body;\n- `resource.service.name`;\n- trace ID;\n- span ID;\n- error code;\n- request or user context.\n\nTrace and span identifiers allow logs to be correlated with a distributed trace when the application emits them correctly.\n\nNot every log entry has trace context. Background tasks, startup messages, health checks, and infrastructure logs may not belong to a user request.\n\nInvestigators should avoid searching only for the word \"error\" and assuming every match is causal. A relevant log should ideally satisfy several conditions:\n\n- it occurs in the incident time window;\n- it belongs to a service on the failing request path;\n- it shares the relevant trace ID when available;\n- its message explains or supports the observed failure.\n\nTelemetry can contain malformed or surprising timestamps. Such data-quality problems should be recorded rather than silently treated as trustworthy evidence."
+        },
+        {
+          "source_id": "telemetry-correlation.md",
+          "content": "# Telemetry Correlation\n\nRoot-cause analysis often requires linking metrics, traces, and logs that describe the same incident from different perspectives.\n\nMetrics are aggregated, so they rarely identify a single request. Traces and logs provide request-level evidence.\n\nA common correlation workflow is:\n\n1. Use metrics to identify the affected service, time window, and symptom.\n2. Select a failing trace from that interval.\n3. Use the trace ID to find logs emitted by services on that request path.\n4. Compare failing and healthy traces when possible.\n5. Check whether the detailed log message is consistent with the failing span.\n\n`TraceId` and `SpanId` serve different purposes. A trace ID groups the entire distributed request, while a span ID identifies one operation within that trace.\n\nSearching logs with a span ID when the logging backend expects the trace ID may return incomplete or misleading results.\n\nCorrelation does not establish causality by itself. A log can share the correct trace ID and still describe a non-causal warning. Evidence should also explain the observed failure and occur on the relevant causal path."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "To tie messages from several services to the same user transaction, applications must emit trace IDs and span IDs in their structured logs.",
+            "sources": [
+              "structured-logging-guide.md"
+            ]
+          },
+          {
+            "text": "A trace ID identifies the complete distributed request, allowing logs from different services involved in that request to be grouped together.",
+            "sources": [
+              "distributed-tracing-guide.md",
+              "telemetry-correlation.md"
+            ]
+          },
+          {
+            "text": "Investigators can use the trace ID to find logs emitted by services on the specific request path associated with that transaction.",
+            "sources": [
+              "telemetry-correlation.md"
+            ]
+          },
+          {
+            "text": "Span IDs identify individual operations within the trace and link child operations to their callers, providing further granularity for correlation.",
+            "sources": [
+              "distributed-tracing-guide.md",
+              "telemetry-correlation.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "To tie messages from several services to the same user transaction, you must use the trace ID, which groups the entire distributed request across service boundaries.",
+            "sources": [
+              "structured-logging-guide.md",
+              "telemetry-correlation.md"
+            ]
+          },
+          {
+            "text": "Services must emit the trace ID in their structured logs so that logs can be correlated with the distributed trace of the request.",
+            "sources": [
+              "structured-logging-guide.md",
+              "telemetry-correlation.md"
+            ]
+          },
+          {
+            "text": "You can use the trace ID to find logs emitted by all services on the specific request path associated with that transaction.",
+            "sources": [
+              "telemetry-correlation.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "A",
+      "human_rationale": "more relevant and precise"
+    },
+    {
+      "query_id": "dev-007",
+      "question": "What can make an RPC fail before the remote application ever sees the request?",
+      "evidence": [
+        {
+          "source_id": "cart-service.md",
+          "content": "# Cart Service\n\nThe Cart service stores and retrieves the products currently selected by a user. Checkout depends on Cart early in the order-placement workflow.\n\nA cart failure can prevent checkout before payment or shipping is attempted. For this reason, the position of the Cart call in a distributed trace matters when diagnosing a failed order.\n\nTypical Cart operations include retrieving a cart, adding an item, and emptying the cart after a successful order. If Checkout cannot retrieve the cart, later dependencies may never be called.\n\nInvestigators should distinguish:\n\n- an empty but valid cart;\n- a Cart RPC error;\n- a slow Cart response;\n- a connectivity problem before the Cart server receives the request.\n\nUseful evidence includes Cart client/server spans, gRPC status codes, Cart logs correlated by trace ID, and Cart latency metrics.\n\nA healthy PaymentService cannot compensate for a Cart failure that happens earlier in the checkout path. Conversely, an error elsewhere in the same trace does not make Cart causal unless it explains the failed request path."
+        },
+        {
+          "source_id": "frontend-service.md",
+          "content": "# Frontend Service\n\nThe Frontend service exposes the user-facing application and translates browser interactions into backend requests.\n\nDuring checkout, the browser may call an endpoint such as `/api/checkout`. The Frontend then invokes backend services, including Checkout.\n\nA browser-visible HTTP 500 establishes that the user request failed, but it does not identify the backend root cause. Investigators should correlate the failing frontend request with the distributed trace and downstream service spans.\n\nUseful frontend evidence includes:\n\n- HTTP route and status code;\n- frontend logs such as checkout failure messages;\n- the trace ID associated with the request;\n- timing of the request;\n- the downstream Checkout span.\n\nA Frontend error can be a symptom of a deeper backend failure. For example, a Checkout RPC may return an error to Frontend after a dependency failure. In that case, the frontend HTTP 500 is evidence of impact, not necessarily the underlying cause."
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "content": "# gRPC Troubleshooting\n\ngRPC status codes describe the outcome observed by an RPC caller. They should be interpreted together with traces, logs, and service topology.\n\n`UNAVAILABLE` usually indicates that the service is currently unavailable at the transport or connectivity level. Possible causes include:\n\n- unreachable endpoint;\n- connection failure;\n- name-resolution failure;\n- unavailable service instance;\n- transient network failure.\n\n`DEADLINE_EXCEEDED` means that the operation did not complete before the caller's deadline. The underlying cause may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.\n\n`INTERNAL` is broader. It can represent an internal application failure or an upstream service translating a lower-level dependency failure into a generic error.\n\nWhen a client span fails, check whether a corresponding server span exists. If no server span exists, the failure may have occurred before the downstream application processed the request.\n\nUseful span fields include:\n\n- RPC service and method;\n- `rpc.response.status_code`;\n- span status;\n- status description;\n- client/server span relationship;\n- trace ID.\n\nDo not diagnose root cause from the status code alone. The same code can result from several mechanisms."
+        },
+        {
+          "source_id": "payment-service.md",
+          "content": "# Payment Service\n\nPaymentService is responsible for charging a customer as part of checkout. The main RPC used by Checkout is `oteldemo.PaymentService/Charge`.\n\nA successful payment request reaches the Payment service, executes the charge logic, and returns a successful gRPC status to the caller. A payment-related checkout failure can occur at several different layers, so investigators should distinguish them carefully.\n\nExamples include:\n\n1. The Checkout client cannot resolve or connect to PaymentService.\n2. The RPC reaches PaymentService but fails before charge processing completes.\n3. PaymentService executes normally but rejects or cannot process the charge.\n4. PaymentService is healthy, but Checkout mishandles the returned result.\n\nThe presence of a failing Checkout → Payment client span does not prove that PaymentService processed the request. If the client span reports a connectivity-oriented status such as `UNAVAILABLE` and no matching Payment server span exists, the failure may have happened before the request arrived at PaymentService.\n\nWhen the server span exists, inspect Payment logs and span attributes for the application-level mechanism.\n\nUseful evidence includes:\n\n- `oteldemo.PaymentService/Charge`;\n- client and server span pairing;\n- `rpc.response.status_code`;\n- trace IDs shared between Checkout and Payment logs;\n- Payment request rate, error rate, and latency.\n\nPaymentService should not be blamed solely because a failing trace contains the word \"payment\"; the causal path must be verified."
+        },
+        {
+          "source_id": "service-discovery.md",
+          "content": "# Service Discovery\n\nDistributed applications need a mechanism for locating service instances.\n\nA client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses. The resulting addresses are then used to establish a connection to the downstream service.\n\nService discovery failures can occur because of:\n\n- an invalid service name;\n- incorrect endpoint configuration;\n- failed DNS or name resolution;\n- no available service instances;\n- stale or incomplete discovery data.\n\nA discovery failure can prevent an RPC from reaching the downstream application at all. In traces, this may appear as a failing client span with no corresponding server span.\n\nMessages such as \"name resolver error\", \"produced zero addresses\", or equivalent resolver diagnostics strongly suggest that the client could not obtain a usable destination.\n\nService discovery is related to, but distinct from, DNS. DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.\n\nFor incident investigation, compare the client-side error with service endpoint configuration, DNS behavior, and the presence or absence of a downstream server span."
+        },
+        {
+          "source_id": "timeout-and-retry-guidance.md",
+          "content": "# Timeout and Retry Guidance\n\nTimeouts and retries protect distributed systems from waiting indefinitely on dependencies, but poor retry policy can amplify incidents.\n\nA request that exceeds its configured deadline may surface as `DEADLINE_EXCEEDED`. Investigators should determine where the time was actually spent instead of assuming the slowest-looking span is the root cause.\n\nRetries can help with transient failures such as temporary connection errors, but retries may also:\n\n- increase downstream load;\n- extend end-to-end latency;\n- create retry storms;\n- duplicate non-idempotent operations;\n- hide the original failure pattern.\n\nRetry policies should consider idempotency, backoff, jitter, maximum attempts, and total time budget.\n\nFor diagnosis, inspect:\n\n- caller deadline;\n- number of attempts;\n- per-attempt latency;\n- downstream server spans;\n- total parent-span duration;\n- whether retry attempts overlap or occur sequentially.\n\nA `DEADLINE_EXCEEDED` error does not automatically imply a network failure. It means the deadline expired; traces and metrics are needed to identify why."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "An RPC can fail before the remote application sees the request if there is a service discovery failure, such as an invalid service name, incorrect endpoint configuration, failed DNS or name resolution, no available service instances, or stale/incomplete discovery data.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "An RPC can fail before the remote application sees the request due to transport or connectivity level issues, including unreachable endpoints, connection failures, name-resolution failures, unavailable service instances, or transient network failures.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "A failure occurring before the downstream application processes the request is indicated by a failing client span with no corresponding server span in the traces.",
+            "sources": [
+              "grpc-troubleshooting.md",
+              "service-discovery.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "An RPC can fail before the remote application sees the request if there is a name-resolution failure or the client cannot resolve the service name.",
+            "sources": [
+              "grpc-troubleshooting.md",
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "An RPC can fail before the remote application sees the request due to connection failures or unreachable endpoints.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "An RPC can fail before the remote application sees the request if there are no available service instances.",
+            "sources": [
+              "grpc-troubleshooting.md",
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "An RPC can fail before the remote application sees the request due to transient network failures.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "An RPC can fail before the remote application sees the request due to incorrect endpoint configuration.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "An RPC can fail before the remote application sees the request due to stale or incomplete discovery data.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "A failure occurring before the downstream application processes the request is indicated by a failing client span with no corresponding server span.",
+            "sources": [
+              "grpc-troubleshooting.md",
+              "service-discovery.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "Service discovery failures, such as producing zero addresses or name resolver errors, can prevent an RPC from reaching the downstream application at all.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "A",
+      "human_rationale": "answer B is too long for the same content"
+    },
+    {
+      "query_id": "dev-008",
+      "question": "Why is a browser HTTP 500 not enough to identify which backend component is faulty?",
+      "evidence": [
+        {
+          "source_id": "checkout-runbook.md",
+          "content": "# Checkout Runbook\n\nUse this runbook when users cannot complete checkout or `/api/checkout` returns errors.\n\n## 1. Confirm impact\n\nCheck:\n\n- `oteldemo.CheckoutService/PlaceOrder` request rate;\n- error rate;\n- p50, p95, and p99 latency;\n- whether the failure is global or intermittent.\n\n## 2. Select a failing request\n\nOpen a failing distributed trace and inspect Checkout and its downstream calls.\n\nExpected dependencies can include:\n\n- Cart;\n- Product Catalog;\n- Currency;\n- Shipping;\n- Payment.\n\n## 3. Identify the first failing dependency\n\nDo not assume the final Checkout error is the root cause.\n\nFor each failing client span, check:\n\n- gRPC status;\n- status description;\n- whether a matching server span exists;\n- whether earlier dependencies completed successfully.\n\n## 4. Correlate logs\n\nSearch logs using the full trace ID. Look for application errors in services on the failing path.\n\n## 5. Compare with healthy behavior\n\nA healthy trace provides a useful reference for normal dependency ordering and approximate latency.\n\n## 6. Check configuration only after localization\n\nIf the trace indicates connection or resolution failure, inspect endpoint and service-discovery configuration.\n\nIf the request reached the downstream server, investigate that service's application logs.\n\nRecord the final conclusion with explicit evidence and rejected alternatives."
+        },
+        {
+          "source_id": "dns-troubleshooting.md",
+          "content": "# DNS Troubleshooting\n\nDNS translates host names into network addresses and may participate in service discovery for distributed applications.\n\nCommon DNS-related failure modes include:\n\n- nonexistent or misspelled host names;\n- temporary resolver failures;\n- stale cached records;\n- incorrect search domains;\n- network access problems to the resolver;\n- records that resolve to unreachable addresses.\n\nDNS evidence should be separated from generic service-discovery evidence. A name-resolution error can originate in DNS, but some service discovery mechanisms do not use DNS directly.\n\nDuring investigation, compare:\n\n- the configured service name;\n- resolver error messages;\n- actual DNS lookup results;\n- container or host search-domain configuration;\n- whether other clients can resolve the same name;\n- whether a server span exists downstream.\n\nIf an RPC client reports that resolution produced no addresses, DNS is one hypothesis, not an automatic conclusion. Endpoint configuration or discovery state can produce a similar symptom."
+        },
+        {
+          "source_id": "frontend-service.md",
+          "content": "# Frontend Service\n\nThe Frontend service exposes the user-facing application and translates browser interactions into backend requests.\n\nDuring checkout, the browser may call an endpoint such as `/api/checkout`. The Frontend then invokes backend services, including Checkout.\n\nA browser-visible HTTP 500 establishes that the user request failed, but it does not identify the backend root cause. Investigators should correlate the failing frontend request with the distributed trace and downstream service spans.\n\nUseful frontend evidence includes:\n\n- HTTP route and status code;\n- frontend logs such as checkout failure messages;\n- the trace ID associated with the request;\n- timing of the request;\n- the downstream Checkout span.\n\nA Frontend error can be a symptom of a deeper backend failure. For example, a Checkout RPC may return an error to Frontend after a dependency failure. In that case, the frontend HTTP 500 is evidence of impact, not necessarily the underlying cause."
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "content": "# gRPC Troubleshooting\n\ngRPC status codes describe the outcome observed by an RPC caller. They should be interpreted together with traces, logs, and service topology.\n\n`UNAVAILABLE` usually indicates that the service is currently unavailable at the transport or connectivity level. Possible causes include:\n\n- unreachable endpoint;\n- connection failure;\n- name-resolution failure;\n- unavailable service instance;\n- transient network failure.\n\n`DEADLINE_EXCEEDED` means that the operation did not complete before the caller's deadline. The underlying cause may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.\n\n`INTERNAL` is broader. It can represent an internal application failure or an upstream service translating a lower-level dependency failure into a generic error.\n\nWhen a client span fails, check whether a corresponding server span exists. If no server span exists, the failure may have occurred before the downstream application processed the request.\n\nUseful span fields include:\n\n- RPC service and method;\n- `rpc.response.status_code`;\n- span status;\n- status description;\n- client/server span relationship;\n- trace ID.\n\nDo not diagnose root cause from the status code alone. The same code can result from several mechanisms."
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "content": "# Payment Runbook\n\nUse this runbook when a checkout investigation points toward the Payment dependency.\n\nFirst determine whether the request actually reached PaymentService.\n\n## Client span exists, server span missing\n\nThis pattern suggests failure before PaymentService handled the request.\n\nInvestigate:\n\n- service name and endpoint configuration;\n- name resolution;\n- service discovery;\n- network connectivity;\n- gRPC status and status description.\n\n`UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\n\n## Payment server span exists\n\nIf the server span exists, inspect PaymentService itself.\n\nCheck:\n\n- Payment application logs;\n- gRPC server status;\n- charge-processing errors;\n- latency;\n- downstream calls made by PaymentService.\n\n## Distinguish symptom from cause\n\nA frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure.\n\nLikewise, a Payment-related error elsewhere in telemetry is not causal unless it belongs to the failing request path.\n\nA useful final report should state whether the failure occurred:\n\n```text\nbefore PaymentService\ninside PaymentService\nafter PaymentService returned\n```\n\nand cite the trace and logs supporting that conclusion."
+        },
+        {
+          "source_id": "service-discovery.md",
+          "content": "# Service Discovery\n\nDistributed applications need a mechanism for locating service instances.\n\nA client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses. The resulting addresses are then used to establish a connection to the downstream service.\n\nService discovery failures can occur because of:\n\n- an invalid service name;\n- incorrect endpoint configuration;\n- failed DNS or name resolution;\n- no available service instances;\n- stale or incomplete discovery data.\n\nA discovery failure can prevent an RPC from reaching the downstream application at all. In traces, this may appear as a failing client span with no corresponding server span.\n\nMessages such as \"name resolver error\", \"produced zero addresses\", or equivalent resolver diagnostics strongly suggest that the client could not obtain a usable destination.\n\nService discovery is related to, but distinct from, DNS. DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.\n\nFor incident investigation, compare the client-side error with service endpoint configuration, DNS behavior, and the presence or absence of a downstream server span."
+        },
+        {
+          "source_id": "timeout-and-retry-guidance.md",
+          "content": "# Timeout and Retry Guidance\n\nTimeouts and retries protect distributed systems from waiting indefinitely on dependencies, but poor retry policy can amplify incidents.\n\nA request that exceeds its configured deadline may surface as `DEADLINE_EXCEEDED`. Investigators should determine where the time was actually spent instead of assuming the slowest-looking span is the root cause.\n\nRetries can help with transient failures such as temporary connection errors, but retries may also:\n\n- increase downstream load;\n- extend end-to-end latency;\n- create retry storms;\n- duplicate non-idempotent operations;\n- hide the original failure pattern.\n\nRetry policies should consider idempotency, backoff, jitter, maximum attempts, and total time budget.\n\nFor diagnosis, inspect:\n\n- caller deadline;\n- number of attempts;\n- per-attempt latency;\n- downstream server spans;\n- total parent-span duration;\n- whether retry attempts overlap or occur sequentially.\n\nA `DEADLINE_EXCEEDED` error does not automatically imply a network failure. It means the deadline expired; traces and metrics are needed to identify why."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "A browser-visible HTTP 500 establishes that the user request failed but does not identify the backend root cause.",
+            "sources": [
+              "frontend-service.md"
+            ]
+          },
+          {
+            "text": "A Frontend error can be a symptom of a deeper backend failure, such as a Checkout RPC returning an error to Frontend after a dependency failure.",
+            "sources": [
+              "frontend-service.md"
+            ]
+          },
+          {
+            "text": "A frontend HTTP 500 may be a propagated symptom rather than the original failure in a downstream service like Payment.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "Investigators must correlate the failing frontend request with the distributed trace and downstream service spans to identify the cause.",
+            "sources": [
+              "frontend-service.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "An HTTP 500 error only establishes that the user request failed, but it does not identify the backend root cause.",
+            "sources": [
+              "frontend-service.md"
+            ]
+          },
+          {
+            "text": "A frontend HTTP 500 can be a symptom of a deeper backend failure, such as a Checkout RPC returning an error to the Frontend after a dependency failure.",
+            "sources": [
+              "frontend-service.md"
+            ]
+          },
+          {
+            "text": "A frontend HTTP 500 may be a propagated symptom rather than the original failure, meaning the error originated in a downstream service like Payment.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "The final error reported by a service like Checkout is not necessarily the root cause, as earlier dependencies may have failed.",
+            "sources": [
+              "checkout-runbook.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "tie",
+      "human_rationale": "almost same answers except the last one which is different"
+    },
+    {
+      "query_id": "dev-009",
+      "question": "Which downstream dependencies participate in placing an order?",
+      "evidence": [
+        {
+          "source_id": "cart-service.md",
+          "content": "# Cart Service\n\nThe Cart service stores and retrieves the products currently selected by a user. Checkout depends on Cart early in the order-placement workflow.\n\nA cart failure can prevent checkout before payment or shipping is attempted. For this reason, the position of the Cart call in a distributed trace matters when diagnosing a failed order.\n\nTypical Cart operations include retrieving a cart, adding an item, and emptying the cart after a successful order. If Checkout cannot retrieve the cart, later dependencies may never be called.\n\nInvestigators should distinguish:\n\n- an empty but valid cart;\n- a Cart RPC error;\n- a slow Cart response;\n- a connectivity problem before the Cart server receives the request.\n\nUseful evidence includes Cart client/server spans, gRPC status codes, Cart logs correlated by trace ID, and Cart latency metrics.\n\nA healthy PaymentService cannot compensate for a Cart failure that happens earlier in the checkout path. Conversely, an error elsewhere in the same trace does not make Cart causal unless it explains the failed request path."
+        },
+        {
+          "source_id": "checkout-architecture.md",
+          "content": "# Checkout Architecture\n\nThe Checkout service coordinates the order-placement workflow. Its main operation is `oteldemo.CheckoutService/PlaceOrder`.\n\nA typical checkout request retrieves the customer's cart, resolves product information, converts prices when needed, obtains a shipping quote, charges the customer, and creates the final order response. Checkout is therefore an orchestration service: a failure in one downstream dependency can make `PlaceOrder` fail even when the Checkout process itself is healthy.\n\nThe most important downstream calls are:\n\n- Cart service for the current basket;\n- Product Catalog for product metadata;\n- Currency service for price conversion;\n- Shipping service for delivery cost;\n- Payment service for the final charge.\n\nMost service-to-service calls use gRPC. A distributed trace is the best source for determining which dependency was reached and which call failed for a specific request.\n\nA failed child span should not automatically be interpreted as a downstream application failure. For example, a client span may fail before a corresponding server span exists. That pattern can indicate service discovery, DNS, connection, or transport problems.\n\nUseful evidence during investigation includes:\n\n- the `oteldemo.CheckoutService/PlaceOrder` server span;\n- child spans for downstream RPC calls;\n- `rpc.response.status_code`;\n- trace-correlated Checkout logs;\n- the error rate and latency of `PlaceOrder`.\n\nCheckout owns orchestration logic, but it does not own payment authorization, product catalog data, or shipping calculation logic."
+        },
+        {
+          "source_id": "checkout-payment-flow.md",
+          "content": "# Checkout Payment Flow\n\nThis document describes the normal business sequence between Checkout and Payment.\n\nA simplified successful order flow is:\n\n```text\nFrontend\n→ Checkout\n→ Cart\n→ Product Catalog\n→ Currency\n→ Shipping\n→ Payment\n→ Checkout response\n→ Frontend response\n```\n\nCheckout invokes `oteldemo.PaymentService/Charge` after it has enough information to calculate the final amount.\n\nOn a successful request:\n\n1. Checkout receives the order request.\n2. Earlier dependencies complete successfully.\n3. Checkout calls PaymentService.\n4. PaymentService processes the charge.\n5. Checkout completes the order and returns success.\n\nThis document is useful for understanding expected control flow and dependency ordering.\n\nIt is not a troubleshooting guide. It does not enumerate network-resolution failure modes, retry policy, or detailed gRPC error interpretation.\n\nBecause it contains terms such as Checkout, PaymentService, `Charge`, frontend, shipping, and order, it can act as a hard negative for questions that require a specific troubleshooting or observability explanation rather than a description of the normal business workflow."
+        },
+        {
+          "source_id": "checkout-runbook.md",
+          "content": "# Checkout Runbook\n\nUse this runbook when users cannot complete checkout or `/api/checkout` returns errors.\n\n## 1. Confirm impact\n\nCheck:\n\n- `oteldemo.CheckoutService/PlaceOrder` request rate;\n- error rate;\n- p50, p95, and p99 latency;\n- whether the failure is global or intermittent.\n\n## 2. Select a failing request\n\nOpen a failing distributed trace and inspect Checkout and its downstream calls.\n\nExpected dependencies can include:\n\n- Cart;\n- Product Catalog;\n- Currency;\n- Shipping;\n- Payment.\n\n## 3. Identify the first failing dependency\n\nDo not assume the final Checkout error is the root cause.\n\nFor each failing client span, check:\n\n- gRPC status;\n- status description;\n- whether a matching server span exists;\n- whether earlier dependencies completed successfully.\n\n## 4. Correlate logs\n\nSearch logs using the full trace ID. Look for application errors in services on the failing path.\n\n## 5. Compare with healthy behavior\n\nA healthy trace provides a useful reference for normal dependency ordering and approximate latency.\n\n## 6. Check configuration only after localization\n\nIf the trace indicates connection or resolution failure, inspect endpoint and service-discovery configuration.\n\nIf the request reached the downstream server, investigate that service's application logs.\n\nRecord the final conclusion with explicit evidence and rejected alternatives."
+        },
+        {
+          "source_id": "incident-response-guide.md",
+          "content": "# Incident Response Guide\n\nRoot-cause analysis should separate observations, interpretations, hypotheses, and conclusions.\n\nAn observation is directly supported by evidence:\n\n```text\nCheckout error rate increased from the healthy baseline.\n```\n\nAn interpretation summarizes what the observation means:\n\n```text\nThe incident affects order placement.\n```\n\nA hypothesis proposes a possible mechanism:\n\n```text\nA downstream dependency may be unavailable.\n```\n\nA conclusion should be supported by multiple consistent pieces of evidence.\n\nA practical investigation workflow is:\n\n1. Define the user-visible symptom.\n2. Quantify the incident with metrics.\n3. Identify representative failing traces.\n4. Locate the first meaningful failure on the request path.\n5. Correlate logs and configuration.\n6. Generate competing hypotheses.\n7. Reject hypotheses contradicted by evidence.\n8. State the best-supported root cause or abstain if evidence is insufficient.\n\nAn error should not automatically be considered the root cause. Investigators should verify that it lies on the failing request path and explains the symptom.\n\nRootLens should follow the discipline:\n\n```text\nclaim → evidence → source\n```\n\nUnsupported certainty is worse than an explicit abstention."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "The downstream dependencies that participate in placing an order are the Cart service, Product Catalog, Currency service, Shipping service, and Payment service.",
+            "sources": [
+              "checkout-architecture.md",
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "The Cart service is used to retrieve the current basket.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "The Product Catalog is used to resolve product metadata.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "The Currency service is used for price conversion.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "The Shipping service is used to obtain a shipping quote or delivery cost.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "The Payment service is used to charge the customer.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "The downstream dependencies that participate in placing an order are the Cart service, Product Catalog, Currency service, Shipping service, and Payment service.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "The Cart service is used to retrieve the customer's current basket.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "The Product Catalog is used to resolve product information and metadata.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "The Currency service is used to convert prices when needed.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "The Shipping service is used to obtain a shipping quote and delivery cost.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          },
+          {
+            "text": "The Payment service is used to charge the customer and process the final charge.",
+            "sources": [
+              "checkout-architecture.md",
+              "checkout-payment-flow.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "tie",
+      "human_rationale": "same answers"
+    },
+    {
+      "query_id": "dev-011",
+      "question": "Which service calculates delivery cost before the customer is charged?",
+      "evidence": [
+        {
+          "source_id": "checkout-architecture.md",
+          "content": "# Checkout Architecture\n\nThe Checkout service coordinates the order-placement workflow. Its main operation is `oteldemo.CheckoutService/PlaceOrder`.\n\nA typical checkout request retrieves the customer's cart, resolves product information, converts prices when needed, obtains a shipping quote, charges the customer, and creates the final order response. Checkout is therefore an orchestration service: a failure in one downstream dependency can make `PlaceOrder` fail even when the Checkout process itself is healthy.\n\nThe most important downstream calls are:\n\n- Cart service for the current basket;\n- Product Catalog for product metadata;\n- Currency service for price conversion;\n- Shipping service for delivery cost;\n- Payment service for the final charge.\n\nMost service-to-service calls use gRPC. A distributed trace is the best source for determining which dependency was reached and which call failed for a specific request.\n\nA failed child span should not automatically be interpreted as a downstream application failure. For example, a client span may fail before a corresponding server span exists. That pattern can indicate service discovery, DNS, connection, or transport problems.\n\nUseful evidence during investigation includes:\n\n- the `oteldemo.CheckoutService/PlaceOrder` server span;\n- child spans for downstream RPC calls;\n- `rpc.response.status_code`;\n- trace-correlated Checkout logs;\n- the error rate and latency of `PlaceOrder`.\n\nCheckout owns orchestration logic, but it does not own payment authorization, product catalog data, or shipping calculation logic."
+        },
+        {
+          "source_id": "checkout-payment-flow.md",
+          "content": "# Checkout Payment Flow\n\nThis document describes the normal business sequence between Checkout and Payment.\n\nA simplified successful order flow is:\n\n```text\nFrontend\n→ Checkout\n→ Cart\n→ Product Catalog\n→ Currency\n→ Shipping\n→ Payment\n→ Checkout response\n→ Frontend response\n```\n\nCheckout invokes `oteldemo.PaymentService/Charge` after it has enough information to calculate the final amount.\n\nOn a successful request:\n\n1. Checkout receives the order request.\n2. Earlier dependencies complete successfully.\n3. Checkout calls PaymentService.\n4. PaymentService processes the charge.\n5. Checkout completes the order and returns success.\n\nThis document is useful for understanding expected control flow and dependency ordering.\n\nIt is not a troubleshooting guide. It does not enumerate network-resolution failure modes, retry policy, or detailed gRPC error interpretation.\n\nBecause it contains terms such as Checkout, PaymentService, `Charge`, frontend, shipping, and order, it can act as a hard negative for questions that require a specific troubleshooting or observability explanation rather than a description of the normal business workflow."
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "content": "# Payment Monitoring\n\nPayment monitoring focuses on the operational health of PaymentService over time.\n\nRecommended dashboards include:\n\n- request rate for `PaymentService/Charge`;\n- error rate by gRPC status;\n- p50, p95, and p99 latency;\n- process CPU and memory;\n- restart count;\n- availability over the selected interval.\n\nAlerts should distinguish sustained degradation from isolated failures. A short burst of `UNAVAILABLE` responses may require different handling from a prolonged error-rate increase.\n\nPayment monitoring is useful for answering questions such as:\n\n- Is PaymentService broadly unhealthy?\n- Did latency change during the incident window?\n- Are failures concentrated in one status code?\n- Is the service receiving traffic at all?\n\nMonitoring does not by itself determine whether an individual Checkout request reached PaymentService. For request-level diagnosis, inspect the distributed trace and look for corresponding Payment server spans.\n\nThis document intentionally contains vocabulary such as Payment, Checkout, `Charge`, latency, and error rate. It is therefore lexically similar to payment troubleshooting material, but its purpose is dashboard and alert design rather than diagnosing a specific request path."
+        },
+        {
+          "source_id": "payment-service.md",
+          "content": "# Payment Service\n\nPaymentService is responsible for charging a customer as part of checkout. The main RPC used by Checkout is `oteldemo.PaymentService/Charge`.\n\nA successful payment request reaches the Payment service, executes the charge logic, and returns a successful gRPC status to the caller. A payment-related checkout failure can occur at several different layers, so investigators should distinguish them carefully.\n\nExamples include:\n\n1. The Checkout client cannot resolve or connect to PaymentService.\n2. The RPC reaches PaymentService but fails before charge processing completes.\n3. PaymentService executes normally but rejects or cannot process the charge.\n4. PaymentService is healthy, but Checkout mishandles the returned result.\n\nThe presence of a failing Checkout → Payment client span does not prove that PaymentService processed the request. If the client span reports a connectivity-oriented status such as `UNAVAILABLE` and no matching Payment server span exists, the failure may have happened before the request arrived at PaymentService.\n\nWhen the server span exists, inspect Payment logs and span attributes for the application-level mechanism.\n\nUseful evidence includes:\n\n- `oteldemo.PaymentService/Charge`;\n- client and server span pairing;\n- `rpc.response.status_code`;\n- trace IDs shared between Checkout and Payment logs;\n- Payment request rate, error rate, and latency.\n\nPaymentService should not be blamed solely because a failing trace contains the word \"payment\"; the causal path must be verified."
+        },
+        {
+          "source_id": "shipping-service.md",
+          "content": "# Shipping Service\n\nThe Shipping service calculates delivery quotes and participates in the checkout workflow before payment is completed.\n\nCheckout asks Shipping for the cost of delivering the current cart. A shipping failure may cause order placement to fail even when Cart, Currency, Product Catalog, and Payment are healthy.\n\nWhen investigating a Shipping problem, determine whether the request reached the Shipping service. A client-side gRPC error without a corresponding Shipping server span can indicate a transport, resolution, or connectivity problem rather than faulty shipping business logic.\n\nRelevant evidence includes:\n\n- Shipping client and server spans;\n- the gRPC method name for the quote request;\n- `rpc.response.status_code`;\n- Shipping logs correlated by trace ID;\n- request latency and error rate;\n- upstream Checkout behavior.\n\nDo not confuse shipping latency with end-to-end checkout latency. The parent Checkout span includes time spent in multiple dependencies and orchestration work.\n\nIf the Shipping call completes successfully before a later Payment failure, Shipping should usually be treated as evidence of a healthy earlier dependency rather than as the root cause."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "The Shipping service calculates delivery quotes (delivery cost) before the customer is charged.",
+            "sources": [
+              "shipping-service.md"
+            ]
+          },
+          {
+            "text": "The Shipping service participates in the checkout workflow before payment is completed.",
+            "sources": [
+              "shipping-service.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "The Shipping service calculates delivery quotes (delivery cost) before the customer is charged.",
+            "sources": [
+              "shipping-service.md"
+            ]
+          },
+          {
+            "text": "The Shipping service participates in the checkout workflow before payment is completed.",
+            "sources": [
+              "shipping-service.md"
+            ]
+          },
+          {
+            "text": "The Payment service is responsible for charging the customer, which occurs after the shipping quote is obtained.",
+            "sources": [
+              "payment-service.md",
+              "checkout-architecture.md",
+              "checkout-payment-flow.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "A",
+      "human_rationale": "answer B doesnt respond to the question"
+    },
+    {
+      "query_id": "dev-013",
+      "question": "A client span returns UNAVAILABLE and there is no downstream server span. What should I investigate?",
+      "evidence": [
+        {
+          "source_id": "distributed-tracing-guide.md",
+          "content": "# Distributed Tracing Guide\n\nA distributed trace represents the execution path of one request across multiple services.\n\nA trace contains spans. Each span represents an operation such as an HTTP request, gRPC call, database query, or internal computation.\n\nImportant identifiers include:\n\n- `TraceId`: identifies the complete distributed request;\n- `SpanId`: identifies one operation inside the trace;\n- parent span ID: links a child operation to its caller.\n\nTrace IDs are typically longer than span IDs and should not be confused when correlating telemetry.\n\nSpan kinds commonly include:\n\n- SERVER;\n- CLIENT;\n- INTERNAL;\n- PRODUCER;\n- CONSUMER.\n\nWhen diagnosing a failed RPC, compare the client span with the corresponding server span. A client error with no downstream server span suggests that the request may have failed before reaching the service.\n\nDo not sum span durations to estimate total request time. Parent spans include child time, and parallel spans can overlap.\n\nThe critical path is more informative for latency analysis than simply selecting the longest visible span.\n\nTracing is especially useful for distinguishing healthy upstream dependencies from the first failing dependency on a specific request path."
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "content": "# gRPC Troubleshooting\n\ngRPC status codes describe the outcome observed by an RPC caller. They should be interpreted together with traces, logs, and service topology.\n\n`UNAVAILABLE` usually indicates that the service is currently unavailable at the transport or connectivity level. Possible causes include:\n\n- unreachable endpoint;\n- connection failure;\n- name-resolution failure;\n- unavailable service instance;\n- transient network failure.\n\n`DEADLINE_EXCEEDED` means that the operation did not complete before the caller's deadline. The underlying cause may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.\n\n`INTERNAL` is broader. It can represent an internal application failure or an upstream service translating a lower-level dependency failure into a generic error.\n\nWhen a client span fails, check whether a corresponding server span exists. If no server span exists, the failure may have occurred before the downstream application processed the request.\n\nUseful span fields include:\n\n- RPC service and method;\n- `rpc.response.status_code`;\n- span status;\n- status description;\n- client/server span relationship;\n- trace ID.\n\nDo not diagnose root cause from the status code alone. The same code can result from several mechanisms."
+        },
+        {
+          "source_id": "latency-troubleshooting.md",
+          "content": "# Latency Troubleshooting\n\nHigh end-to-end latency can result from a slow service, retries, queueing, network delay, resource saturation, or several moderate delays on the critical path.\n\nStart with latency metrics such as p50, p95, and p99. A percentile increase shows that the latency distribution changed but does not identify the responsible operation.\n\nThen inspect representative traces.\n\nImportant rules:\n\n- parent span duration includes child execution time;\n- parallel spans can overlap;\n- summing all span durations overestimates request latency;\n- the longest span is not automatically the root cause;\n- retries can create repeated spans and extend total latency.\n\nCompare failing or slow traces against a healthy baseline.\n\nCheck whether latency is concentrated in:\n\n- one downstream RPC;\n- repeated retry attempts;\n- a gap between operations;\n- internal processing;\n- several dependencies on the critical path.\n\n`DEADLINE_EXCEEDED` indicates that the request exceeded a deadline, not why. The underlying latency mechanism still requires evidence.\n\nFor RootLens, latency conclusions should identify the operation contributing to the critical path and cite the relevant spans and metrics."
+        },
+        {
+          "source_id": "observability-guide.md",
+          "content": "# Observability Guide\n\nObservability combines multiple telemetry signals to understand the internal behavior of a distributed system from its external outputs.\n\nThe three primary signals used by RootLens are metrics, traces, and logs.\n\nMetrics answer questions such as:\n\n- Is error rate increasing?\n- Is latency degrading?\n- How much traffic is affected?\n- Is a resource saturated?\n\nDistributed traces reconstruct the path of an individual request across service boundaries. They are particularly useful for locating the dependency or operation where a failing request diverges from a healthy one.\n\nLogs provide detailed events emitted during execution. Structured logs can include service names, error fields, trace IDs, span IDs, and application-specific context.\n\nA typical investigation may proceed from aggregate symptoms to request-level evidence:\n\n```text\nmetrics\n→ detect and quantify degradation\n\ntraces\n→ localize the failing path\n\nlogs\n→ identify the detailed mechanism\n```\n\nThis order is useful but not mandatory.\n\nObservability evidence should be interpreted causally. An error in telemetry is not necessarily the root cause simply because it is visible."
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "content": "# Payment Runbook\n\nUse this runbook when a checkout investigation points toward the Payment dependency.\n\nFirst determine whether the request actually reached PaymentService.\n\n## Client span exists, server span missing\n\nThis pattern suggests failure before PaymentService handled the request.\n\nInvestigate:\n\n- service name and endpoint configuration;\n- name resolution;\n- service discovery;\n- network connectivity;\n- gRPC status and status description.\n\n`UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\n\n## Payment server span exists\n\nIf the server span exists, inspect PaymentService itself.\n\nCheck:\n\n- Payment application logs;\n- gRPC server status;\n- charge-processing errors;\n- latency;\n- downstream calls made by PaymentService.\n\n## Distinguish symptom from cause\n\nA frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure.\n\nLikewise, a Payment-related error elsewhere in telemetry is not causal unless it belongs to the failing request path.\n\nA useful final report should state whether the failure occurred:\n\n```text\nbefore PaymentService\ninside PaymentService\nafter PaymentService returned\n```\n\nand cite the trace and logs supporting that conclusion."
+        },
+        {
+          "source_id": "service-discovery.md",
+          "content": "# Service Discovery\n\nDistributed applications need a mechanism for locating service instances.\n\nA client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses. The resulting addresses are then used to establish a connection to the downstream service.\n\nService discovery failures can occur because of:\n\n- an invalid service name;\n- incorrect endpoint configuration;\n- failed DNS or name resolution;\n- no available service instances;\n- stale or incomplete discovery data.\n\nA discovery failure can prevent an RPC from reaching the downstream application at all. In traces, this may appear as a failing client span with no corresponding server span.\n\nMessages such as \"name resolver error\", \"produced zero addresses\", or equivalent resolver diagnostics strongly suggest that the client could not obtain a usable destination.\n\nService discovery is related to, but distinct from, DNS. DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.\n\nFor incident investigation, compare the client-side error with service endpoint configuration, DNS behavior, and the presence or absence of a downstream server span."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "A client span returning UNAVAILABLE with no downstream server span suggests the failure occurred before the request reached the PaymentService.",
+            "sources": [
+              "payment-runbook.md",
+              "grpc-troubleshooting.md",
+              "distributed-tracing-guide.md"
+            ]
+          },
+          {
+            "text": "Investigation should focus on service name and endpoint configuration.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "Investigation should check for name resolution failures.",
+            "sources": [
+              "payment-runbook.md",
+              "grpc-troubleshooting.md",
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Investigation should verify service discovery mechanisms and data.",
+            "sources": [
+              "payment-runbook.md",
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Investigation should assess network connectivity.",
+            "sources": [
+              "payment-runbook.md",
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "Investigation should review gRPC status and status description for resolver-oriented diagnostics.",
+            "sources": [
+              "payment-runbook.md",
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "Potential causes for UNAVAILABLE in this context include unreachable endpoints, connection failures, name-resolution failures, unavailable service instances, or transient network failures.",
+            "sources": [
+              "grpc-troubleshooting.md",
+              "service-discovery.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "When a client span returns UNAVAILABLE with no corresponding server span, the failure likely occurred before the downstream application processed the request.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "You should investigate service name and endpoint configuration to ensure they are correct.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "You should investigate name resolution issues, such as DNS failures or invalid service names.",
+            "sources": [
+              "payment-runbook.md",
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "You should investigate service discovery to check for failed resolution, stale data, or no available service instances.",
+            "sources": [
+              "payment-runbook.md",
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "You should investigate network connectivity to rule out unreachable endpoints or transient network failures.",
+            "sources": [
+              "payment-runbook.md",
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "You should inspect the gRPC status code and the specific status description for resolver-oriented diagnostics (e.g., 'name resolver error' or 'produced zero addresses').",
+            "sources": [
+              "payment-runbook.md",
+              "service-discovery.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "B",
+      "human_rationale": "answer a is not relevent"
+    },
+    {
+      "query_id": "dev-015",
+      "question": "How can I distinguish PaymentService business logic failure from failure to reach PaymentService?",
+      "evidence": [
+        {
+          "source_id": "cart-service.md",
+          "content": "# Cart Service\n\nThe Cart service stores and retrieves the products currently selected by a user. Checkout depends on Cart early in the order-placement workflow.\n\nA cart failure can prevent checkout before payment or shipping is attempted. For this reason, the position of the Cart call in a distributed trace matters when diagnosing a failed order.\n\nTypical Cart operations include retrieving a cart, adding an item, and emptying the cart after a successful order. If Checkout cannot retrieve the cart, later dependencies may never be called.\n\nInvestigators should distinguish:\n\n- an empty but valid cart;\n- a Cart RPC error;\n- a slow Cart response;\n- a connectivity problem before the Cart server receives the request.\n\nUseful evidence includes Cart client/server spans, gRPC status codes, Cart logs correlated by trace ID, and Cart latency metrics.\n\nA healthy PaymentService cannot compensate for a Cart failure that happens earlier in the checkout path. Conversely, an error elsewhere in the same trace does not make Cart causal unless it explains the failed request path."
+        },
+        {
+          "source_id": "checkout-runbook.md",
+          "content": "# Checkout Runbook\n\nUse this runbook when users cannot complete checkout or `/api/checkout` returns errors.\n\n## 1. Confirm impact\n\nCheck:\n\n- `oteldemo.CheckoutService/PlaceOrder` request rate;\n- error rate;\n- p50, p95, and p99 latency;\n- whether the failure is global or intermittent.\n\n## 2. Select a failing request\n\nOpen a failing distributed trace and inspect Checkout and its downstream calls.\n\nExpected dependencies can include:\n\n- Cart;\n- Product Catalog;\n- Currency;\n- Shipping;\n- Payment.\n\n## 3. Identify the first failing dependency\n\nDo not assume the final Checkout error is the root cause.\n\nFor each failing client span, check:\n\n- gRPC status;\n- status description;\n- whether a matching server span exists;\n- whether earlier dependencies completed successfully.\n\n## 4. Correlate logs\n\nSearch logs using the full trace ID. Look for application errors in services on the failing path.\n\n## 5. Compare with healthy behavior\n\nA healthy trace provides a useful reference for normal dependency ordering and approximate latency.\n\n## 6. Check configuration only after localization\n\nIf the trace indicates connection or resolution failure, inspect endpoint and service-discovery configuration.\n\nIf the request reached the downstream server, investigate that service's application logs.\n\nRecord the final conclusion with explicit evidence and rejected alternatives."
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "content": "# Payment Monitoring\n\nPayment monitoring focuses on the operational health of PaymentService over time.\n\nRecommended dashboards include:\n\n- request rate for `PaymentService/Charge`;\n- error rate by gRPC status;\n- p50, p95, and p99 latency;\n- process CPU and memory;\n- restart count;\n- availability over the selected interval.\n\nAlerts should distinguish sustained degradation from isolated failures. A short burst of `UNAVAILABLE` responses may require different handling from a prolonged error-rate increase.\n\nPayment monitoring is useful for answering questions such as:\n\n- Is PaymentService broadly unhealthy?\n- Did latency change during the incident window?\n- Are failures concentrated in one status code?\n- Is the service receiving traffic at all?\n\nMonitoring does not by itself determine whether an individual Checkout request reached PaymentService. For request-level diagnosis, inspect the distributed trace and look for corresponding Payment server spans.\n\nThis document intentionally contains vocabulary such as Payment, Checkout, `Charge`, latency, and error rate. It is therefore lexically similar to payment troubleshooting material, but its purpose is dashboard and alert design rather than diagnosing a specific request path."
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "content": "# Payment Runbook\n\nUse this runbook when a checkout investigation points toward the Payment dependency.\n\nFirst determine whether the request actually reached PaymentService.\n\n## Client span exists, server span missing\n\nThis pattern suggests failure before PaymentService handled the request.\n\nInvestigate:\n\n- service name and endpoint configuration;\n- name resolution;\n- service discovery;\n- network connectivity;\n- gRPC status and status description.\n\n`UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\n\n## Payment server span exists\n\nIf the server span exists, inspect PaymentService itself.\n\nCheck:\n\n- Payment application logs;\n- gRPC server status;\n- charge-processing errors;\n- latency;\n- downstream calls made by PaymentService.\n\n## Distinguish symptom from cause\n\nA frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure.\n\nLikewise, a Payment-related error elsewhere in telemetry is not causal unless it belongs to the failing request path.\n\nA useful final report should state whether the failure occurred:\n\n```text\nbefore PaymentService\ninside PaymentService\nafter PaymentService returned\n```\n\nand cite the trace and logs supporting that conclusion."
+        },
+        {
+          "source_id": "payment-service.md",
+          "content": "# Payment Service\n\nPaymentService is responsible for charging a customer as part of checkout. The main RPC used by Checkout is `oteldemo.PaymentService/Charge`.\n\nA successful payment request reaches the Payment service, executes the charge logic, and returns a successful gRPC status to the caller. A payment-related checkout failure can occur at several different layers, so investigators should distinguish them carefully.\n\nExamples include:\n\n1. The Checkout client cannot resolve or connect to PaymentService.\n2. The RPC reaches PaymentService but fails before charge processing completes.\n3. PaymentService executes normally but rejects or cannot process the charge.\n4. PaymentService is healthy, but Checkout mishandles the returned result.\n\nThe presence of a failing Checkout → Payment client span does not prove that PaymentService processed the request. If the client span reports a connectivity-oriented status such as `UNAVAILABLE` and no matching Payment server span exists, the failure may have happened before the request arrived at PaymentService.\n\nWhen the server span exists, inspect Payment logs and span attributes for the application-level mechanism.\n\nUseful evidence includes:\n\n- `oteldemo.PaymentService/Charge`;\n- client and server span pairing;\n- `rpc.response.status_code`;\n- trace IDs shared between Checkout and Payment logs;\n- Payment request rate, error rate, and latency.\n\nPaymentService should not be blamed solely because a failing trace contains the word \"payment\"; the causal path must be verified."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "To distinguish between a failure to reach PaymentService and a PaymentService business logic failure, investigators must first determine if the request actually reached the service by inspecting the distributed trace for the presence of a Payment server span.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "A failure to reach PaymentService is indicated when a client span exists but no matching Payment server span exists, suggesting the failure occurred before the request arrived at the service.",
+            "sources": [
+              "payment-service.md",
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "Connectivity-oriented gRPC status codes such as `UNAVAILABLE` in the client span, especially when no server span is present, indicate that the failure likely happened before PaymentService processed the request.",
+            "sources": [
+              "payment-service.md",
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "A PaymentService business logic failure is indicated when a Payment server span exists, meaning the request reached the service but failed during processing.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "When a server span exists, the failure is attributed to business logic or processing errors, which should be investigated by inspecting Payment application logs, gRPC server status, charge-processing errors, and downstream calls made by PaymentService.",
+            "sources": [
+              "payment-service.md",
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "The final conclusion should explicitly state whether the failure occurred before PaymentService, inside PaymentService, or after PaymentService returned, supported by specific trace and log evidence.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "To distinguish between a failure to reach PaymentService and a business logic failure, you must determine if the request actually reached the service by inspecting the distributed trace for a corresponding Payment server span.",
+            "sources": [
+              "payment-service.md",
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "If a client span exists but no server span exists, the failure likely occurred before PaymentService handled the request, indicating a connectivity or resolution issue.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "A failing client span reporting a connectivity-oriented status such as `UNAVAILABLE` with no matching Payment server span suggests the failure happened before the request arrived at PaymentService.",
+            "sources": [
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "If the Payment server span exists, the failure is likely inside PaymentService, and you should inspect Payment application logs, gRPC server status, charge-processing errors, and downstream calls.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "When the server span exists, you should inspect Payment logs and span attributes for the application-level mechanism to identify business logic failures.",
+            "sources": [
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "A frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure, so the causal path must be verified.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "The final conclusion should explicitly state whether the failure occurred before PaymentService, inside PaymentService, or after PaymentService returned.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "A",
+      "human_rationale": "more precise answer to the question"
+    },
+    {
+      "query_id": "dev-016",
+      "question": "A resolver says it produced zero addresses. Which failure mechanisms should I consider?",
+      "evidence": [
+        {
+          "source_id": "dns-troubleshooting.md",
+          "content": "# DNS Troubleshooting\n\nDNS translates host names into network addresses and may participate in service discovery for distributed applications.\n\nCommon DNS-related failure modes include:\n\n- nonexistent or misspelled host names;\n- temporary resolver failures;\n- stale cached records;\n- incorrect search domains;\n- network access problems to the resolver;\n- records that resolve to unreachable addresses.\n\nDNS evidence should be separated from generic service-discovery evidence. A name-resolution error can originate in DNS, but some service discovery mechanisms do not use DNS directly.\n\nDuring investigation, compare:\n\n- the configured service name;\n- resolver error messages;\n- actual DNS lookup results;\n- container or host search-domain configuration;\n- whether other clients can resolve the same name;\n- whether a server span exists downstream.\n\nIf an RPC client reports that resolution produced no addresses, DNS is one hypothesis, not an automatic conclusion. Endpoint configuration or discovery state can produce a similar symptom."
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "content": "# gRPC Troubleshooting\n\ngRPC status codes describe the outcome observed by an RPC caller. They should be interpreted together with traces, logs, and service topology.\n\n`UNAVAILABLE` usually indicates that the service is currently unavailable at the transport or connectivity level. Possible causes include:\n\n- unreachable endpoint;\n- connection failure;\n- name-resolution failure;\n- unavailable service instance;\n- transient network failure.\n\n`DEADLINE_EXCEEDED` means that the operation did not complete before the caller's deadline. The underlying cause may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.\n\n`INTERNAL` is broader. It can represent an internal application failure or an upstream service translating a lower-level dependency failure into a generic error.\n\nWhen a client span fails, check whether a corresponding server span exists. If no server span exists, the failure may have occurred before the downstream application processed the request.\n\nUseful span fields include:\n\n- RPC service and method;\n- `rpc.response.status_code`;\n- span status;\n- status description;\n- client/server span relationship;\n- trace ID.\n\nDo not diagnose root cause from the status code alone. The same code can result from several mechanisms."
+        },
+        {
+          "source_id": "incident-response-guide.md",
+          "content": "# Incident Response Guide\n\nRoot-cause analysis should separate observations, interpretations, hypotheses, and conclusions.\n\nAn observation is directly supported by evidence:\n\n```text\nCheckout error rate increased from the healthy baseline.\n```\n\nAn interpretation summarizes what the observation means:\n\n```text\nThe incident affects order placement.\n```\n\nA hypothesis proposes a possible mechanism:\n\n```text\nA downstream dependency may be unavailable.\n```\n\nA conclusion should be supported by multiple consistent pieces of evidence.\n\nA practical investigation workflow is:\n\n1. Define the user-visible symptom.\n2. Quantify the incident with metrics.\n3. Identify representative failing traces.\n4. Locate the first meaningful failure on the request path.\n5. Correlate logs and configuration.\n6. Generate competing hypotheses.\n7. Reject hypotheses contradicted by evidence.\n8. State the best-supported root cause or abstain if evidence is insufficient.\n\nAn error should not automatically be considered the root cause. Investigators should verify that it lies on the failing request path and explains the symptom.\n\nRootLens should follow the discipline:\n\n```text\nclaim → evidence → source\n```\n\nUnsupported certainty is worse than an explicit abstention."
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "content": "# Payment Runbook\n\nUse this runbook when a checkout investigation points toward the Payment dependency.\n\nFirst determine whether the request actually reached PaymentService.\n\n## Client span exists, server span missing\n\nThis pattern suggests failure before PaymentService handled the request.\n\nInvestigate:\n\n- service name and endpoint configuration;\n- name resolution;\n- service discovery;\n- network connectivity;\n- gRPC status and status description.\n\n`UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\n\n## Payment server span exists\n\nIf the server span exists, inspect PaymentService itself.\n\nCheck:\n\n- Payment application logs;\n- gRPC server status;\n- charge-processing errors;\n- latency;\n- downstream calls made by PaymentService.\n\n## Distinguish symptom from cause\n\nA frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure.\n\nLikewise, a Payment-related error elsewhere in telemetry is not causal unless it belongs to the failing request path.\n\nA useful final report should state whether the failure occurred:\n\n```text\nbefore PaymentService\ninside PaymentService\nafter PaymentService returned\n```\n\nand cite the trace and logs supporting that conclusion."
+        },
+        {
+          "source_id": "service-discovery.md",
+          "content": "# Service Discovery\n\nDistributed applications need a mechanism for locating service instances.\n\nA client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses. The resulting addresses are then used to establish a connection to the downstream service.\n\nService discovery failures can occur because of:\n\n- an invalid service name;\n- incorrect endpoint configuration;\n- failed DNS or name resolution;\n- no available service instances;\n- stale or incomplete discovery data.\n\nA discovery failure can prevent an RPC from reaching the downstream application at all. In traces, this may appear as a failing client span with no corresponding server span.\n\nMessages such as \"name resolver error\", \"produced zero addresses\", or equivalent resolver diagnostics strongly suggest that the client could not obtain a usable destination.\n\nService discovery is related to, but distinct from, DNS. DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.\n\nFor incident investigation, compare the client-side error with service endpoint configuration, DNS behavior, and the presence or absence of a downstream server span."
+        },
+        {
+          "source_id": "timeout-and-retry-guidance.md",
+          "content": "# Timeout and Retry Guidance\n\nTimeouts and retries protect distributed systems from waiting indefinitely on dependencies, but poor retry policy can amplify incidents.\n\nA request that exceeds its configured deadline may surface as `DEADLINE_EXCEEDED`. Investigators should determine where the time was actually spent instead of assuming the slowest-looking span is the root cause.\n\nRetries can help with transient failures such as temporary connection errors, but retries may also:\n\n- increase downstream load;\n- extend end-to-end latency;\n- create retry storms;\n- duplicate non-idempotent operations;\n- hide the original failure pattern.\n\nRetry policies should consider idempotency, backoff, jitter, maximum attempts, and total time budget.\n\nFor diagnosis, inspect:\n\n- caller deadline;\n- number of attempts;\n- per-attempt latency;\n- downstream server spans;\n- total parent-span duration;\n- whether retry attempts overlap or occur sequentially.\n\nA `DEADLINE_EXCEEDED` error does not automatically imply a network failure. It means the deadline expired; traces and metrics are needed to identify why."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "A resolver producing zero addresses indicates that the client could not obtain a usable destination.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Potential failure mechanisms include failed DNS or name resolution.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Potential failure mechanisms include incorrect endpoint configuration.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Potential failure mechanisms include no available service instances.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Potential failure mechanisms include stale or incomplete discovery data.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Potential failure mechanisms include an invalid service name.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "DNS-specific failure modes to consider include nonexistent or misspelled host names.",
+            "sources": [
+              "dns-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "DNS-specific failure modes to consider include temporary resolver failures.",
+            "sources": [
+              "dns-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "DNS-specific failure modes to consider include stale cached records.",
+            "sources": [
+              "dns-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "DNS-specific failure modes to consider include incorrect search domains.",
+            "sources": [
+              "dns-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "DNS-specific failure modes to consider include network access problems to the resolver.",
+            "sources": [
+              "dns-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "DNS-specific failure modes to consider include records that resolve to unreachable addresses.",
+            "sources": [
+              "dns-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "Endpoint configuration or discovery state can produce a similar symptom of zero addresses, so DNS is not the only hypothesis.",
+            "sources": [
+              "dns-troubleshooting.md",
+              "service-discovery.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "A resolver producing zero addresses suggests the client could not obtain a usable destination.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "DNS-related failure modes that may result in zero addresses include nonexistent or misspelled host names, temporary resolver failures, stale cached records, incorrect search domains, network access problems to the resolver, and records that resolve to unreachable addresses.",
+            "sources": [
+              "dns-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "Service discovery failures that may result in zero addresses include an invalid service name, incorrect endpoint configuration, failed DNS or name resolution, no available service instances, and stale or incomplete discovery data.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Endpoint configuration or discovery state can produce a similar symptom of zero addresses as DNS failures.",
+            "sources": [
+              "dns-troubleshooting.md",
+              "service-discovery.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "B",
+      "human_rationale": "shorter and same content"
+    },
+    {
+      "query_id": "dev-017",
+      "question": "Which observability signal is best for detecting and quantifying an increase in checkout error rate?",
+      "evidence": [
+        {
+          "source_id": "checkout-runbook.md",
+          "content": "# Checkout Runbook\n\nUse this runbook when users cannot complete checkout or `/api/checkout` returns errors.\n\n## 1. Confirm impact\n\nCheck:\n\n- `oteldemo.CheckoutService/PlaceOrder` request rate;\n- error rate;\n- p50, p95, and p99 latency;\n- whether the failure is global or intermittent.\n\n## 2. Select a failing request\n\nOpen a failing distributed trace and inspect Checkout and its downstream calls.\n\nExpected dependencies can include:\n\n- Cart;\n- Product Catalog;\n- Currency;\n- Shipping;\n- Payment.\n\n## 3. Identify the first failing dependency\n\nDo not assume the final Checkout error is the root cause.\n\nFor each failing client span, check:\n\n- gRPC status;\n- status description;\n- whether a matching server span exists;\n- whether earlier dependencies completed successfully.\n\n## 4. Correlate logs\n\nSearch logs using the full trace ID. Look for application errors in services on the failing path.\n\n## 5. Compare with healthy behavior\n\nA healthy trace provides a useful reference for normal dependency ordering and approximate latency.\n\n## 6. Check configuration only after localization\n\nIf the trace indicates connection or resolution failure, inspect endpoint and service-discovery configuration.\n\nIf the request reached the downstream server, investigate that service's application logs.\n\nRecord the final conclusion with explicit evidence and rejected alternatives."
+        },
+        {
+          "source_id": "currency-service.md",
+          "content": "# Currency Service\n\nThe Currency service converts monetary values between currencies used by the storefront and downstream checkout operations.\n\nCheckout or the frontend may request currency conversion during an order. Currency failures can affect displayed prices or prevent an order from completing, depending on where the failure occurs.\n\nUseful investigation evidence includes:\n\n- Currency client/server spans;\n- requested source and destination currencies;\n- gRPC status codes;\n- Currency service logs;\n- request latency and error-rate metrics.\n\nA successful Currency span on a failing checkout trace is useful negative evidence: it helps rule out currency conversion as the causal step for that request.\n\nCurrency issues should be separated from Payment issues. Currency transforms values; Payment performs the charge. Similar monetary vocabulary in logs does not imply the same service responsibility."
+        },
+        {
+          "source_id": "feature-flags.md",
+          "content": "# Feature Flags\n\nFeature flags allow behavior to be enabled, disabled, or modified without rebuilding the entire application.\n\nIn an observability demo or test environment, feature flags may intentionally inject faults such as latency, service failures, or unreachable dependencies. In production systems, flags can also control product behavior, rollout percentage, and experiments.\n\nFeature flag evidence is highly informative only when the investigator is allowed to inspect flag state. A benchmark intended to test blind root-cause analysis should avoid exposing the injected fault name directly to the investigator.\n\nUseful evidence includes:\n\n- flag evaluation results;\n- service and environment targeted by the flag;\n- activation time;\n- rollout scope;\n- configuration changes.\n\nA flag-related error appearing elsewhere in telemetry is not automatically causal for the user-facing incident. It must be connected to the failing request path and observed symptom.\n\nFor RootLens evaluation, ground-truth fault configuration should be kept separate from the operational knowledge available to the retriever."
+        },
+        {
+          "source_id": "metrics-guide.md",
+          "content": "# Metrics Guide\n\nMetrics summarize system behavior over time.\n\nCommon metric types include counters, gauges, and histograms.\n\nA counter increases cumulatively. Request counters are usually converted into rates using a function such as `rate(counter[5m])`.\n\nA gauge can move up or down and is useful for quantities such as queue depth, memory usage, or active connections.\n\nHistograms aggregate observations into buckets and can be used to estimate latency percentiles such as p50, p95, and p99.\n\nFor service health, useful signals include:\n\n- traffic;\n- error rate;\n- latency;\n- saturation.\n\nThese are closely related to the SRE \"golden signals\".\n\nWhen evaluating checkout behavior, metrics can show that `oteldemo.CheckoutService/PlaceOrder` has an elevated error rate or latency. Metrics alone normally cannot identify the exact downstream call that failed for an individual request.\n\nAlways distinguish zero from missing data. An absent series may mean that no metric exists or no samples were emitted, not that the measured value is zero.\n\nMetrics are strongest for detection and quantification; traces and logs are usually needed for request-level root-cause evidence."
+        },
+        {
+          "source_id": "observability-guide.md",
+          "content": "# Observability Guide\n\nObservability combines multiple telemetry signals to understand the internal behavior of a distributed system from its external outputs.\n\nThe three primary signals used by RootLens are metrics, traces, and logs.\n\nMetrics answer questions such as:\n\n- Is error rate increasing?\n- Is latency degrading?\n- How much traffic is affected?\n- Is a resource saturated?\n\nDistributed traces reconstruct the path of an individual request across service boundaries. They are particularly useful for locating the dependency or operation where a failing request diverges from a healthy one.\n\nLogs provide detailed events emitted during execution. Structured logs can include service names, error fields, trace IDs, span IDs, and application-specific context.\n\nA typical investigation may proceed from aggregate symptoms to request-level evidence:\n\n```text\nmetrics\n→ detect and quantify degradation\n\ntraces\n→ localize the failing path\n\nlogs\n→ identify the detailed mechanism\n```\n\nThis order is useful but not mandatory.\n\nObservability evidence should be interpreted causally. An error in telemetry is not necessarily the root cause simply because it is visible."
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "content": "# Payment Monitoring\n\nPayment monitoring focuses on the operational health of PaymentService over time.\n\nRecommended dashboards include:\n\n- request rate for `PaymentService/Charge`;\n- error rate by gRPC status;\n- p50, p95, and p99 latency;\n- process CPU and memory;\n- restart count;\n- availability over the selected interval.\n\nAlerts should distinguish sustained degradation from isolated failures. A short burst of `UNAVAILABLE` responses may require different handling from a prolonged error-rate increase.\n\nPayment monitoring is useful for answering questions such as:\n\n- Is PaymentService broadly unhealthy?\n- Did latency change during the incident window?\n- Are failures concentrated in one status code?\n- Is the service receiving traffic at all?\n\nMonitoring does not by itself determine whether an individual Checkout request reached PaymentService. For request-level diagnosis, inspect the distributed trace and look for corresponding Payment server spans.\n\nThis document intentionally contains vocabulary such as Payment, Checkout, `Charge`, latency, and error rate. It is therefore lexically similar to payment troubleshooting material, but its purpose is dashboard and alert design rather than diagnosing a specific request path."
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "content": "# Payment Runbook\n\nUse this runbook when a checkout investigation points toward the Payment dependency.\n\nFirst determine whether the request actually reached PaymentService.\n\n## Client span exists, server span missing\n\nThis pattern suggests failure before PaymentService handled the request.\n\nInvestigate:\n\n- service name and endpoint configuration;\n- name resolution;\n- service discovery;\n- network connectivity;\n- gRPC status and status description.\n\n`UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\n\n## Payment server span exists\n\nIf the server span exists, inspect PaymentService itself.\n\nCheck:\n\n- Payment application logs;\n- gRPC server status;\n- charge-processing errors;\n- latency;\n- downstream calls made by PaymentService.\n\n## Distinguish symptom from cause\n\nA frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure.\n\nLikewise, a Payment-related error elsewhere in telemetry is not causal unless it belongs to the failing request path.\n\nA useful final report should state whether the failure occurred:\n\n```text\nbefore PaymentService\ninside PaymentService\nafter PaymentService returned\n```\n\nand cite the trace and logs supporting that conclusion."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "Metrics are the best observability signal for detecting and quantifying an increase in checkout error rate.",
+            "sources": [
+              "observability-guide.md",
+              "metrics-guide.md"
+            ]
+          },
+          {
+            "text": "Metrics are explicitly described as being strongest for detection and quantification of system behavior.",
+            "sources": [
+              "metrics-guide.md"
+            ]
+          },
+          {
+            "text": "In the typical investigation order, metrics are used to detect and quantify degradation, while traces and logs are used for localization and detailed mechanism identification.",
+            "sources": [
+              "observability-guide.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "Error rate is the best observability signal for detecting and quantifying an increase in checkout error rate.",
+            "sources": [
+              "metrics-guide.md"
+            ]
+          },
+          {
+            "text": "Metrics are strongest for detection and quantification of system behavior, such as elevated error rates.",
+            "sources": [
+              "metrics-guide.md"
+            ]
+          },
+          {
+            "text": "Specifically, metrics can show that `oteldemo.CheckoutService/PlaceOrder` has an elevated error rate.",
+            "sources": [
+              "metrics-guide.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "A",
+      "human_rationale": "best answer because first B answer is slightly wrong"
+    },
+    {
+      "query_id": "dev-018",
+      "question": "Which telemetry signal should I use to identify where one distributed request failed?",
+      "evidence": [
+        {
+          "source_id": "distributed-tracing-guide.md",
+          "content": "# Distributed Tracing Guide\n\nA distributed trace represents the execution path of one request across multiple services.\n\nA trace contains spans. Each span represents an operation such as an HTTP request, gRPC call, database query, or internal computation.\n\nImportant identifiers include:\n\n- `TraceId`: identifies the complete distributed request;\n- `SpanId`: identifies one operation inside the trace;\n- parent span ID: links a child operation to its caller.\n\nTrace IDs are typically longer than span IDs and should not be confused when correlating telemetry.\n\nSpan kinds commonly include:\n\n- SERVER;\n- CLIENT;\n- INTERNAL;\n- PRODUCER;\n- CONSUMER.\n\nWhen diagnosing a failed RPC, compare the client span with the corresponding server span. A client error with no downstream server span suggests that the request may have failed before reaching the service.\n\nDo not sum span durations to estimate total request time. Parent spans include child time, and parallel spans can overlap.\n\nThe critical path is more informative for latency analysis than simply selecting the longest visible span.\n\nTracing is especially useful for distinguishing healthy upstream dependencies from the first failing dependency on a specific request path."
+        },
+        {
+          "source_id": "observability-guide.md",
+          "content": "# Observability Guide\n\nObservability combines multiple telemetry signals to understand the internal behavior of a distributed system from its external outputs.\n\nThe three primary signals used by RootLens are metrics, traces, and logs.\n\nMetrics answer questions such as:\n\n- Is error rate increasing?\n- Is latency degrading?\n- How much traffic is affected?\n- Is a resource saturated?\n\nDistributed traces reconstruct the path of an individual request across service boundaries. They are particularly useful for locating the dependency or operation where a failing request diverges from a healthy one.\n\nLogs provide detailed events emitted during execution. Structured logs can include service names, error fields, trace IDs, span IDs, and application-specific context.\n\nA typical investigation may proceed from aggregate symptoms to request-level evidence:\n\n```text\nmetrics\n→ detect and quantify degradation\n\ntraces\n→ localize the failing path\n\nlogs\n→ identify the detailed mechanism\n```\n\nThis order is useful but not mandatory.\n\nObservability evidence should be interpreted causally. An error in telemetry is not necessarily the root cause simply because it is visible."
+        },
+        {
+          "source_id": "otel-collector.md",
+          "content": "# OpenTelemetry Collector\n\nThe OpenTelemetry Collector receives, processes, and exports telemetry.\n\nApplications can emit traces, metrics, and logs using OpenTelemetry protocols. The Collector can then route those signals to backends such as tracing, metrics, and logging systems.\n\nA typical flow is:\n\n```text\napplication services\n→ OpenTelemetry Collector\n→ telemetry backends\n```\n\nThe Collector can use receivers, processors, exporters, and pipelines.\n\nIn some environments, Prometheus may receive metrics through an OTLP ingestion path rather than by scraping application targets directly. In that configuration, an empty Prometheus Targets page does not necessarily mean that no metrics are being collected.\n\nCollector failures can affect observability without directly causing the user-facing business incident. For example, missing traces may be a telemetry problem while checkout itself remains healthy.\n\nInvestigators should therefore distinguish:\n\n- application failure;\n- telemetry collection failure;\n- backend visualization failure.\n\nUseful evidence includes Collector logs, pipeline configuration, exporter status, and whether telemetry from multiple services disappears at the same time."
+        },
+        {
+          "source_id": "service-discovery.md",
+          "content": "# Service Discovery\n\nDistributed applications need a mechanism for locating service instances.\n\nA client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses. The resulting addresses are then used to establish a connection to the downstream service.\n\nService discovery failures can occur because of:\n\n- an invalid service name;\n- incorrect endpoint configuration;\n- failed DNS or name resolution;\n- no available service instances;\n- stale or incomplete discovery data.\n\nA discovery failure can prevent an RPC from reaching the downstream application at all. In traces, this may appear as a failing client span with no corresponding server span.\n\nMessages such as \"name resolver error\", \"produced zero addresses\", or equivalent resolver diagnostics strongly suggest that the client could not obtain a usable destination.\n\nService discovery is related to, but distinct from, DNS. DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.\n\nFor incident investigation, compare the client-side error with service endpoint configuration, DNS behavior, and the presence or absence of a downstream server span."
+        },
+        {
+          "source_id": "telemetry-correlation.md",
+          "content": "# Telemetry Correlation\n\nRoot-cause analysis often requires linking metrics, traces, and logs that describe the same incident from different perspectives.\n\nMetrics are aggregated, so they rarely identify a single request. Traces and logs provide request-level evidence.\n\nA common correlation workflow is:\n\n1. Use metrics to identify the affected service, time window, and symptom.\n2. Select a failing trace from that interval.\n3. Use the trace ID to find logs emitted by services on that request path.\n4. Compare failing and healthy traces when possible.\n5. Check whether the detailed log message is consistent with the failing span.\n\n`TraceId` and `SpanId` serve different purposes. A trace ID groups the entire distributed request, while a span ID identifies one operation within that trace.\n\nSearching logs with a span ID when the logging backend expects the trace ID may return incomplete or misleading results.\n\nCorrelation does not establish causality by itself. A log can share the correct trace ID and still describe a non-causal warning. Evidence should also explain the observed failure and occur on the relevant causal path."
+        },
+        {
+          "source_id": "timeout-and-retry-guidance.md",
+          "content": "# Timeout and Retry Guidance\n\nTimeouts and retries protect distributed systems from waiting indefinitely on dependencies, but poor retry policy can amplify incidents.\n\nA request that exceeds its configured deadline may surface as `DEADLINE_EXCEEDED`. Investigators should determine where the time was actually spent instead of assuming the slowest-looking span is the root cause.\n\nRetries can help with transient failures such as temporary connection errors, but retries may also:\n\n- increase downstream load;\n- extend end-to-end latency;\n- create retry storms;\n- duplicate non-idempotent operations;\n- hide the original failure pattern.\n\nRetry policies should consider idempotency, backoff, jitter, maximum attempts, and total time budget.\n\nFor diagnosis, inspect:\n\n- caller deadline;\n- number of attempts;\n- per-attempt latency;\n- downstream server spans;\n- total parent-span duration;\n- whether retry attempts overlap or occur sequentially.\n\nA `DEADLINE_EXCEEDED` error does not automatically imply a network failure. It means the deadline expired; traces and metrics are needed to identify why."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "Distributed traces should be used to identify where a distributed request failed, as they reconstruct the path of an individual request across service boundaries and are particularly useful for locating the dependency or operation where a failing request diverges from a healthy one.",
+            "sources": [
+              "observability-guide.md"
+            ]
+          },
+          {
+            "text": "Tracing is especially useful for distinguishing healthy upstream dependencies from the first failing dependency on a specific request path.",
+            "sources": [
+              "distributed-tracing-guide.md"
+            ]
+          },
+          {
+            "text": "When diagnosing a failed RPC, investigators should compare the client span with the corresponding server span to determine if the request failed before reaching the downstream service.",
+            "sources": [
+              "distributed-tracing-guide.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "Distributed traces should be used to identify where a distributed request failed because they reconstruct the path of an individual request across service boundaries.",
+            "sources": [
+              "observability-guide.md"
+            ]
+          },
+          {
+            "text": "Traces are particularly useful for locating the specific dependency or operation where a failing request diverges from a healthy one.",
+            "sources": [
+              "observability-guide.md"
+            ]
+          },
+          {
+            "text": "Tracing is especially useful for distinguishing healthy upstream dependencies from the first failing dependency on a specific request path.",
+            "sources": [
+              "distributed-tracing-guide.md"
+            ]
+          },
+          {
+            "text": "In the investigation workflow, traces are used to localize the failing path after metrics detect degradation.",
+            "sources": [
+              "observability-guide.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "B",
+      "human_rationale": "more relevent in the last answers"
+    },
+    {
+      "query_id": "dev-019",
+      "question": "What evidence should I require before treating an error log as causal for an incident?",
+      "evidence": [
+        {
+          "source_id": "checkout-runbook.md",
+          "content": "# Checkout Runbook\n\nUse this runbook when users cannot complete checkout or `/api/checkout` returns errors.\n\n## 1. Confirm impact\n\nCheck:\n\n- `oteldemo.CheckoutService/PlaceOrder` request rate;\n- error rate;\n- p50, p95, and p99 latency;\n- whether the failure is global or intermittent.\n\n## 2. Select a failing request\n\nOpen a failing distributed trace and inspect Checkout and its downstream calls.\n\nExpected dependencies can include:\n\n- Cart;\n- Product Catalog;\n- Currency;\n- Shipping;\n- Payment.\n\n## 3. Identify the first failing dependency\n\nDo not assume the final Checkout error is the root cause.\n\nFor each failing client span, check:\n\n- gRPC status;\n- status description;\n- whether a matching server span exists;\n- whether earlier dependencies completed successfully.\n\n## 4. Correlate logs\n\nSearch logs using the full trace ID. Look for application errors in services on the failing path.\n\n## 5. Compare with healthy behavior\n\nA healthy trace provides a useful reference for normal dependency ordering and approximate latency.\n\n## 6. Check configuration only after localization\n\nIf the trace indicates connection or resolution failure, inspect endpoint and service-discovery configuration.\n\nIf the request reached the downstream server, investigate that service's application logs.\n\nRecord the final conclusion with explicit evidence and rejected alternatives."
+        },
+        {
+          "source_id": "incident-response-guide.md",
+          "content": "# Incident Response Guide\n\nRoot-cause analysis should separate observations, interpretations, hypotheses, and conclusions.\n\nAn observation is directly supported by evidence:\n\n```text\nCheckout error rate increased from the healthy baseline.\n```\n\nAn interpretation summarizes what the observation means:\n\n```text\nThe incident affects order placement.\n```\n\nA hypothesis proposes a possible mechanism:\n\n```text\nA downstream dependency may be unavailable.\n```\n\nA conclusion should be supported by multiple consistent pieces of evidence.\n\nA practical investigation workflow is:\n\n1. Define the user-visible symptom.\n2. Quantify the incident with metrics.\n3. Identify representative failing traces.\n4. Locate the first meaningful failure on the request path.\n5. Correlate logs and configuration.\n6. Generate competing hypotheses.\n7. Reject hypotheses contradicted by evidence.\n8. State the best-supported root cause or abstain if evidence is insufficient.\n\nAn error should not automatically be considered the root cause. Investigators should verify that it lies on the failing request path and explains the symptom.\n\nRootLens should follow the discipline:\n\n```text\nclaim → evidence → source\n```\n\nUnsupported certainty is worse than an explicit abstention."
+        },
+        {
+          "source_id": "observability-guide.md",
+          "content": "# Observability Guide\n\nObservability combines multiple telemetry signals to understand the internal behavior of a distributed system from its external outputs.\n\nThe three primary signals used by RootLens are metrics, traces, and logs.\n\nMetrics answer questions such as:\n\n- Is error rate increasing?\n- Is latency degrading?\n- How much traffic is affected?\n- Is a resource saturated?\n\nDistributed traces reconstruct the path of an individual request across service boundaries. They are particularly useful for locating the dependency or operation where a failing request diverges from a healthy one.\n\nLogs provide detailed events emitted during execution. Structured logs can include service names, error fields, trace IDs, span IDs, and application-specific context.\n\nA typical investigation may proceed from aggregate symptoms to request-level evidence:\n\n```text\nmetrics\n→ detect and quantify degradation\n\ntraces\n→ localize the failing path\n\nlogs\n→ identify the detailed mechanism\n```\n\nThis order is useful but not mandatory.\n\nObservability evidence should be interpreted causally. An error in telemetry is not necessarily the root cause simply because it is visible."
+        },
+        {
+          "source_id": "structured-logging-guide.md",
+          "content": "# Structured Logging Guide\n\nStructured logs represent events using fields rather than relying only on free-form text.\n\nA structured log entry may contain:\n\n- timestamp;\n- severity;\n- message body;\n- `resource.service.name`;\n- trace ID;\n- span ID;\n- error code;\n- request or user context.\n\nTrace and span identifiers allow logs to be correlated with a distributed trace when the application emits them correctly.\n\nNot every log entry has trace context. Background tasks, startup messages, health checks, and infrastructure logs may not belong to a user request.\n\nInvestigators should avoid searching only for the word \"error\" and assuming every match is causal. A relevant log should ideally satisfy several conditions:\n\n- it occurs in the incident time window;\n- it belongs to a service on the failing request path;\n- it shares the relevant trace ID when available;\n- its message explains or supports the observed failure.\n\nTelemetry can contain malformed or surprising timestamps. Such data-quality problems should be recorded rather than silently treated as trustworthy evidence."
+        },
+        {
+          "source_id": "telemetry-correlation.md",
+          "content": "# Telemetry Correlation\n\nRoot-cause analysis often requires linking metrics, traces, and logs that describe the same incident from different perspectives.\n\nMetrics are aggregated, so they rarely identify a single request. Traces and logs provide request-level evidence.\n\nA common correlation workflow is:\n\n1. Use metrics to identify the affected service, time window, and symptom.\n2. Select a failing trace from that interval.\n3. Use the trace ID to find logs emitted by services on that request path.\n4. Compare failing and healthy traces when possible.\n5. Check whether the detailed log message is consistent with the failing span.\n\n`TraceId` and `SpanId` serve different purposes. A trace ID groups the entire distributed request, while a span ID identifies one operation within that trace.\n\nSearching logs with a span ID when the logging backend expects the trace ID may return incomplete or misleading results.\n\nCorrelation does not establish causality by itself. A log can share the correct trace ID and still describe a non-causal warning. Evidence should also explain the observed failure and occur on the relevant causal path."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "An error should not automatically be considered the root cause; investigators must verify that it lies on the failing request path and explains the observed symptom.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "Correlation does not establish causality by itself; evidence should explain the observed failure and occur on the relevant causal path.",
+            "sources": [
+              "telemetry-correlation.md"
+            ]
+          },
+          {
+            "text": "A log can share the correct trace ID and still describe a non-causal warning.",
+            "sources": [
+              "telemetry-correlation.md"
+            ]
+          },
+          {
+            "text": "Investigators should avoid searching only for the word 'error' and assuming every match is causal.",
+            "sources": [
+              "structured-logging-guide.md"
+            ]
+          },
+          {
+            "text": "A relevant log should ideally occur in the incident time window.",
+            "sources": [
+              "structured-logging-guide.md"
+            ]
+          },
+          {
+            "text": "A relevant log should belong to a service on the failing request path.",
+            "sources": [
+              "structured-logging-guide.md"
+            ]
+          },
+          {
+            "text": "A relevant log should share the relevant trace ID when available.",
+            "sources": [
+              "structured-logging-guide.md"
+            ]
+          },
+          {
+            "text": "A relevant log's message should explain or support the observed failure.",
+            "sources": [
+              "structured-logging-guide.md"
+            ]
+          },
+          {
+            "text": "Root-cause analysis should separate observations, interpretations, hypotheses, and conclusions.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "A conclusion should be supported by multiple consistent pieces of evidence.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "Investigators should generate competing hypotheses and reject those contradicted by evidence.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "The final conclusion should state the best-supported root cause or abstain if evidence is insufficient.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "The investigation workflow should follow the discipline of 'claim → evidence → source'.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "An error should not automatically be considered the root cause; investigators must verify that it lies on the failing request path and explains the symptom.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "Correlation does not establish causality by itself; evidence should explain the observed failure and occur on the relevant causal path.",
+            "sources": [
+              "telemetry-correlation.md"
+            ]
+          },
+          {
+            "text": "Investigators should avoid assuming every log match containing the word 'error' is causal.",
+            "sources": [
+              "structured-logging-guide.md"
+            ]
+          },
+          {
+            "text": "A relevant log should ideally occur in the incident time window, belong to a service on the failing request path, share the relevant trace ID when available, and its message should explain or support the observed failure.",
+            "sources": [
+              "structured-logging-guide.md"
+            ]
+          },
+          {
+            "text": "Investigators should verify the error is on the failing request path by checking if a matching server span exists and whether earlier dependencies completed successfully.",
+            "sources": [
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "Unsupported certainty is worse than an explicit abstention; conclusions should be supported by multiple consistent pieces of evidence.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "Investigators should generate competing hypotheses and reject those contradicted by evidence before stating the best-supported root cause.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "B",
+      "human_rationale": "too many answers on logs"
+    },
+    {
+      "query_id": "dev-020",
+      "question": "What evidence distinguishes a network or resolution failure from an application-level payment failure?",
+      "evidence": [
+        {
+          "source_id": "dns-troubleshooting.md",
+          "content": "# DNS Troubleshooting\n\nDNS translates host names into network addresses and may participate in service discovery for distributed applications.\n\nCommon DNS-related failure modes include:\n\n- nonexistent or misspelled host names;\n- temporary resolver failures;\n- stale cached records;\n- incorrect search domains;\n- network access problems to the resolver;\n- records that resolve to unreachable addresses.\n\nDNS evidence should be separated from generic service-discovery evidence. A name-resolution error can originate in DNS, but some service discovery mechanisms do not use DNS directly.\n\nDuring investigation, compare:\n\n- the configured service name;\n- resolver error messages;\n- actual DNS lookup results;\n- container or host search-domain configuration;\n- whether other clients can resolve the same name;\n- whether a server span exists downstream.\n\nIf an RPC client reports that resolution produced no addresses, DNS is one hypothesis, not an automatic conclusion. Endpoint configuration or discovery state can produce a similar symptom."
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "content": "# Payment Monitoring\n\nPayment monitoring focuses on the operational health of PaymentService over time.\n\nRecommended dashboards include:\n\n- request rate for `PaymentService/Charge`;\n- error rate by gRPC status;\n- p50, p95, and p99 latency;\n- process CPU and memory;\n- restart count;\n- availability over the selected interval.\n\nAlerts should distinguish sustained degradation from isolated failures. A short burst of `UNAVAILABLE` responses may require different handling from a prolonged error-rate increase.\n\nPayment monitoring is useful for answering questions such as:\n\n- Is PaymentService broadly unhealthy?\n- Did latency change during the incident window?\n- Are failures concentrated in one status code?\n- Is the service receiving traffic at all?\n\nMonitoring does not by itself determine whether an individual Checkout request reached PaymentService. For request-level diagnosis, inspect the distributed trace and look for corresponding Payment server spans.\n\nThis document intentionally contains vocabulary such as Payment, Checkout, `Charge`, latency, and error rate. It is therefore lexically similar to payment troubleshooting material, but its purpose is dashboard and alert design rather than diagnosing a specific request path."
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "content": "# Payment Runbook\n\nUse this runbook when a checkout investigation points toward the Payment dependency.\n\nFirst determine whether the request actually reached PaymentService.\n\n## Client span exists, server span missing\n\nThis pattern suggests failure before PaymentService handled the request.\n\nInvestigate:\n\n- service name and endpoint configuration;\n- name resolution;\n- service discovery;\n- network connectivity;\n- gRPC status and status description.\n\n`UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\n\n## Payment server span exists\n\nIf the server span exists, inspect PaymentService itself.\n\nCheck:\n\n- Payment application logs;\n- gRPC server status;\n- charge-processing errors;\n- latency;\n- downstream calls made by PaymentService.\n\n## Distinguish symptom from cause\n\nA frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure.\n\nLikewise, a Payment-related error elsewhere in telemetry is not causal unless it belongs to the failing request path.\n\nA useful final report should state whether the failure occurred:\n\n```text\nbefore PaymentService\ninside PaymentService\nafter PaymentService returned\n```\n\nand cite the trace and logs supporting that conclusion."
+        },
+        {
+          "source_id": "payment-service.md",
+          "content": "# Payment Service\n\nPaymentService is responsible for charging a customer as part of checkout. The main RPC used by Checkout is `oteldemo.PaymentService/Charge`.\n\nA successful payment request reaches the Payment service, executes the charge logic, and returns a successful gRPC status to the caller. A payment-related checkout failure can occur at several different layers, so investigators should distinguish them carefully.\n\nExamples include:\n\n1. The Checkout client cannot resolve or connect to PaymentService.\n2. The RPC reaches PaymentService but fails before charge processing completes.\n3. PaymentService executes normally but rejects or cannot process the charge.\n4. PaymentService is healthy, but Checkout mishandles the returned result.\n\nThe presence of a failing Checkout → Payment client span does not prove that PaymentService processed the request. If the client span reports a connectivity-oriented status such as `UNAVAILABLE` and no matching Payment server span exists, the failure may have happened before the request arrived at PaymentService.\n\nWhen the server span exists, inspect Payment logs and span attributes for the application-level mechanism.\n\nUseful evidence includes:\n\n- `oteldemo.PaymentService/Charge`;\n- client and server span pairing;\n- `rpc.response.status_code`;\n- trace IDs shared between Checkout and Payment logs;\n- Payment request rate, error rate, and latency.\n\nPaymentService should not be blamed solely because a failing trace contains the word \"payment\"; the causal path must be verified."
+        },
+        {
+          "source_id": "service-discovery.md",
+          "content": "# Service Discovery\n\nDistributed applications need a mechanism for locating service instances.\n\nA client often begins with a logical service name or configured endpoint and resolves it into one or more usable network addresses. The resulting addresses are then used to establish a connection to the downstream service.\n\nService discovery failures can occur because of:\n\n- an invalid service name;\n- incorrect endpoint configuration;\n- failed DNS or name resolution;\n- no available service instances;\n- stale or incomplete discovery data.\n\nA discovery failure can prevent an RPC from reaching the downstream application at all. In traces, this may appear as a failing client span with no corresponding server span.\n\nMessages such as \"name resolver error\", \"produced zero addresses\", or equivalent resolver diagnostics strongly suggest that the client could not obtain a usable destination.\n\nService discovery is related to, but distinct from, DNS. DNS can be one mechanism used during resolution, while service discovery is the broader process of finding a reachable service instance.\n\nFor incident investigation, compare the client-side error with service endpoint configuration, DNS behavior, and the presence or absence of a downstream server span."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "A network or resolution failure is distinguished by the presence of a client span but the absence of a corresponding server span, indicating the request did not reach PaymentService.",
+            "sources": [
+              "payment-runbook.md",
+              "service-discovery.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "Network or resolution failures are often associated with gRPC status `UNAVAILABLE` and resolver-oriented diagnostics such as 'name resolver error' or 'produced zero addresses'.",
+            "sources": [
+              "payment-runbook.md",
+              "service-discovery.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "An application-level payment failure is distinguished by the presence of a Payment server span, indicating the request reached PaymentService, where the failure occurs during charge processing or result handling.",
+            "sources": [
+              "payment-runbook.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "Evidence for application-level failures includes inspecting Payment application logs, gRPC server status, charge-processing errors, and span attributes like `rpc.response.status_code`.",
+            "sources": [
+              "payment-runbook.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "The causal path must be verified by checking if a server span exists downstream; if no server span exists, the failure likely occurred before the request arrived at PaymentService, whereas if a server span exists, the failure occurred inside or after PaymentService.",
+            "sources": [
+              "payment-runbook.md",
+              "payment-service.md",
+              "dns-troubleshooting.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "A network or resolution failure is distinguished by the presence of a client span but the absence of a corresponding server span, indicating the request did not reach PaymentService.",
+            "sources": [
+              "payment-runbook.md",
+              "service-discovery.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "Network or resolution failures are often associated with gRPC status `UNAVAILABLE` and resolver-oriented diagnostics such as 'name resolver error' or 'produced zero addresses'.",
+            "sources": [
+              "payment-runbook.md",
+              "service-discovery.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "An application-level payment failure is distinguished by the presence of a Payment server span, indicating the request reached PaymentService.",
+            "sources": [
+              "payment-runbook.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "When a server span exists, evidence of application-level failure includes Payment application logs, charge-processing errors, and gRPC server status.",
+            "sources": [
+              "payment-runbook.md",
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "A failing client span with a connectivity-oriented status like `UNAVAILABLE` and no matching server span suggests the failure occurred before the request arrived at PaymentService, whereas a server span implies the failure occurred inside or after PaymentService processing.",
+            "sources": [
+              "payment-service.md",
+              "payment-runbook.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "tie",
+      "human_rationale": "same"
+    },
+    {
+      "query_id": "dev-021",
+      "question": "How should I investigate a sudden checkout error-rate increase from detection to request-level evidence?",
+      "evidence": [
+        {
+          "source_id": "checkout-runbook.md",
+          "content": "# Checkout Runbook\n\nUse this runbook when users cannot complete checkout or `/api/checkout` returns errors.\n\n## 1. Confirm impact\n\nCheck:\n\n- `oteldemo.CheckoutService/PlaceOrder` request rate;\n- error rate;\n- p50, p95, and p99 latency;\n- whether the failure is global or intermittent.\n\n## 2. Select a failing request\n\nOpen a failing distributed trace and inspect Checkout and its downstream calls.\n\nExpected dependencies can include:\n\n- Cart;\n- Product Catalog;\n- Currency;\n- Shipping;\n- Payment.\n\n## 3. Identify the first failing dependency\n\nDo not assume the final Checkout error is the root cause.\n\nFor each failing client span, check:\n\n- gRPC status;\n- status description;\n- whether a matching server span exists;\n- whether earlier dependencies completed successfully.\n\n## 4. Correlate logs\n\nSearch logs using the full trace ID. Look for application errors in services on the failing path.\n\n## 5. Compare with healthy behavior\n\nA healthy trace provides a useful reference for normal dependency ordering and approximate latency.\n\n## 6. Check configuration only after localization\n\nIf the trace indicates connection or resolution failure, inspect endpoint and service-discovery configuration.\n\nIf the request reached the downstream server, investigate that service's application logs.\n\nRecord the final conclusion with explicit evidence and rejected alternatives."
+        },
+        {
+          "source_id": "currency-service.md",
+          "content": "# Currency Service\n\nThe Currency service converts monetary values between currencies used by the storefront and downstream checkout operations.\n\nCheckout or the frontend may request currency conversion during an order. Currency failures can affect displayed prices or prevent an order from completing, depending on where the failure occurs.\n\nUseful investigation evidence includes:\n\n- Currency client/server spans;\n- requested source and destination currencies;\n- gRPC status codes;\n- Currency service logs;\n- request latency and error-rate metrics.\n\nA successful Currency span on a failing checkout trace is useful negative evidence: it helps rule out currency conversion as the causal step for that request.\n\nCurrency issues should be separated from Payment issues. Currency transforms values; Payment performs the charge. Similar monetary vocabulary in logs does not imply the same service responsibility."
+        },
+        {
+          "source_id": "frontend-service.md",
+          "content": "# Frontend Service\n\nThe Frontend service exposes the user-facing application and translates browser interactions into backend requests.\n\nDuring checkout, the browser may call an endpoint such as `/api/checkout`. The Frontend then invokes backend services, including Checkout.\n\nA browser-visible HTTP 500 establishes that the user request failed, but it does not identify the backend root cause. Investigators should correlate the failing frontend request with the distributed trace and downstream service spans.\n\nUseful frontend evidence includes:\n\n- HTTP route and status code;\n- frontend logs such as checkout failure messages;\n- the trace ID associated with the request;\n- timing of the request;\n- the downstream Checkout span.\n\nA Frontend error can be a symptom of a deeper backend failure. For example, a Checkout RPC may return an error to Frontend after a dependency failure. In that case, the frontend HTTP 500 is evidence of impact, not necessarily the underlying cause."
+        },
+        {
+          "source_id": "incident-response-guide.md",
+          "content": "# Incident Response Guide\n\nRoot-cause analysis should separate observations, interpretations, hypotheses, and conclusions.\n\nAn observation is directly supported by evidence:\n\n```text\nCheckout error rate increased from the healthy baseline.\n```\n\nAn interpretation summarizes what the observation means:\n\n```text\nThe incident affects order placement.\n```\n\nA hypothesis proposes a possible mechanism:\n\n```text\nA downstream dependency may be unavailable.\n```\n\nA conclusion should be supported by multiple consistent pieces of evidence.\n\nA practical investigation workflow is:\n\n1. Define the user-visible symptom.\n2. Quantify the incident with metrics.\n3. Identify representative failing traces.\n4. Locate the first meaningful failure on the request path.\n5. Correlate logs and configuration.\n6. Generate competing hypotheses.\n7. Reject hypotheses contradicted by evidence.\n8. State the best-supported root cause or abstain if evidence is insufficient.\n\nAn error should not automatically be considered the root cause. Investigators should verify that it lies on the failing request path and explains the symptom.\n\nRootLens should follow the discipline:\n\n```text\nclaim → evidence → source\n```\n\nUnsupported certainty is worse than an explicit abstention."
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "content": "# Payment Monitoring\n\nPayment monitoring focuses on the operational health of PaymentService over time.\n\nRecommended dashboards include:\n\n- request rate for `PaymentService/Charge`;\n- error rate by gRPC status;\n- p50, p95, and p99 latency;\n- process CPU and memory;\n- restart count;\n- availability over the selected interval.\n\nAlerts should distinguish sustained degradation from isolated failures. A short burst of `UNAVAILABLE` responses may require different handling from a prolonged error-rate increase.\n\nPayment monitoring is useful for answering questions such as:\n\n- Is PaymentService broadly unhealthy?\n- Did latency change during the incident window?\n- Are failures concentrated in one status code?\n- Is the service receiving traffic at all?\n\nMonitoring does not by itself determine whether an individual Checkout request reached PaymentService. For request-level diagnosis, inspect the distributed trace and look for corresponding Payment server spans.\n\nThis document intentionally contains vocabulary such as Payment, Checkout, `Charge`, latency, and error rate. It is therefore lexically similar to payment troubleshooting material, but its purpose is dashboard and alert design rather than diagnosing a specific request path."
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "content": "# Payment Runbook\n\nUse this runbook when a checkout investigation points toward the Payment dependency.\n\nFirst determine whether the request actually reached PaymentService.\n\n## Client span exists, server span missing\n\nThis pattern suggests failure before PaymentService handled the request.\n\nInvestigate:\n\n- service name and endpoint configuration;\n- name resolution;\n- service discovery;\n- network connectivity;\n- gRPC status and status description.\n\n`UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\n\n## Payment server span exists\n\nIf the server span exists, inspect PaymentService itself.\n\nCheck:\n\n- Payment application logs;\n- gRPC server status;\n- charge-processing errors;\n- latency;\n- downstream calls made by PaymentService.\n\n## Distinguish symptom from cause\n\nA frontend HTTP 500 or Checkout `INTERNAL` status may be a propagated symptom rather than the original payment failure.\n\nLikewise, a Payment-related error elsewhere in telemetry is not causal unless it belongs to the failing request path.\n\nA useful final report should state whether the failure occurred:\n\n```text\nbefore PaymentService\ninside PaymentService\nafter PaymentService returned\n```\n\nand cite the trace and logs supporting that conclusion."
+        }
+      ],
+      "answer_a": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "The investigation should begin by defining the user-visible symptom, such as a browser-visible HTTP 500 or errors on `/api/checkout`, and quantifying the incident with metrics like error rate, request rate, and latency percentiles (p50, p95, p99).",
+            "sources": [
+              "incident-response-guide.md",
+              "checkout-runbook.md",
+              "frontend-service.md"
+            ]
+          },
+          {
+            "text": "Investigators should identify representative failing traces by opening a failing distributed trace and inspecting the Checkout service and its downstream calls.",
+            "sources": [
+              "incident-response-guide.md",
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "To move from detection to request-level evidence, locate the first meaningful failure on the request path by checking gRPC status, status description, and whether earlier dependencies completed successfully, rather than assuming the final Checkout error is the root cause.",
+            "sources": [
+              "incident-response-guide.md",
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "Correlate logs using the full trace ID to look for application errors in services on the failing path.",
+            "sources": [
+              "incident-response-guide.md",
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "Compare the failing trace with a healthy trace to establish a reference for normal dependency ordering and approximate latency.",
+            "sources": [
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "If the trace indicates a connection or resolution failure, inspect endpoint and service-discovery configuration; if the request reached the downstream server, investigate that service's application logs.",
+            "sources": [
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "Generate competing hypotheses and reject those contradicted by evidence, ensuring that any identified error lies on the failing request path and explains the symptom.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "State the best-supported root cause or abstain if evidence is insufficient, following the discipline of 'claim → evidence → source'.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "answer_b": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "To investigate a sudden checkout error-rate increase, first confirm the impact by checking the `oteldemo.CheckoutService/PlaceOrder` request rate, error rate, p50/p95/p99 latency, and whether the failure is global or intermittent.",
+            "sources": [
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "Select a failing distributed trace and inspect the Checkout service along with its downstream calls, which may include Cart, Product Catalog, Currency, Shipping, and Payment.",
+            "sources": [
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "Identify the first failing dependency by checking the gRPC status, status description, existence of a matching server span, and whether earlier dependencies completed successfully, rather than assuming the final Checkout error is the root cause.",
+            "sources": [
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "Correlate logs by searching using the full trace ID to look for application errors in services on the failing path.",
+            "sources": [
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "Compare the failing trace with a healthy trace to establish a reference for normal dependency ordering and approximate latency.",
+            "sources": [
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "If the trace indicates a connection or resolution failure, inspect endpoint and service-discovery configuration; if the request reached the downstream server, investigate that service's application logs.",
+            "sources": [
+              "checkout-runbook.md"
+            ]
+          },
+          {
+            "text": "Distinguish between observations (e.g., error rate increase), interpretations (e.g., incident affects order placement), and hypotheses (e.g., downstream dependency unavailable) to structure the root-cause analysis.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "Verify that any error lies on the failing request path and explains the symptom, as an error should not automatically be considered the root cause.",
+            "sources": [
+              "incident-response-guide.md"
+            ]
+          },
+          {
+            "text": "For request-level evidence, inspect the distributed trace for corresponding server spans to determine if the request reached specific downstream services like PaymentService.",
+            "sources": [
+              "payment-monitoring.md"
+            ]
+          },
+          {
+            "text": "Distinguish symptoms from causes, as frontend HTTP 500s or Checkout `INTERNAL` statuses may be propagated symptoms rather than the original failure.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "human_label": "A",
+      "human_rationale": "better answers"
+    }
+  ]
+}

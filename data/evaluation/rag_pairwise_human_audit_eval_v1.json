@@ -1,0 +1,465 @@
+{
+  "metadata": {
+    "experiment": "014F",
+    "evaluation": "targeted_human_pairwise_audit",
+    "version": "v1",
+    "audited_queries": 15,
+    "audit_sampling": "targeted: judge disagreements, negative-control non-ties, and changed-context consensus wins",
+    "important_note": "Human audit is used for targeted adjudication, not as a random-sample estimate of answer quality."
+  },
+  "human_targeted_counts": {
+    "dense": 6,
+    "semantic": 6,
+    "tie": 3,
+    "inconclusive": 0
+  },
+  "human_changed_context_counts": {
+    "dense": 4,
+    "semantic": 5,
+    "tie": 1,
+    "inconclusive": 0
+  },
+  "human_negative_control_counts": {
+    "dense": 2,
+    "semantic": 1,
+    "tie": 2,
+    "inconclusive": 0
+  },
+  "human_judge_agreement": {
+    "comparable_labels": 15,
+    "gemma_matches": 10,
+    "qwen_matches": 9,
+    "gemma_rate": 0.6666666666666666,
+    "qwen_rate": 0.6
+  },
+  "consensus_wins": {
+    "count": 7,
+    "human_confirmed": 6
+  },
+  "final_combined_adjudication": {
+    "all_24": {
+      "dense": 6,
+      "semantic": 6,
+      "tie": 12,
+      "inconclusive": 0
+    },
+    "changed_context_15": {
+      "dense": 4,
+      "semantic": 5,
+      "tie": 6,
+      "inconclusive": 0
+    },
+    "negative_control_9": {
+      "dense": 2,
+      "semantic": 1,
+      "tie": 6,
+      "inconclusive": 0
+    }
+  },
+  "audited_queries": [
+    {
+      "query_id": "dev-002",
+      "context_changed": true,
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ],
+      "human_raw_label": "A",
+      "human_preference": "semantic",
+      "human_rationale": "use distributed tracing guide as source",
+      "gemma_preference": "semantic",
+      "qwen_preference": "semantic",
+      "judge_consensus": "semantic",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": -0.33333333333333337,
+      "citation_recall_delta": 0.0,
+      "evidence_jaccard": 0.6666666666666666
+    },
+    {
+      "query_id": "dev-003",
+      "context_changed": true,
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ],
+      "human_raw_label": "A",
+      "human_preference": "dense",
+      "human_rationale": "more precise",
+      "gemma_preference": "dense",
+      "qwen_preference": "dense",
+      "judge_consensus": "dense",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": 0.0,
+      "citation_recall_delta": 0.0,
+      "evidence_jaccard": 0.6666666666666666
+    },
+    {
+      "query_id": "dev-006",
+      "context_changed": true,
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ],
+      "human_raw_label": "A",
+      "human_preference": "semantic",
+      "human_rationale": "more relevant and precise",
+      "gemma_preference": "semantic",
+      "qwen_preference": "semantic",
+      "judge_consensus": "semantic",
+      "retrieval_recall_delta": 0.33333333333333337,
+      "citation_precision_delta": 0.0,
+      "citation_recall_delta": 0.33333333333333337,
+      "evidence_jaccard": 0.25
+    },
+    {
+      "query_id": "dev-007",
+      "context_changed": true,
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ],
+      "human_raw_label": "A",
+      "human_preference": "dense",
+      "human_rationale": "answer B is too long for the same content",
+      "gemma_preference": "dense",
+      "qwen_preference": "dense",
+      "judge_consensus": "dense",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": -0.33333333333333337,
+      "citation_recall_delta": 0.0,
+      "evidence_jaccard": 0.6666666666666666
+    },
+    {
+      "query_id": "dev-008",
+      "context_changed": true,
+      "audit_reasons": [
+        "cross_judge_disagreement"
+      ],
+      "human_raw_label": "tie",
+      "human_preference": "tie",
+      "human_rationale": "almost same answers except the last one which is different",
+      "gemma_preference": "semantic",
+      "qwen_preference": "dense",
+      "judge_consensus": "disagreement",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": -0.16666666666666663,
+      "citation_recall_delta": -0.3333333333333333,
+      "evidence_jaccard": 0.42857142857142855
+    },
+    {
+      "query_id": "dev-009",
+      "context_changed": false,
+      "audit_reasons": [
+        "cross_judge_disagreement",
+        "negative_control_non_tie"
+      ],
+      "human_raw_label": "tie",
+      "human_preference": "tie",
+      "human_rationale": "same answers",
+      "gemma_preference": "tie",
+      "qwen_preference": "dense",
+      "judge_consensus": "disagreement",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": -0.5,
+      "citation_recall_delta": -0.5,
+      "evidence_jaccard": 1.0
+    },
+    {
+      "query_id": "dev-011",
+      "context_changed": false,
+      "audit_reasons": [
+        "cross_judge_disagreement",
+        "negative_control_non_tie"
+      ],
+      "human_raw_label": "A",
+      "human_preference": "dense",
+      "human_rationale": "answer B doesnt respond to the question",
+      "gemma_preference": "dense",
+      "qwen_preference": "semantic",
+      "judge_consensus": "disagreement",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": -0.25,
+      "citation_recall_delta": 0.6666666666666667,
+      "evidence_jaccard": 1.0
+    },
+    {
+      "query_id": "dev-013",
+      "context_changed": true,
+      "audit_reasons": [
+        "cross_judge_disagreement"
+      ],
+      "human_raw_label": "B",
+      "human_preference": "semantic",
+      "human_rationale": "answer a is not relevent",
+      "gemma_preference": "semantic",
+      "qwen_preference": "dense",
+      "judge_consensus": "disagreement",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": 0.25,
+      "citation_recall_delta": 0.0,
+      "evidence_jaccard": 0.6666666666666666
+    },
+    {
+      "query_id": "dev-015",
+      "context_changed": false,
+      "audit_reasons": [
+        "cross_judge_disagreement",
+        "negative_control_non_tie"
+      ],
+      "human_raw_label": "A",
+      "human_preference": "dense",
+      "human_rationale": "more precise answer to the question",
+      "gemma_preference": "tie",
+      "qwen_preference": "dense",
+      "judge_consensus": "disagreement",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": 0.0,
+      "citation_recall_delta": 0.0,
+      "evidence_jaccard": 1.0
+    },
+    {
+      "query_id": "dev-016",
+      "context_changed": true,
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ],
+      "human_raw_label": "B",
+      "human_preference": "semantic",
+      "human_rationale": "shorter and same content",
+      "gemma_preference": "semantic",
+      "qwen_preference": "semantic",
+      "judge_consensus": "semantic",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": 0.0,
+      "citation_recall_delta": 0.0,
+      "evidence_jaccard": 0.6666666666666666
+    },
+    {
+      "query_id": "dev-017",
+      "context_changed": true,
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ],
+      "human_raw_label": "A",
+      "human_preference": "dense",
+      "human_rationale": "best answer because first B answer is slightly wrong",
+      "gemma_preference": "dense",
+      "qwen_preference": "dense",
+      "judge_consensus": "dense",
+      "retrieval_recall_delta": -0.33333333333333337,
+      "citation_precision_delta": 0.0,
+      "citation_recall_delta": -0.3333333333333333,
+      "evidence_jaccard": 0.42857142857142855
+    },
+    {
+      "query_id": "dev-018",
+      "context_changed": true,
+      "audit_reasons": [
+        "changed_context_consensus_win"
+      ],
+      "human_raw_label": "B",
+      "human_preference": "semantic",
+      "human_rationale": "more relevent in the last answers",
+      "gemma_preference": "dense",
+      "qwen_preference": "dense",
+      "judge_consensus": "dense",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": 0.0,
+      "citation_recall_delta": 0.0,
+      "evidence_jaccard": 0.6666666666666666
+    },
+    {
+      "query_id": "dev-019",
+      "context_changed": false,
+      "audit_reasons": [
+        "negative_control_non_tie"
+      ],
+      "human_raw_label": "B",
+      "human_preference": "semantic",
+      "human_rationale": "too many answers on logs",
+      "gemma_preference": "semantic",
+      "qwen_preference": "semantic",
+      "judge_consensus": "semantic",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": -0.25,
+      "citation_recall_delta": 0.0,
+      "evidence_jaccard": 1.0
+    },
+    {
+      "query_id": "dev-020",
+      "context_changed": false,
+      "audit_reasons": [
+        "negative_control_non_tie"
+      ],
+      "human_raw_label": "tie",
+      "human_preference": "tie",
+      "human_rationale": "same",
+      "gemma_preference": "dense",
+      "qwen_preference": "dense",
+      "judge_consensus": "dense",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": 0.25,
+      "citation_recall_delta": 0.0,
+      "evidence_jaccard": 1.0
+    },
+    {
+      "query_id": "dev-021",
+      "context_changed": true,
+      "audit_reasons": [
+        "cross_judge_disagreement"
+      ],
+      "human_raw_label": "A",
+      "human_preference": "dense",
+      "human_rationale": "better answers",
+      "gemma_preference": "semantic",
+      "qwen_preference": "dense",
+      "judge_consensus": "disagreement",
+      "retrieval_recall_delta": 0.0,
+      "citation_precision_delta": -0.08333333333333331,
+      "citation_recall_delta": 0.0,
+      "evidence_jaccard": 0.6666666666666666
+    }
+  ],
+  "final_queries": [
+    {
+      "query_id": "dev-001",
+      "context_changed": false,
+      "final_label": "tie",
+      "adjudication_source": "judge_consensus"
+    },
+    {
+      "query_id": "dev-002",
+      "context_changed": true,
+      "final_label": "semantic",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-003",
+      "context_changed": true,
+      "final_label": "dense",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-004",
+      "context_changed": true,
+      "final_label": "tie",
+      "adjudication_source": "judge_consensus"
+    },
+    {
+      "query_id": "dev-005",
+      "context_changed": true,
+      "final_label": "tie",
+      "adjudication_source": "judge_consensus"
+    },
+    {
+      "query_id": "dev-006",
+      "context_changed": true,
+      "final_label": "semantic",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-007",
+      "context_changed": true,
+      "final_label": "dense",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-008",
+      "context_changed": true,
+      "final_label": "tie",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-009",
+      "context_changed": false,
+      "final_label": "tie",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-010",
+      "context_changed": false,
+      "final_label": "tie",
+      "adjudication_source": "judge_consensus"
+    },
+    {
+      "query_id": "dev-011",
+      "context_changed": false,
+      "final_label": "dense",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-012",
+      "context_changed": true,
+      "final_label": "tie",
+      "adjudication_source": "judge_consensus"
+    },
+    {
+      "query_id": "dev-013",
+      "context_changed": true,
+      "final_label": "semantic",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-014",
+      "context_changed": false,
+      "final_label": "tie",
+      "adjudication_source": "judge_consensus"
+    },
+    {
+      "query_id": "dev-015",
+      "context_changed": false,
+      "final_label": "dense",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-016",
+      "context_changed": true,
+      "final_label": "semantic",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-017",
+      "context_changed": true,
+      "final_label": "dense",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-018",
+      "context_changed": true,
+      "final_label": "semantic",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-019",
+      "context_changed": false,
+      "final_label": "semantic",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-020",
+      "context_changed": false,
+      "final_label": "tie",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-021",
+      "context_changed": true,
+      "final_label": "dense",
+      "adjudication_source": "human_audit"
+    },
+    {
+      "query_id": "dev-022",
+      "context_changed": true,
+      "final_label": "tie",
+      "adjudication_source": "judge_consensus"
+    },
+    {
+      "query_id": "dev-023",
+      "context_changed": false,
+      "final_label": "tie",
+      "adjudication_source": "judge_consensus"
+    },
+    {
+      "query_id": "dev-024",
+      "context_changed": true,
+      "final_label": "tie",
+      "adjudication_source": "judge_consensus"
+    }
+  ]
+}
