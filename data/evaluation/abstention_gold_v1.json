@@ -1,0 +1,178 @@
+{
+  "metadata": {
+    "version": "v1",
+    "experiment": "014D",
+    "classes": [
+      "answered",
+      "partial",
+      "abstained"
+    ],
+    "class_balance": {
+      "answered": 6,
+      "partial": 6,
+      "abstained": 6
+    },
+    "absence_audit": "Unknown components were selected from corpus-wide abstention candidate audit results."
+  },
+  "gold": [
+    {
+      "query_id": "abs-001",
+      "expected_status": "answered",
+      "supported_component": "PaymentService is responsible for charging the customer during checkout.",
+      "missing_component": null,
+      "expected_sources": [
+        "payment-service.md"
+      ]
+    },
+    {
+      "query_id": "abs-002",
+      "expected_status": "partial",
+      "supported_component": "PaymentService is responsible for charging the customer.",
+      "missing_component": "The PostgreSQL version used in production is not described.",
+      "expected_sources": [
+        "payment-service.md"
+      ]
+    },
+    {
+      "query_id": "abs-003",
+      "expected_status": "abstained",
+      "supported_component": null,
+      "missing_component": "The corpus does not specify a PostgreSQL version.",
+      "expected_sources": []
+    },
+    {
+      "query_id": "abs-004",
+      "expected_status": "answered",
+      "supported_component": "Metrics are used for detection and quantification of checkout degradation.",
+      "missing_component": null,
+      "expected_sources": [
+        "metrics-guide.md",
+        "observability-guide.md"
+      ]
+    },
+    {
+      "query_id": "abs-005",
+      "expected_status": "partial",
+      "supported_component": "Metrics are appropriate for detecting and quantifying the degradation.",
+      "missing_component": "The production cloud region is not specified.",
+      "expected_sources": [
+        "metrics-guide.md",
+        "observability-guide.md"
+      ]
+    },
+    {
+      "query_id": "abs-006",
+      "expected_status": "abstained",
+      "supported_component": null,
+      "missing_component": "The corpus does not specify a production cloud region.",
+      "expected_sources": []
+    },
+    {
+      "query_id": "abs-007",
+      "expected_status": "answered",
+      "supported_component": "Investigate failures occurring before the downstream application handled the request, including resolution, discovery, endpoint, or connectivity problems.",
+      "missing_component": null,
+      "expected_sources": [
+        "grpc-troubleshooting.md",
+        "service-discovery.md",
+        "payment-runbook.md"
+      ]
+    },
+    {
+      "query_id": "abs-008",
+      "expected_status": "partial",
+      "supported_component": "The missing server span supports investigating pre-service failures.",
+      "missing_component": "The current on-call engineer is not specified.",
+      "expected_sources": [
+        "grpc-troubleshooting.md",
+        "service-discovery.md",
+        "payment-runbook.md"
+      ]
+    },
+    {
+      "query_id": "abs-009",
+      "expected_status": "abstained",
+      "supported_component": null,
+      "missing_component": "The corpus does not identify a current on-call engineer.",
+      "expected_sources": []
+    },
+    {
+      "query_id": "abs-010",
+      "expected_status": "answered",
+      "supported_component": "Shipping calculates delivery quotes and participates before payment is completed.",
+      "missing_component": null,
+      "expected_sources": [
+        "shipping-service.md"
+      ]
+    },
+    {
+      "query_id": "abs-011",
+      "expected_status": "partial",
+      "supported_component": "Shipping calculates delivery quotes before payment completes.",
+      "missing_component": "The production Kubernetes replica count is not specified.",
+      "expected_sources": [
+        "shipping-service.md"
+      ]
+    },
+    {
+      "query_id": "abs-012",
+      "expected_status": "abstained",
+      "supported_component": null,
+      "missing_component": "The corpus does not specify Kubernetes replica counts.",
+      "expected_sources": []
+    },
+    {
+      "query_id": "abs-013",
+      "expected_status": "answered",
+      "supported_component": "DEADLINE_EXCEEDED indicates a deadline was exceeded but does not by itself identify the underlying cause.",
+      "missing_component": null,
+      "expected_sources": [
+        "timeout-and-retry-guidance.md",
+        "grpc-troubleshooting.md",
+        "latency-troubleshooting.md"
+      ]
+    },
+    {
+      "query_id": "abs-014",
+      "expected_status": "partial",
+      "supported_component": "The meaning and limitations of DEADLINE_EXCEEDED are documented.",
+      "missing_component": "The TLS certificate expiration date is not specified.",
+      "expected_sources": [
+        "timeout-and-retry-guidance.md",
+        "grpc-troubleshooting.md"
+      ]
+    },
+    {
+      "query_id": "abs-015",
+      "expected_status": "abstained",
+      "supported_component": null,
+      "missing_component": "The corpus contains no production TLS certificate expiry information.",
+      "expected_sources": []
+    },
+    {
+      "query_id": "abs-016",
+      "expected_status": "answered",
+      "supported_component": "CurrencyService converts monetary values between currencies.",
+      "missing_component": null,
+      "expected_sources": [
+        "currency-service.md"
+      ]
+    },
+    {
+      "query_id": "abs-017",
+      "expected_status": "partial",
+      "supported_component": "CurrencyService converts monetary values.",
+      "missing_component": "The production CPU limit is not specified.",
+      "expected_sources": [
+        "currency-service.md"
+      ]
+    },
+    {
+      "query_id": "abs-018",
+      "expected_status": "abstained",
+      "supported_component": null,
+      "missing_component": "The corpus does not specify CPU limits.",
+      "expected_sources": []
+    }
+  ]
+}

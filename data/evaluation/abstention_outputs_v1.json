@@ -1,0 +1,1031 @@
+{
+  "metadata": {
+    "experiment": "014D",
+    "version": "v1",
+    "query_file": "abstention_queries_v1.json",
+    "query_sha256": "d6b34668919c2ca277ef2c4d5685a8baaf264c342f00fb0cd5e67181162ee0a0",
+    "gold_loaded_during_generation": false,
+    "llm_model": "qwen-3.6-35b-instruct",
+    "base_url": "https://llm.aristote.education/v1",
+    "rag_prompt_version": "v1",
+    "retriever": "dense",
+    "dense_model": "BAAI/bge-small-en-v1.5",
+    "retrieval_unit": "whole_document",
+    "top_k": 5
+  },
+  "items": [
+    {
+      "query_id": "abs-001",
+      "pair_id": "payment_database",
+      "variant": "answerable",
+      "query": "Which service is responsible for charging the customer during checkout?",
+      "evidence": [
+        {
+          "source_id": "payment-service.md",
+          "rank": 1,
+          "retrieval_score": 0.7619004249572754
+        },
+        {
+          "source_id": "checkout-architecture.md",
+          "rank": 2,
+          "retrieval_score": 0.7135930061340332
+        },
+        {
+          "source_id": "checkout-payment-flow.md",
+          "rank": 3,
+          "retrieval_score": 0.6950551271438599
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "rank": 4,
+          "retrieval_score": 0.6708884239196777
+        },
+        {
+          "source_id": "currency-service.md",
+          "rank": 5,
+          "retrieval_score": 0.6537399291992188
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "The PaymentService is responsible for charging the customer during checkout.",
+            "sources": [
+              "payment-service.md"
+            ]
+          },
+          {
+            "text": "The main RPC used by Checkout to charge the customer is oteldemo.PaymentService/Charge.",
+            "sources": [
+              "payment-service.md",
+              "checkout-payment-flow.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 1,
+      "latency_ms": 754.7564579872414,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"The PaymentService is responsible for charging the customer during checkout.\",\n      \"sources\": [\n        \"payment-service.md\"\n      ]\n    },\n    {\n      \"text\": \"The main RPC used by Checkout to charge the customer is oteldemo.PaymentService/Charge.\",\n      \"sources\": [\n        \"payment-service.md\",\n        \"checkout-payment-flow.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    },
+    {
+      "query_id": "abs-002",
+      "pair_id": "payment_database",
+      "variant": "partial",
+      "query": "Which service is responsible for charging the customer during checkout, and which PostgreSQL version does it use in production?",
+      "evidence": [
+        {
+          "source_id": "payment-service.md",
+          "rank": 1,
+          "retrieval_score": 0.7409349679946899
+        },
+        {
+          "source_id": "checkout-architecture.md",
+          "rank": 2,
+          "retrieval_score": 0.7199175953865051
+        },
+        {
+          "source_id": "checkout-payment-flow.md",
+          "rank": 3,
+          "retrieval_score": 0.6964123249053955
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "rank": 4,
+          "retrieval_score": 0.696028470993042
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 5,
+          "retrieval_score": 0.6663661003112793
+        }
+      ],
+      "answer": {
+        "status": "partial",
+        "claims": [
+          {
+            "text": "The Payment Service is responsible for charging the customer during checkout.",
+            "sources": [
+              "payment-service.md"
+            ]
+          }
+        ],
+        "limitation": "The provided evidence does not contain information regarding the PostgreSQL version used in production."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1540.7724169781432,
+      "raw_model_output": "{\n  \"status\": \"partial\",\n  \"claims\": [\n    {\n      \"text\": \"The Payment Service is responsible for charging the customer during checkout.\",\n      \"sources\": [\n        \"payment-service.md\"\n      ]\n    }\n  ],\n  \"limitation\": \"The provided evidence does not contain information regarding the PostgreSQL version used in production.\"\n}"
+    },
+    {
+      "query_id": "abs-003",
+      "pair_id": "payment_database",
+      "variant": "unanswerable",
+      "query": "Which PostgreSQL version does PaymentService use in production?",
+      "evidence": [
+        {
+          "source_id": "payment-service.md",
+          "rank": 1,
+          "retrieval_score": 0.7023773193359375
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "rank": 2,
+          "retrieval_score": 0.6951702833175659
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 3,
+          "retrieval_score": 0.6933333873748779
+        },
+        {
+          "source_id": "checkout-architecture.md",
+          "rank": 4,
+          "retrieval_score": 0.6457222700119019
+        },
+        {
+          "source_id": "checkout-payment-flow.md",
+          "rank": 5,
+          "retrieval_score": 0.6325790882110596
+        }
+      ],
+      "answer": {
+        "status": "abstained",
+        "claims": [],
+        "limitation": "The provided evidence describes the architecture, monitoring, and troubleshooting procedures for the PaymentService but does not specify the version of PostgreSQL used in production."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1859.2194170923904,
+      "raw_model_output": "{\n  \"status\": \"abstained\",\n  \"claims\": [],\n  \"limitation\": \"The provided evidence describes the architecture, monitoring, and troubleshooting procedures for the PaymentService but does not specify the version of PostgreSQL used in production.\"\n}"
+    },
+    {
+      "query_id": "abs-004",
+      "pair_id": "metrics_region",
+      "variant": "answerable",
+      "query": "Which observability signal should be used to detect and quantify an increase in checkout error rate?",
+      "evidence": [
+        {
+          "source_id": "observability-guide.md",
+          "rank": 1,
+          "retrieval_score": 0.7465063333511353
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "rank": 2,
+          "retrieval_score": 0.7274946570396423
+        },
+        {
+          "source_id": "metrics-guide.md",
+          "rank": 3,
+          "retrieval_score": 0.7195425033569336
+        },
+        {
+          "source_id": "checkout-runbook.md",
+          "rank": 4,
+          "retrieval_score": 0.7028583288192749
+        },
+        {
+          "source_id": "feature-flags.md",
+          "rank": 5,
+          "retrieval_score": 0.6898109912872314
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "Metrics are the observability signal used to detect and quantify an increase in error rate.",
+            "sources": [
+              "observability-guide.md"
+            ]
+          },
+          {
+            "text": "Metrics are specifically described as being strongest for detection and quantification of system behavior.",
+            "sources": [
+              "metrics-guide.md"
+            ]
+          },
+          {
+            "text": "In the context of checkout behavior, metrics can show that the `oteldemo.CheckoutService/PlaceOrder` endpoint has an elevated error rate.",
+            "sources": [
+              "metrics-guide.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1239.9089169921353,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"Metrics are the observability signal used to detect and quantify an increase in error rate.\",\n      \"sources\": [\n        \"observability-guide.md\"\n      ]\n    },\n    {\n      \"text\": \"Metrics are specifically described as being strongest for detection and quantification of system behavior.\",\n      \"sources\": [\n        \"metrics-guide.md\"\n      ]\n    },\n    {\n      \"text\": \"In the context of checkout behavior, metrics can show that the `oteldemo.CheckoutService/PlaceOrder` endpoint has an elevated error rate.\",\n      \"sources\": [\n        \"metrics-guide.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    },
+    {
+      "query_id": "abs-005",
+      "pair_id": "metrics_region",
+      "variant": "partial",
+      "query": "Which observability signal should be used to detect and quantify an increase in checkout error rate, and which production cloud region hosts the system?",
+      "evidence": [
+        {
+          "source_id": "observability-guide.md",
+          "rank": 1,
+          "retrieval_score": 0.7392529249191284
+        },
+        {
+          "source_id": "feature-flags.md",
+          "rank": 2,
+          "retrieval_score": 0.6890244483947754
+        },
+        {
+          "source_id": "metrics-guide.md",
+          "rank": 3,
+          "retrieval_score": 0.6827963590621948
+        },
+        {
+          "source_id": "checkout-runbook.md",
+          "rank": 4,
+          "retrieval_score": 0.6797842383384705
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "rank": 5,
+          "retrieval_score": 0.6777200698852539
+        }
+      ],
+      "answer": {
+        "status": "partial",
+        "claims": [
+          {
+            "text": "Metrics should be used to detect and quantify an increase in checkout error rate.",
+            "sources": [
+              "metrics-guide.md"
+            ]
+          },
+          {
+            "text": "Metrics are strongest for detection and quantification of symptoms such as error rate.",
+            "sources": [
+              "metrics-guide.md"
+            ]
+          }
+        ],
+        "limitation": "The provided evidence does not specify which production cloud region hosts the system."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 715.6636250438169,
+      "raw_model_output": "{\n  \"status\": \"partial\",\n  \"claims\": [\n    {\n      \"text\": \"Metrics should be used to detect and quantify an increase in checkout error rate.\",\n      \"sources\": [\n        \"SOURCE: metrics-guide.md\"\n      ]\n    },\n    {\n      \"text\": \"Metrics are strongest for detection and quantification of symptoms such as error rate.\",\n      \"sources\": [\n        \"SOURCE: metrics-guide.md\"\n      ]\n    }\n  ],\n  \"limitation\": \"The provided evidence does not specify which production cloud region hosts the system.\"\n}"
+    },
+    {
+      "query_id": "abs-006",
+      "pair_id": "metrics_region",
+      "variant": "unanswerable",
+      "query": "Which production cloud region hosts the checkout system?",
+      "evidence": [
+        {
+          "source_id": "checkout-architecture.md",
+          "rank": 1,
+          "retrieval_score": 0.6398891806602478
+        },
+        {
+          "source_id": "checkout-runbook.md",
+          "rank": 2,
+          "retrieval_score": 0.5764665007591248
+        },
+        {
+          "source_id": "product-catalog-service.md",
+          "rank": 3,
+          "retrieval_score": 0.5716005563735962
+        },
+        {
+          "source_id": "checkout-payment-flow.md",
+          "rank": 4,
+          "retrieval_score": 0.5712325572967529
+        },
+        {
+          "source_id": "shipping-service.md",
+          "rank": 5,
+          "retrieval_score": 0.5584626793861389
+        }
+      ],
+      "answer": {
+        "status": "abstained",
+        "claims": [],
+        "limitation": "The provided evidence describes the architecture, dependencies, and troubleshooting procedures for the checkout system but does not specify which production cloud region hosts it."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 658.5921669611707,
+      "raw_model_output": "{\n  \"status\": \"abstained\",\n  \"claims\": [],\n  \"limitation\": \"The provided evidence describes the architecture, dependencies, and troubleshooting procedures for the checkout system but does not specify which production cloud region hosts it.\"\n}"
+    },
+    {
+      "query_id": "abs-007",
+      "pair_id": "trace_oncall",
+      "variant": "answerable",
+      "query": "A failing client span has no matching downstream server span. What should I investigate?",
+      "evidence": [
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 1,
+          "retrieval_score": 0.7517911195755005
+        },
+        {
+          "source_id": "service-discovery.md",
+          "rank": 2,
+          "retrieval_score": 0.7324542999267578
+        },
+        {
+          "source_id": "latency-troubleshooting.md",
+          "rank": 3,
+          "retrieval_score": 0.7236417531967163
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "rank": 4,
+          "retrieval_score": 0.7230205535888672
+        },
+        {
+          "source_id": "distributed-tracing-guide.md",
+          "rank": 5,
+          "retrieval_score": 0.7185438275337219
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "A failing client span with no matching downstream server span suggests that the failure occurred before the downstream service handled the request.",
+            "sources": [
+              "payment-runbook.md",
+              "distributed-tracing-guide.md"
+            ]
+          },
+          {
+            "text": "Investigation should include checking the service name and endpoint configuration.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "Investigation should include checking name resolution.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "Investigation should include checking service discovery.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "Investigation should include checking network connectivity.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "Investigation should include checking the gRPC status and status description.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "The gRPC status `UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.",
+            "sources": [
+              "payment-runbook.md"
+            ]
+          },
+          {
+            "text": "Service discovery failures can prevent an RPC from reaching the downstream application at all, appearing as a failing client span with no corresponding server span.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Messages such as 'name resolver error' or 'produced zero addresses' strongly suggest that the client could not obtain a usable destination.",
+            "sources": [
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Possible causes for `UNAVAILABLE` include unreachable endpoint, connection failure, name-resolution failure, unavailable service instance, or transient network failure.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 2,
+      "latency_ms": 11194.602958043106,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"A failing client span with no matching downstream server span suggests that the failure occurred before the downstream service handled the request.\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"distributed-tracing-guide.md\"\n      ]\n    },\n    {\n      \"text\": \"Investigation should include checking the service name and endpoint configuration.\",\n      \"sources\": [\n        \"payment-runbook.md\"\n      ]\n    },\n    {\n      \"text\": \"Investigation should include checking name resolution.\",\n      \"sources\": [\n        \"payment-runbook.md\"\n      ]\n    },\n    {\n      \"text\": \"Investigation should include checking service discovery.\",\n      \"sources\": [\n        \"payment-runbook.md\"\n      ]\n    },\n    {\n      \"text\": \"Investigation should include checking network connectivity.\",\n      \"sources\": [\n        \"payment-runbook.md\"\n      ]\n    },\n    {\n      \"text\": \"Investigation should include checking the gRPC status and status description.\",\n      \"sources\": [\n        \"payment-runbook.md\"\n      ]\n    },\n    {\n      \"text\": \"The gRPC status `UNAVAILABLE` with resolver-oriented diagnostics is especially relevant to this branch.\",\n      \"sources\": [\n        \"payment-runbook.md\"\n      ]\n    },\n    {\n      \"text\": \"Service discovery failures can prevent an RPC from reaching the downstream application at all, appearing as a failing client span with no corresponding server span.\",\n      \"sources\": [\n        \"service-discovery.md\"\n      ]\n    },\n    {\n      \"text\": \"Messages such as 'name resolver error' or 'produced zero addresses' strongly suggest that the client could not obtain a usable destination.\",\n      \"sources\": [\n        \"service-discovery.md\"\n      ]\n    },\n    {\n      \"text\": \"Possible causes for `UNAVAILABLE` include unreachable endpoint, connection failure, name-resolution failure, unavailable service instance, or transient network failure.\",\n      \"sources\": [\n        \"grpc-troubleshooting.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    },
+    {
+      "query_id": "abs-008",
+      "pair_id": "trace_oncall",
+      "variant": "partial",
+      "query": "A failing client span has no matching downstream server span. What should I investigate, and who is the current on-call engineer?",
+      "evidence": [
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 1,
+          "retrieval_score": 0.7514510154724121
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "rank": 2,
+          "retrieval_score": 0.736426591873169
+        },
+        {
+          "source_id": "service-discovery.md",
+          "rank": 3,
+          "retrieval_score": 0.7276538610458374
+        },
+        {
+          "source_id": "distributed-tracing-guide.md",
+          "rank": 4,
+          "retrieval_score": 0.7191818356513977
+        },
+        {
+          "source_id": "latency-troubleshooting.md",
+          "rank": 5,
+          "retrieval_score": 0.7100276350975037
+        }
+      ],
+      "answer": {
+        "status": "partial",
+        "claims": [
+          {
+            "text": "A failing client span with no matching downstream server span suggests the failure occurred before the downstream service (PaymentService) handled the request.",
+            "sources": [
+              "payment-runbook.md",
+              "grpc-troubleshooting.md",
+              "service-discovery.md",
+              "distributed-tracing-guide.md"
+            ]
+          },
+          {
+            "text": "Investigation should include checking service name and endpoint configuration, name resolution, service discovery, network connectivity, and gRPC status and status description.",
+            "sources": [
+              "payment-runbook.md",
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "Specifically, look for `UNAVAILABLE` status with resolver-oriented diagnostics, as this is relevant to failures where the client could not obtain a usable destination.",
+            "sources": [
+              "payment-runbook.md",
+              "grpc-troubleshooting.md",
+              "service-discovery.md"
+            ]
+          },
+          {
+            "text": "The provided evidence does not contain information regarding the current on-call engineer.",
+            "sources": [
+              "payment-runbook.md",
+              "grpc-troubleshooting.md",
+              "service-discovery.md",
+              "distributed-tracing-guide.md",
+              "latency-troubleshooting.md"
+            ]
+          }
+        ],
+        "limitation": "The provided evidence does not identify the current on-call engineer."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3093.29612494912,
+      "raw_model_output": "{\n  \"status\": \"partial\",\n  \"claims\": [\n    {\n      \"text\": \"A failing client span with no matching downstream server span suggests the failure occurred before the downstream service (PaymentService) handled the request.\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"grpc-troubleshooting.md\",\n        \"service-discovery.md\",\n        \"distributed-tracing-guide.md\"\n      ]\n    },\n    {\n      \"text\": \"Investigation should include checking service name and endpoint configuration, name resolution, service discovery, network connectivity, and gRPC status and status description.\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"service-discovery.md\"\n      ]\n    },\n    {\n      \"text\": \"Specifically, look for `UNAVAILABLE` status with resolver-oriented diagnostics, as this is relevant to failures where the client could not obtain a usable destination.\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"grpc-troubleshooting.md\",\n        \"service-discovery.md\"\n      ]\n    },\n    {\n      \"text\": \"The provided evidence does not contain information regarding the current on-call engineer.\",\n      \"sources\": [\n        \"payment-runbook.md\",\n        \"grpc-troubleshooting.md\",\n        \"service-discovery.md\",\n        \"distributed-tracing-guide.md\",\n        \"latency-troubleshooting.md\"\n      ]\n    }\n  ],\n  \"limitation\": \"The provided evidence does not identify the current on-call engineer.\"\n}"
+    },
+    {
+      "query_id": "abs-009",
+      "pair_id": "trace_oncall",
+      "variant": "unanswerable",
+      "query": "Who is the current on-call engineer for checkout incidents?",
+      "evidence": [
+        {
+          "source_id": "checkout-architecture.md",
+          "rank": 1,
+          "retrieval_score": 0.6490011811256409
+        },
+        {
+          "source_id": "checkout-runbook.md",
+          "rank": 2,
+          "retrieval_score": 0.6194869875907898
+        },
+        {
+          "source_id": "payment-service.md",
+          "rank": 3,
+          "retrieval_score": 0.5950554609298706
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "rank": 4,
+          "retrieval_score": 0.586837887763977
+        },
+        {
+          "source_id": "frontend-service.md",
+          "rank": 5,
+          "retrieval_score": 0.5866961479187012
+        }
+      ],
+      "answer": {
+        "status": "abstained",
+        "claims": [],
+        "limitation": "The provided evidence describes the architecture, runbooks, and monitoring for the Checkout and Payment services, but it does not contain any information regarding specific personnel, roles, or on-call assignments for checkout incidents."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 670.7958750193939,
+      "raw_model_output": "{\n  \"status\": \"abstained\",\n  \"claims\": [],\n  \"limitation\": \"The provided evidence describes the architecture, runbooks, and monitoring for the Checkout and Payment services, but it does not contain any information regarding specific personnel, roles, or on-call assignments for checkout incidents.\"\n}"
+    },
+    {
+      "query_id": "abs-010",
+      "pair_id": "shipping_replicas",
+      "variant": "answerable",
+      "query": "What role does the Shipping service play in checkout before payment is completed?",
+      "evidence": [
+        {
+          "source_id": "shipping-service.md",
+          "rank": 1,
+          "retrieval_score": 0.7617392539978027
+        },
+        {
+          "source_id": "checkout-payment-flow.md",
+          "rank": 2,
+          "retrieval_score": 0.7511309385299683
+        },
+        {
+          "source_id": "checkout-architecture.md",
+          "rank": 3,
+          "retrieval_score": 0.7317932844161987
+        },
+        {
+          "source_id": "cart-service.md",
+          "rank": 4,
+          "retrieval_score": 0.7052807807922363
+        },
+        {
+          "source_id": "payment-service.md",
+          "rank": 5,
+          "retrieval_score": 0.6883342266082764
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "The Shipping service calculates delivery quotes and participates in the checkout workflow before payment is completed.",
+            "sources": [
+              "shipping-service.md"
+            ]
+          },
+          {
+            "text": "During the checkout process, Checkout asks the Shipping service for the cost of delivering the current cart.",
+            "sources": [
+              "shipping-service.md"
+            ]
+          },
+          {
+            "text": "The Shipping service provides the delivery cost as one of the most important downstream calls in the order-placement workflow.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1119.0817500464618,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"The Shipping service calculates delivery quotes and participates in the checkout workflow before payment is completed.\",\n      \"sources\": [\n        \"shipping-service.md\"\n      ]\n    },\n    {\n      \"text\": \"During the checkout process, Checkout asks the Shipping service for the cost of delivering the current cart.\",\n      \"sources\": [\n        \"shipping-service.md\"\n      ]\n    },\n    {\n      \"text\": \"The Shipping service provides the delivery cost as one of the most important downstream calls in the order-placement workflow.\",\n      \"sources\": [\n        \"checkout-architecture.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    },
+    {
+      "query_id": "abs-011",
+      "pair_id": "shipping_replicas",
+      "variant": "partial",
+      "query": "What role does the Shipping service play in checkout before payment is completed, and how many Kubernetes replicas does it run in production?",
+      "evidence": [
+        {
+          "source_id": "shipping-service.md",
+          "rank": 1,
+          "retrieval_score": 0.7203807234764099
+        },
+        {
+          "source_id": "checkout-architecture.md",
+          "rank": 2,
+          "retrieval_score": 0.7163816690444946
+        },
+        {
+          "source_id": "checkout-payment-flow.md",
+          "rank": 3,
+          "retrieval_score": 0.7018587589263916
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 4,
+          "retrieval_score": 0.6710999608039856
+        },
+        {
+          "source_id": "cart-service.md",
+          "rank": 5,
+          "retrieval_score": 0.6674464344978333
+        }
+      ],
+      "answer": {
+        "status": "partial",
+        "claims": [
+          {
+            "text": "The Shipping service calculates delivery quotes and participates in the checkout workflow before payment is completed.",
+            "sources": [
+              "shipping-service.md"
+            ]
+          },
+          {
+            "text": "Checkout asks Shipping for the cost of delivering the current cart.",
+            "sources": [
+              "shipping-service.md"
+            ]
+          }
+        ],
+        "limitation": "The provided evidence does not contain information regarding the number of Kubernetes replicas the Shipping service runs in production."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2028.7388750584796,
+      "raw_model_output": "{\n  \"status\": \"partial\",\n  \"claims\": [\n    {\n      \"text\": \"The Shipping service calculates delivery quotes and participates in the checkout workflow before payment is completed.\",\n      \"sources\": [\n        \"shipping-service.md\"\n      ]\n    },\n    {\n      \"text\": \"Checkout asks Shipping for the cost of delivering the current cart.\",\n      \"sources\": [\n        \"shipping-service.md\"\n      ]\n    }\n  ],\n  \"limitation\": \"The provided evidence does not contain information regarding the number of Kubernetes replicas the Shipping service runs in production.\"\n}"
+    },
+    {
+      "query_id": "abs-012",
+      "pair_id": "shipping_replicas",
+      "variant": "unanswerable",
+      "query": "How many Kubernetes replicas does the Shipping service run in production?",
+      "evidence": [
+        {
+          "source_id": "shipping-service.md",
+          "rank": 1,
+          "retrieval_score": 0.6181646585464478
+        },
+        {
+          "source_id": "observability-guide.md",
+          "rank": 2,
+          "retrieval_score": 0.5718536376953125
+        },
+        {
+          "source_id": "checkout-architecture.md",
+          "rank": 3,
+          "retrieval_score": 0.5647891759872437
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 4,
+          "retrieval_score": 0.5589464902877808
+        },
+        {
+          "source_id": "product-catalog-service.md",
+          "rank": 5,
+          "retrieval_score": 0.5586568117141724
+        }
+      ],
+      "answer": {
+        "status": "abstained",
+        "claims": [],
+        "limitation": "The provided evidence describes the Shipping service's role, its dependencies, and how to investigate issues with it, but it does not contain any information regarding the number of Kubernetes replicas running in production."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1582.2720419382676,
+      "raw_model_output": "{\n  \"status\": \"abstained\",\n  \"claims\": [],\n  \"limitation\": \"The provided evidence describes the Shipping service's role, its dependencies, and how to investigate issues with it, but it does not contain any information regarding the number of Kubernetes replicas running in production.\"\n}"
+    },
+    {
+      "query_id": "abs-013",
+      "pair_id": "deadline_tls",
+      "variant": "answerable",
+      "query": "What does DEADLINE_EXCEEDED tell me, and what does it not establish about the underlying root cause?",
+      "evidence": [
+        {
+          "source_id": "timeout-and-retry-guidance.md",
+          "rank": 1,
+          "retrieval_score": 0.7332992553710938
+        },
+        {
+          "source_id": "latency-troubleshooting.md",
+          "rank": 2,
+          "retrieval_score": 0.7192565202713013
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "rank": 3,
+          "retrieval_score": 0.7019125819206238
+        },
+        {
+          "source_id": "incident-response-guide.md",
+          "rank": 4,
+          "retrieval_score": 0.6526250839233398
+        },
+        {
+          "source_id": "telemetry-correlation.md",
+          "rank": 5,
+          "retrieval_score": 0.6079220771789551
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "DEADLINE_EXCEEDED indicates that a request exceeded its configured deadline or that an operation did not complete before the caller's deadline.",
+            "sources": [
+              "timeout-and-retry-guidance.md",
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "DEADLINE_EXCEEDED does not automatically imply a network failure.",
+            "sources": [
+              "timeout-and-retry-guidance.md"
+            ]
+          },
+          {
+            "text": "DEADLINE_EXCEEDED does not identify the underlying latency mechanism or the specific root cause of the delay.",
+            "sources": [
+              "latency-troubleshooting.md",
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "The underlying cause for a DEADLINE_EXCEEDED error may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "Traces and metrics are required to identify why the deadline expired.",
+            "sources": [
+              "timeout-and-retry-guidance.md",
+              "latency-troubleshooting.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2671.6942089842632,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"DEADLINE_EXCEEDED indicates that a request exceeded its configured deadline or that an operation did not complete before the caller's deadline.\",\n      \"sources\": [\n        \"timeout-and-retry-guidance.md\",\n        \"grpc-troubleshooting.md\"\n      ]\n    },\n    {\n      \"text\": \"DEADLINE_EXCEEDED does not automatically imply a network failure.\",\n      \"sources\": [\n        \"timeout-and-retry-guidance.md\"\n      ]\n    },\n    {\n      \"text\": \"DEADLINE_EXCEEDED does not identify the underlying latency mechanism or the specific root cause of the delay.\",\n      \"sources\": [\n        \"latency-troubleshooting.md\",\n        \"grpc-troubleshooting.md\"\n      ]\n    },\n    {\n      \"text\": \"The underlying cause for a DEADLINE_EXCEEDED error may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.\",\n      \"sources\": [\n        \"grpc-troubleshooting.md\"\n      ]\n    },\n    {\n      \"text\": \"Traces and metrics are required to identify why the deadline expired.\",\n      \"sources\": [\n        \"timeout-and-retry-guidance.md\",\n        \"latency-troubleshooting.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    },
+    {
+      "query_id": "abs-014",
+      "pair_id": "deadline_tls",
+      "variant": "partial",
+      "query": "What does DEADLINE_EXCEEDED tell me about the request, and when does the production TLS certificate expire?",
+      "evidence": [
+        {
+          "source_id": "timeout-and-retry-guidance.md",
+          "rank": 1,
+          "retrieval_score": 0.7099354267120361
+        },
+        {
+          "source_id": "latency-troubleshooting.md",
+          "rank": 2,
+          "retrieval_score": 0.7007777094841003
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "rank": 3,
+          "retrieval_score": 0.6809020042419434
+        },
+        {
+          "source_id": "checkout-runbook.md",
+          "rank": 4,
+          "retrieval_score": 0.6314175724983215
+        },
+        {
+          "source_id": "shipping-service.md",
+          "rank": 5,
+          "retrieval_score": 0.6216805577278137
+        }
+      ],
+      "answer": {
+        "status": "partial",
+        "claims": [
+          {
+            "text": "DEADLINE_EXCEEDED indicates that the request exceeded a deadline, meaning the operation did not complete before the caller's deadline.",
+            "sources": [
+              "grpc-troubleshooting.md",
+              "latency-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "DEADLINE_EXCEEDED does not automatically imply a network failure or identify the root cause; it means the deadline expired, and traces and metrics are needed to identify why.",
+            "sources": [
+              "timeout-and-retry-guidance.md",
+              "grpc-troubleshooting.md"
+            ]
+          },
+          {
+            "text": "The underlying cause for a DEADLINE_EXCEEDED error may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.",
+            "sources": [
+              "grpc-troubleshooting.md"
+            ]
+          }
+        ],
+        "limitation": "The provided evidence does not contain information regarding when the production TLS certificate expires."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 4613.812334020622,
+      "raw_model_output": "{\n  \"status\": \"partial\",\n  \"claims\": [\n    {\n      \"text\": \"DEADLINE_EXCEEDED indicates that the request exceeded a deadline, meaning the operation did not complete before the caller's deadline.\",\n      \"sources\": [\n        \"SOURCE: grpc-troubleshooting.md\",\n        \"SOURCE: latency-troubleshooting.md\"\n      ]\n    },\n    {\n      \"text\": \"DEADLINE_EXCEEDED does not automatically imply a network failure or identify the root cause; it means the deadline expired, and traces and metrics are needed to identify why.\",\n      \"sources\": [\n        \"SOURCE: timeout-and-retry-guidance.md\",\n        \"SOURCE: grpc-troubleshooting.md\"\n      ]\n    },\n    {\n      \"text\": \"The underlying cause for a DEADLINE_EXCEEDED error may be a slow downstream service, network delay, queueing, retries, or an unrealistically short timeout.\",\n      \"sources\": [\n        \"SOURCE: grpc-troubleshooting.md\"\n      ]\n    }\n  ],\n  \"limitation\": \"The provided evidence does not contain information regarding when the production TLS certificate expires.\"\n}"
+    },
+    {
+      "query_id": "abs-015",
+      "pair_id": "deadline_tls",
+      "variant": "unanswerable",
+      "query": "When does the production TLS certificate expire?",
+      "evidence": [
+        {
+          "source_id": "latency-troubleshooting.md",
+          "rank": 1,
+          "retrieval_score": 0.5709719657897949
+        },
+        {
+          "source_id": "observability-guide.md",
+          "rank": 2,
+          "retrieval_score": 0.5647989511489868
+        },
+        {
+          "source_id": "grpc-troubleshooting.md",
+          "rank": 3,
+          "retrieval_score": 0.5623115301132202
+        },
+        {
+          "source_id": "shipping-service.md",
+          "rank": 4,
+          "retrieval_score": 0.5618336200714111
+        },
+        {
+          "source_id": "timeout-and-retry-guidance.md",
+          "rank": 5,
+          "retrieval_score": 0.5566588640213013
+        }
+      ],
+      "answer": {
+        "status": "abstained",
+        "claims": [],
+        "limitation": "The provided evidence contains troubleshooting guides for latency, observability, gRPC, shipping services, and timeouts/retries. None of the sources contain information regarding TLS certificates or their expiration dates."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 2646.8330409843475,
+      "raw_model_output": "{\n  \"status\": \"abstained\",\n  \"claims\": [],\n  \"limitation\": \"The provided evidence contains troubleshooting guides for latency, observability, gRPC, shipping services, and timeouts/retries. None of the sources contain information regarding TLS certificates or their expiration dates.\"\n}"
+    },
+    {
+      "query_id": "abs-016",
+      "pair_id": "currency_cpu",
+      "variant": "answerable",
+      "query": "What is the Currency service responsible for during checkout?",
+      "evidence": [
+        {
+          "source_id": "currency-service.md",
+          "rank": 1,
+          "retrieval_score": 0.8320668935775757
+        },
+        {
+          "source_id": "payment-service.md",
+          "rank": 2,
+          "retrieval_score": 0.7382181882858276
+        },
+        {
+          "source_id": "checkout-architecture.md",
+          "rank": 3,
+          "retrieval_score": 0.7317298650741577
+        },
+        {
+          "source_id": "checkout-payment-flow.md",
+          "rank": 4,
+          "retrieval_score": 0.7024050951004028
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "rank": 5,
+          "retrieval_score": 0.6919436454772949
+        }
+      ],
+      "answer": {
+        "status": "answered",
+        "claims": [
+          {
+            "text": "The Currency service converts monetary values between currencies used by the storefront and downstream checkout operations.",
+            "sources": [
+              "currency-service.md"
+            ]
+          },
+          {
+            "text": "Checkout or the frontend may request currency conversion during an order.",
+            "sources": [
+              "currency-service.md"
+            ]
+          },
+          {
+            "text": "Currency failures can affect displayed prices or prevent an order from completing, depending on where the failure occurs.",
+            "sources": [
+              "currency-service.md"
+            ]
+          }
+        ],
+        "limitation": null
+      },
+      "generation_attempts": 1,
+      "latency_ms": 1985.4524589609355,
+      "raw_model_output": "{\n  \"status\": \"answered\",\n  \"claims\": [\n    {\n      \"text\": \"The Currency service converts monetary values between currencies used by the storefront and downstream checkout operations.\",\n      \"sources\": [\n        \"currency-service.md\"\n      ]\n    },\n    {\n      \"text\": \"Checkout or the frontend may request currency conversion during an order.\",\n      \"sources\": [\n        \"currency-service.md\"\n      ]\n    },\n    {\n      \"text\": \"Currency failures can affect displayed prices or prevent an order from completing, depending on where the failure occurs.\",\n      \"sources\": [\n        \"currency-service.md\"\n      ]\n    }\n  ],\n  \"limitation\": null\n}"
+    },
+    {
+      "query_id": "abs-017",
+      "pair_id": "currency_cpu",
+      "variant": "partial",
+      "query": "What is the Currency service responsible for during checkout, and what CPU limit is configured for it in production?",
+      "evidence": [
+        {
+          "source_id": "currency-service.md",
+          "rank": 1,
+          "retrieval_score": 0.760857343673706
+        },
+        {
+          "source_id": "checkout-architecture.md",
+          "rank": 2,
+          "retrieval_score": 0.7043790817260742
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "rank": 3,
+          "retrieval_score": 0.6752445697784424
+        },
+        {
+          "source_id": "payment-service.md",
+          "rank": 4,
+          "retrieval_score": 0.6698413491249084
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 5,
+          "retrieval_score": 0.6588150262832642
+        }
+      ],
+      "answer": {
+        "status": "partial",
+        "claims": [
+          {
+            "text": "The Currency service is responsible for converting monetary values between currencies used by the storefront and downstream checkout operations.",
+            "sources": [
+              "currency-service.md"
+            ]
+          },
+          {
+            "text": "Checkout or the frontend may request currency conversion during an order.",
+            "sources": [
+              "currency-service.md"
+            ]
+          },
+          {
+            "text": "The Currency service is a downstream dependency for price conversion in the Checkout service.",
+            "sources": [
+              "checkout-architecture.md"
+            ]
+          }
+        ],
+        "limitation": "The provided evidence does not contain information regarding the CPU limit configured for the Currency service in production."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 3339.8554580053315,
+      "raw_model_output": "{\n  \"status\": \"partial\",\n  \"claims\": [\n    {\n      \"text\": \"The Currency service is responsible for converting monetary values between currencies used by the storefront and downstream checkout operations.\",\n      \"sources\": [\n        \"currency-service.md\"\n      ]\n    },\n    {\n      \"text\": \"Checkout or the frontend may request currency conversion during an order.\",\n      \"sources\": [\n        \"currency-service.md\"\n      ]\n    },\n    {\n      \"text\": \"The Currency service is a downstream dependency for price conversion in the Checkout service.\",\n      \"sources\": [\n        \"checkout-architecture.md\"\n      ]\n    }\n  ],\n  \"limitation\": \"The provided evidence does not contain information regarding the CPU limit configured for the Currency service in production.\"\n}"
+    },
+    {
+      "query_id": "abs-018",
+      "pair_id": "currency_cpu",
+      "variant": "unanswerable",
+      "query": "What CPU limit is configured for CurrencyService in production?",
+      "evidence": [
+        {
+          "source_id": "currency-service.md",
+          "rank": 1,
+          "retrieval_score": 0.6867626905441284
+        },
+        {
+          "source_id": "payment-monitoring.md",
+          "rank": 2,
+          "retrieval_score": 0.6283162236213684
+        },
+        {
+          "source_id": "payment-runbook.md",
+          "rank": 3,
+          "retrieval_score": 0.6274882555007935
+        },
+        {
+          "source_id": "checkout-runbook.md",
+          "rank": 4,
+          "retrieval_score": 0.6267763376235962
+        },
+        {
+          "source_id": "latency-troubleshooting.md",
+          "rank": 5,
+          "retrieval_score": 0.6249462366104126
+        }
+      ],
+      "answer": {
+        "status": "abstained",
+        "claims": [],
+        "limitation": "The provided evidence does not contain any information regarding the CPU limit configuration for the CurrencyService in production. The document 'currency-service.md' describes the service's function and useful investigation evidence but does not specify resource limits."
+      },
+      "generation_attempts": 1,
+      "latency_ms": 715.9923750441521,
+      "raw_model_output": "{\n  \"status\": \"abstained\",\n  \"claims\": [],\n  \"limitation\": \"The provided evidence does not contain any information regarding the CPU limit configuration for the CurrencyService in production. The document 'currency-service.md' describes the service's function and useful investigation evidence but does not specify resource limits.\"\n}"
+    }
+  ]
+}
