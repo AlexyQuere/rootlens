@@ -1,0 +1,485 @@
+{
+  "metadata": {
+    "source_outputs": "dev_rag_outputs_v1.json",
+    "queries": 24,
+    "attempt_metadata_complete": false
+  },
+  "aggregate": {
+    "retrieval_qrel_recall": 0.8298611111111112,
+    "citation_qrel_precision": 0.9375,
+    "citation_qrel_recall": 0.6736111111111112,
+    "relevant_evidence_retention": 0.8402777777777778,
+    "source_utilization": 0.4166666666666667,
+    "mean_claims_per_query": 4.833333333333333,
+    "mean_sources_per_claim": 1.2879769536019536,
+    "status_counts": {
+      "answered": 24,
+      "partial": 0,
+      "abstained": 0
+    }
+  },
+  "categories": {
+    "architecture": {
+      "queries": 4,
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.6666666666666666,
+      "mean_claims": 4.0
+    },
+    "exact_identifier": {
+      "queries": 4,
+      "retrieval_qrel_recall": 0.9166666666666666,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.6666666666666666,
+      "mean_claims": 3.0
+    },
+    "hard_negative": {
+      "queries": 2,
+      "retrieval_qrel_recall": 0.75,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.5,
+      "mean_claims": 2.5
+    },
+    "multi_document": {
+      "queries": 3,
+      "retrieval_qrel_recall": 0.5833333333333334,
+      "citation_qrel_precision": 0.6944444444444445,
+      "citation_qrel_recall": 0.5,
+      "mean_claims": 6.0
+    },
+    "observability": {
+      "queries": 3,
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.8888888888888888,
+      "mean_claims": 6.333333333333333
+    },
+    "semantic_paraphrase": {
+      "queries": 4,
+      "retrieval_qrel_recall": 0.625,
+      "citation_qrel_precision": 0.9166666666666666,
+      "citation_qrel_recall": 0.625,
+      "mean_claims": 3.75
+    },
+    "troubleshooting": {
+      "queries": 4,
+      "retrieval_qrel_recall": 0.875,
+      "citation_qrel_precision": 0.9375,
+      "citation_qrel_recall": 0.7916666666666666,
+      "mean_claims": 7.75
+    }
+  },
+  "queries": [
+    {
+      "query_id": "dev-001",
+      "category": "exact_identifier",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.5,
+      "relevant_evidence_retention": 0.5,
+      "source_utilization": 0.2,
+      "claim_count": 1,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [
+        "checkout-payment-flow.md"
+      ],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-002",
+      "category": "exact_identifier",
+      "status": "answered",
+      "retrieval_qrel_recall": 0.6666666666666666,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.6666666666666666,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.4,
+      "claim_count": 5,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [
+        "service-discovery.md"
+      ],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-003",
+      "category": "exact_identifier",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.5,
+      "relevant_evidence_retention": 0.5,
+      "source_utilization": 0.2,
+      "claim_count": 3,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [
+        "checkout-runbook.md"
+      ],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-004",
+      "category": "exact_identifier",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 1.0,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.4,
+      "claim_count": 3,
+      "mean_sources_per_claim": 1.6666666666666667,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-005",
+      "category": "semantic_paraphrase",
+      "status": "answered",
+      "retrieval_qrel_recall": 0.5,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.5,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.2,
+      "claim_count": 5,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [
+        "dns-troubleshooting.md"
+      ],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-006",
+      "category": "semantic_paraphrase",
+      "status": "answered",
+      "retrieval_qrel_recall": 0.6666666666666666,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.6666666666666666,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.4,
+      "claim_count": 3,
+      "mean_sources_per_claim": 1.6666666666666667,
+      "missing_relevant_from_retrieval": [
+        "distributed-tracing-guide.md"
+      ],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-007",
+      "category": "semantic_paraphrase",
+      "status": "answered",
+      "retrieval_qrel_recall": 0.6666666666666666,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.6666666666666666,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.4,
+      "claim_count": 3,
+      "mean_sources_per_claim": 1.3333333333333333,
+      "missing_relevant_from_retrieval": [
+        "dns-troubleshooting.md"
+      ],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-008",
+      "category": "semantic_paraphrase",
+      "status": "answered",
+      "retrieval_qrel_recall": 0.6666666666666666,
+      "citation_qrel_precision": 0.6666666666666666,
+      "citation_qrel_recall": 0.6666666666666666,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.6,
+      "claim_count": 4,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [
+        "incident-response-guide.md"
+      ],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": [
+        "payment-runbook.md"
+      ]
+    },
+    {
+      "query_id": "dev-009",
+      "category": "architecture",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 1.0,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.4,
+      "claim_count": 6,
+      "mean_sources_per_claim": 1.1666666666666667,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-010",
+      "category": "architecture",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.6666666666666666,
+      "relevant_evidence_retention": 0.6666666666666666,
+      "source_utilization": 0.4,
+      "claim_count": 4,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [
+        "checkout-architecture.md"
+      ],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-011",
+      "category": "architecture",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.3333333333333333,
+      "relevant_evidence_retention": 0.3333333333333333,
+      "source_utilization": 0.2,
+      "claim_count": 2,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [
+        "checkout-architecture.md",
+        "checkout-payment-flow.md"
+      ],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-012",
+      "category": "architecture",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.6666666666666666,
+      "relevant_evidence_retention": 0.6666666666666666,
+      "source_utilization": 0.4,
+      "claim_count": 4,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [
+        "checkout-architecture.md"
+      ],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-013",
+      "category": "troubleshooting",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 0.75,
+      "citation_qrel_recall": 1.0,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.8,
+      "claim_count": 7,
+      "mean_sources_per_claim": 2.142857142857143,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": [
+        "distributed-tracing-guide.md"
+      ]
+    },
+    {
+      "query_id": "dev-014",
+      "category": "troubleshooting",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 1.0,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.6,
+      "claim_count": 5,
+      "mean_sources_per_claim": 1.6,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-015",
+      "category": "troubleshooting",
+      "status": "answered",
+      "retrieval_qrel_recall": 0.5,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.5,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.4,
+      "claim_count": 6,
+      "mean_sources_per_claim": 1.5,
+      "missing_relevant_from_retrieval": [
+        "grpc-troubleshooting.md",
+        "service-discovery.md"
+      ],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-016",
+      "category": "troubleshooting",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.6666666666666666,
+      "relevant_evidence_retention": 0.6666666666666666,
+      "source_utilization": 0.4,
+      "claim_count": 13,
+      "mean_sources_per_claim": 1.0769230769230769,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [
+        "grpc-troubleshooting.md"
+      ],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-017",
+      "category": "observability",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.6666666666666666,
+      "relevant_evidence_retention": 0.6666666666666666,
+      "source_utilization": 0.4,
+      "claim_count": 3,
+      "mean_sources_per_claim": 1.3333333333333333,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [
+        "checkout-runbook.md"
+      ],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-018",
+      "category": "observability",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 1.0,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.4,
+      "claim_count": 3,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-019",
+      "category": "observability",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 1.0,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.6,
+      "claim_count": 13,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-020",
+      "category": "multi_document",
+      "status": "answered",
+      "retrieval_qrel_recall": 0.75,
+      "citation_qrel_precision": 0.75,
+      "citation_qrel_recall": 0.75,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.8,
+      "claim_count": 5,
+      "mean_sources_per_claim": 2.6,
+      "missing_relevant_from_retrieval": [
+        "grpc-troubleshooting.md"
+      ],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": [
+        "dns-troubleshooting.md"
+      ]
+    },
+    {
+      "query_id": "dev-021",
+      "category": "multi_document",
+      "status": "answered",
+      "retrieval_qrel_recall": 0.25,
+      "citation_qrel_precision": 0.3333333333333333,
+      "citation_qrel_recall": 0.25,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.6,
+      "claim_count": 8,
+      "mean_sources_per_claim": 1.625,
+      "missing_relevant_from_retrieval": [
+        "distributed-tracing-guide.md",
+        "metrics-guide.md",
+        "telemetry-correlation.md"
+      ],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": [
+        "frontend-service.md",
+        "incident-response-guide.md"
+      ]
+    },
+    {
+      "query_id": "dev-022",
+      "category": "multi_document",
+      "status": "answered",
+      "retrieval_qrel_recall": 0.75,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.5,
+      "relevant_evidence_retention": 0.6666666666666666,
+      "source_utilization": 0.4,
+      "claim_count": 5,
+      "mean_sources_per_claim": 1.2,
+      "missing_relevant_from_retrieval": [
+        "metrics-guide.md"
+      ],
+      "retrieved_relevant_not_cited": [
+        "distributed-tracing-guide.md"
+      ],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-023",
+      "category": "hard_negative",
+      "status": "answered",
+      "retrieval_qrel_recall": 0.5,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.5,
+      "relevant_evidence_retention": 1.0,
+      "source_utilization": 0.2,
+      "claim_count": 3,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [
+        "metrics-guide.md"
+      ],
+      "retrieved_relevant_not_cited": [],
+      "cited_qrel_irrelevant": []
+    },
+    {
+      "query_id": "dev-024",
+      "category": "hard_negative",
+      "status": "answered",
+      "retrieval_qrel_recall": 1.0,
+      "citation_qrel_precision": 1.0,
+      "citation_qrel_recall": 0.5,
+      "relevant_evidence_retention": 0.5,
+      "source_utilization": 0.2,
+      "claim_count": 2,
+      "mean_sources_per_claim": 1.0,
+      "missing_relevant_from_retrieval": [],
+      "retrieved_relevant_not_cited": [
+        "incident-response-guide.md"
+      ],
+      "cited_qrel_irrelevant": []
+    }
+  ]
+}
