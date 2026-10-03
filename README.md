@@ -12,7 +12,7 @@ The system should eventually be able to observe an incident, decide what evidenc
 
 ## Current status
 
-**Stages 1-14 and deterministic observability Experiments 015A-015D are complete.**
+**Stages 1-14 and deterministic observability Experiments 015A-015C are complete.**
 
 The current default knowledge pipeline remains:
 
@@ -33,7 +33,7 @@ BasicGroundedRAG
 structured claims + explicit sources
 ```
 
-The live incident path now has deterministic metrics, trace, log, and unified cross-modal evidence:
+The live incident path now has deterministic metrics, trace, and log evidence:
 
 ```text
 incident
@@ -45,13 +45,10 @@ incident
    +--> OpenSearch request-correlated log evidence
    |
    v
-unified typed incident evidence
-   |
-   v
-next: first single custom investigation loop
+next: unified cross-modal evidence
 ```
 
-No agent framework has been introduced yet. Agentic orchestration will only be added after the deterministic evidence layer has stable contracts, provenance, controlled evaluations, and explicit failure semantics.
+No agent framework has been introduced yet. Agentic orchestration will only be added after metrics, traces, and logs have stable contracts, tests, provenance, controlled evaluations, and a unified evidence representation.
 
 ## Why RootLens is not just another RAG chatbot
 
@@ -728,135 +725,6 @@ paymentUnreachable real ON request
 
 This is why RootLens keeps modality-specific raw evidence rather than collapsing metrics, traces, and logs into one opaque score.
 
-## Experiment 015D - Unified cross-modal incident evidence
-
-Experiment 015D unified metrics, traces, and logs into a typed incident-evidence layer before introducing any investigation agent.
-
-Core capabilities:
-
-```text
-typed incident bundle
-explicit modality acquisition state
-exact trace-ID and span-ID correlation
-explicit service / peer metric bindings
-service-oriented evidence views
-missing-context vs unmatched-context integrity semantics
-synchronized metric / trace / log capture
-checkpoint / resume for long experiments
-controlled cross-modal content validation
-```
-
-### Why synchronization mattered
-
-An initial attempt to combine previously frozen metric, trace, and log artifacts was rejected because the artifacts represented different incident runs. RootLens now requires temporal compatibility and uses a synchronized capture protocol instead of treating `same scenario` as `same incident`.
-
-For each phase, Prometheus metrics are evaluated at the analytical window end, Jaeger traces are collected for the same analytical window, and OpenSearch logs are recovered by exact captured trace IDs using `observedTimestamp` for discovery while preserving original event timestamps.
-
-### Typed evidence model
-
-The incident representation preserves modality-specific semantics rather than flattening all evidence into one score.
-
-```text
-IncidentEvidenceBundle
-  metrics      -> baseline / incident MetricComparisonEvidence
-  traces       -> request-level TraceEvidence
-  logs         -> exact LogEvidence documents
-  acquisitions -> observed / empty / unavailable modality state
-```
-
-RPC client metrics use explicit service bindings. A Checkout-to-Payment metric remains a Checkout-emitted client metric while also becoming edge evidence for Payment with a `peer` role. This avoids relabeling edge evidence as an internal Payment metric.
-
-### Cross-modal integrity
-
-The synchronized `paymentFailure` incident produced:
-
-```text
-10 metric comparisons
-11 incident traces
-425 incident logs
-10 / 10 metric bindings
-425 / 425 logs with matching trace context
-425 / 425 logs with matching span context
-```
-
-Synthetic tests also verify that these cases remain distinct:
-
-```text
-missing trace/span context
-!=
-trace/span context present but unmatched
-```
-
-RootLens therefore does not infer that missing context is equivalent to a failed correlation.
-
-### Synchronized `paymentFailure` positive control
-
-The synchronized positive control showed:
-
-```text
-checkout_error_rate          0.0 -> 1.0
-checkout_payment_error_rate  0.0 -> 1.0
-frontend_http_error_rate     0.0 -> 0.0
-
-11 / 11 Checkout -> Payment CLIENT spans in error
-11 / 11 matching Payment SERVER spans in error
-11 / 11 traces with Payment invalid-token failure log
-```
-
-Request-level correlation joined all three evidence elements on all 11 incident traces. The interpretation remains layered:
-
-```text
-metrics -> detect degraded Checkout / Payment RPC behavior
-traces  -> show the request reached Payment and failed server-side
-logs    -> add the systematic invalid-token mechanism
-```
-
-The baseline for this specific synchronized artifact was historically reacquired after a serialization failure. Its exact analytical window was preserved, and the artifact records this provenance explicitly rather than pretending the acquisition happened live.
-
-### Synchronized real-ON `paymentUnreachable`
-
-The controlled real-runtime-ON experiment produced a different evidence shape:
-
-```text
-checkout_error_rate          0.0 -> 1.0
-checkout_payment_error_rate  0.0 -> 1.0
-frontend_http_error_rate     0.0 -> 0.003205
-
-13 / 13 measured traces:
-  paymentUnreachable = True / on
-  Checkout -> Payment CLIENT observed
-  Checkout -> Payment CLIENT ERROR
-  error message = "name resolver error: produced zero addresses"
-
-0 / 13 Payment SERVER spans observed
-0 Payment logs observed
-13 / 13 frontend traces contain "Checkout failed to place order"
-```
-
-The runtime manipulation check is evaluated on the measured incident traces themselves, not only on the control plane. All 13 incident requests evaluated `paymentUnreachable=True/on`.
-
-The service-oriented view still binds Checkout-to-Payment RPC metrics to Payment as peer evidence, but Payment has no observed trace span and no observed log in this incident. This is intentionally represented as absence of observed Payment evidence, not as proof that Payment could never have executed.
-
-### 015D conclusion
-
-The two synchronized failure modes demonstrate why cross-modal evidence must preserve structure:
-
-```text
-paymentFailure
-  metrics -> degraded Checkout / Payment RPC
-  traces  -> Payment SERVER observed and in error
-  logs    -> Payment invalid-token mechanism
-
-paymentUnreachable real ON
-  metrics -> degraded Checkout / Payment RPC
-  traces  -> resolver failure on Checkout client before Payment server evidence
-  logs    -> frontend symptom; no Payment log observed
-```
-
-The same high-level metric symptom can therefore correspond to materially different request-level mechanisms. RootLens keeps the modalities typed and correlated rather than collapsing them into an opaque root-cause score.
-
-**Decision:** freeze Experiment 015D and move to the first single custom investigation loop. No LangChain/LangGraph-style orchestration is justified yet.
-
 ## Current architecture decision
 
 ```text
@@ -876,9 +744,9 @@ Incident
   -> deterministic Prometheus metrics
   -> deterministic Jaeger / OTLP traces
   -> deterministic OpenSearch logs
-  -> unified typed cross-modal evidence
+  -> unified cross-modal evidence       [next]
   -> knowledge retrieval when needed
-  -> single custom investigation loop   [next]
+  -> single custom investigation loop
   -> explicit hypothesis / evidence engine
   -> agentic orchestration
 ```
@@ -891,16 +759,17 @@ The retrieval phase is frozen. Metrics, traces, and logs are now deterministic e
 
 Planned sequence:
 
-1. **first single custom investigation loop**;
-2. agentic RAG and deterministic tool selection;
-3. explicit hypothesis / evidence / contradiction engine;
-4. multi-agent architecture only if it beats the single-agent baseline;
-5. code, Git, topology, and time-series investigation;
-6. productization, UI, final benchmark, and incident replay.
+1. **015D - unified metrics / traces / logs evidence correlation**;
+2. first single custom investigation loop;
+3. agentic RAG and tool selection;
+4. explicit hypothesis / evidence / contradiction engine;
+5. multi-agent architecture only if it beats the single-agent baseline;
+6. code, Git, topology, and time-series investigation;
+7. productization, UI, final benchmark, and incident replay.
 
 ## Interview-level project summary
 
-> I am building an AI incident investigator from first principles rather than starting from an agent framework. I first benchmarked sparse retrieval, dense embeddings, chunking, rerankers, multi-query, fusion, set-aware selection, and decomposition, then built an evidence-grounded RAG contract where every factual claim cites evidence and the model can abstain. After freezing Dense top-5 as the default retrieval path, I built deterministic observability layers for metrics, traces, and logs, then unified them into typed cross-modal incident evidence with explicit provenance, metric/service bindings, exact trace/span correlation, integrity semantics, and synchronized experiments. In a server-side Payment failure, the same requests show Checkout-to-Payment metric errors, matching Payment server errors, and a systematic invalid-token log. In a real runtime `paymentUnreachable` failure, the Checkout-to-Payment metric also reaches a 100% error rate, but all measured requests fail at the client resolver, no Payment server span is observed, and no Payment log is observed. The next step is a single custom investigation loop that learns to choose among these deterministic evidence tools before any multi-agent orchestration is introduced.
+> I am building an AI incident investigator from first principles rather than starting from an agent framework. I first benchmarked sparse retrieval, dense embeddings, chunking, rerankers, multi-query, fusion, set-aware selection, and decomposition, then built an evidence-grounded RAG contract where every factual claim cites evidence and the model can abstain. After freezing Dense top-5 as the default retrieval path, I built deterministic observability layers for metrics, traces, and logs. The metrics layer preserves exact PromQL and baseline-vs-incident evidence. The trace layer works directly with Jaeger v3 and OTLP, reconstructs request topology, diagnoses telemetry-integrity problems, and exposed a control-plane/runtime feature-flag divergence. The log layer works directly with OpenSearch, separates event time from observation time, preserves duplicate and timestamp-integrity evidence, and compares incident signatures by per-trace prevalence. Controlled experiments showed that logs add an invalid-token mechanism for a server-side Payment failure, while traces carry the decisive resolver mechanism for a pre-server connectivity failure. The next step is a unified cross-modal evidence layer before introducing the first investigation agent.
 
 ## Status
 
@@ -915,12 +784,12 @@ Answer-level retriever decision    complete
 Deterministic metrics (015A)       complete
 Deterministic traces (015B)        complete
 Deterministic logs (015C)          complete
-Unified evidence (015D)            complete
-Single investigation agent         next
+Unified evidence (015D)            next
+Single investigation agent         planned
 Agentic RAG                        planned
 Hypothesis / evidence engine       planned
 Multi-agent evaluation             planned
 Productization / final benchmark   planned
 ```
 
-RootLens now has a frozen deterministic cross-modal evidence layer and is moving to the **first single investigation agent**.
+RootLens is now moving from **three deterministic modality-specific evidence layers** to **unified cross-modal evidence correlation**.
