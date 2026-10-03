@@ -269,6 +269,8 @@ class TraceIntegrityEvidence:
 
     root_count: int
     orphan_count: int
+    max_root_interval_skew_ms: float
+    root_interval_violation_count: int
 
     temporal_violations: tuple[
         ParentChildTemporalViolation,
@@ -557,6 +559,86 @@ class TraceEvidence:
         )
 
     @property
+    def spans_outside_root_interval(
+        self,
+    ) -> tuple[
+        SpanEvidence,
+        ...
+    ]:
+
+        roots = self.root_spans
+
+        if len(roots) != 1:
+            return ()
+
+        root = roots[0]
+
+        return tuple(
+            span
+            for span in self.spans
+            if (
+                span.span_id
+                != root.span_id
+                and (
+                    span.start_time_unix_nano
+                    < root.start_time_unix_nano
+                    or span.end_time_unix_nano
+                    > root.end_time_unix_nano
+                )
+            )
+        )
+
+
+    @property
+    def max_root_interval_skew_ms(
+        self,
+    ) -> float:
+
+        roots = self.root_spans
+
+        if len(roots) != 1:
+            return 0.0
+
+        root = roots[0]
+
+        maximum_ns = 0
+
+        for span in self.spans:
+
+            if (
+                span.span_id
+                == root.span_id
+            ):
+                continue
+
+            starts_early_ns = max(
+                0,
+                (
+                    root.start_time_unix_nano
+                    - span.start_time_unix_nano
+                ),
+            )
+
+            ends_late_ns = max(
+                0,
+                (
+                    span.end_time_unix_nano
+                    - root.end_time_unix_nano
+                ),
+            )
+
+            maximum_ns = max(
+                maximum_ns,
+                starts_early_ns,
+                ends_late_ns,
+            )
+
+        return (
+            maximum_ns
+            / 1_000_000
+        )
+
+    @property
     def integrity(
         self,
     ) -> TraceIntegrityEvidence:
@@ -570,5 +652,12 @@ class TraceEvidence:
             ),
             temporal_violations=(
                 self.temporal_violations
+            ),
+            root_interval_violation_count=len(
+                self.spans_outside_root_interval
+            ),
+
+            max_root_interval_skew_ms=(
+                self.max_root_interval_skew_ms
             ),
         )
