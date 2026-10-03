@@ -12,9 +12,9 @@ The system should eventually be able to observe an incident, decide what evidenc
 
 ## Current status
 
-**Stage 14 is complete.** The retrieval and evidence-grounded RAG phase is now frozen.
+**Stages 1-14 and deterministic observability Experiments 015A-015B are complete.**
 
-The current default knowledge pipeline is:
+The current default knowledge pipeline remains:
 
 ```text
 question
@@ -33,7 +33,20 @@ BasicGroundedRAG
 structured claims + explicit sources
 ```
 
-The next phase is **deterministic observability tooling**: metrics, traces, and logs. Agentic orchestration will only be added after these tools have stable contracts and tests.
+The live incident path now has deterministic metrics and trace evidence:
+
+```text
+incident
+   |
+   +--> Prometheus metrics evidence
+   |
+   +--> Jaeger / OTLP request-level trace evidence
+   |
+   v
+next: deterministic log evidence
+```
+
+No agent framework has been introduced yet. Agentic orchestration will only be added after metrics, traces, and logs have stable contracts, tests, provenance, and controlled evaluations.
 
 ## Why RootLens is not just another RAG chatbot
 
@@ -69,14 +82,17 @@ rootlens/
 │   │   ├── dev_queries.json        # architecture / tuning queries
 │   │   ├── dev_rewrites_v1.json    # frozen semantic rewrites
 │   │   └── ...
-│   └── evaluation/                 # hidden or derived evaluation artifacts
-├── scripts/                        # reproducible experiment runners
+│   └── evaluation/                 # hidden or derived frozen artifacts
+├── docs/
+│   └── experiments/                # experiment reports and decisions
+├── scripts/                        # smoke tests and reproducible runners
 ├── src/rootlens/
 │   ├── retrieval/                  # sparse, dense, fusion, multi-query
 │   ├── rag/                        # evidence-grounded generation pipeline
-│   ├── evaluation/                 # retrieval, grounding, abstention, pairwise metrics
-│   └── llm/                        # provider abstraction
-└── tests/                          # deterministic unit tests
+│   ├── llm/                        # provider abstraction
+│   ├── observability/              # Prometheus, Jaeger, trace evidence/tools
+│   └── evaluation/                 # retrieval, RAG, telemetry evaluation
+└── tests/                           # deterministic unit tests
 ```
 
 ## Development environment
@@ -103,23 +119,23 @@ PYTHONPATH=src python -m pytest tests -q
 
 The project uses the OpenTelemetry Demo as the distributed-system laboratory. The environment exposes realistic service-to-service traffic, traces, logs, metrics, feature-flag faults, and downstream failure propagation.
 
-The first manual RCA exercise established the investigation discipline used throughout RootLens:
+The investigation discipline is:
 
 ```text
 Observation != Interpretation != Hypothesis != Conclusion
 ```
 
-Example causal chain from an injected payment failure:
+The intended modality split is:
 
 ```text
-invalid / unresolved Payment destination
-        -> resolver produced zero addresses
-        -> Checkout -> Payment Charge returned gRPC UNAVAILABLE
-        -> Checkout translated failure to INTERNAL
-        -> browser observed HTTP 500
+metrics -> detect and scope
+traces  -> localize request path
+logs    -> explain mechanism
+docs    -> provide technical knowledge
+code    -> verify implementation behavior
 ```
 
-The important lesson is that a user-visible symptom is not automatically the root cause. Metrics detect and quantify; traces localize the failing request path; logs and configuration evidence explain the mechanism.
+A user-visible symptom is not automatically the root cause, and a control-plane configuration value is not automatically proof that the same value was evaluated by the runtime handling a request.
 
 ## Retrieval experiments: Stages 2-13
 
@@ -379,6 +395,137 @@ The identical-context control is important: preferences still appeared when retr
 
 **Decision:** keep Dense BGE whole-document top-5 as the default. Retain Semantic Multi-Query as an experimental strategy, not a systematic production path.
 
+## Experiment 015A - Deterministic metrics investigation
+
+RootLens added a direct Prometheus client and typed metric evidence before introducing any agentic behavior.
+
+Core capabilities:
+
+```text
+instant query
+range query
+request rate
+error-rate ratio
+request count
+server latency quantiles
+baseline-vs-incident comparison
+exact PromQL provenance
+```
+
+Selected native metric families are `http_server`, `rpc_server`, and `rpc_client`.
+
+The metrics layer deliberately avoids LLM-generated arbitrary PromQL and root-cause heuristics.
+
+### paymentFailure positive control
+
+During `paymentFailure=100%`, observed Checkout PlaceOrder and Checkout-to-Payment Charge RPCs both reported an error rate of 1.0, while the selected frontend HTTP error-rate metric remained 0. Latency also fell because the failing path returned faster.
+
+Lesson:
+
+> lower latency does not necessarily mean healthier behavior.
+
+### paymentUnreachable ambiguity
+
+During the controlled `paymentUnreachable` run, selected native RPC metrics showed no error signal. This was not interpreted as proof of health or proof that metrics cannot detect the fault. The unresolved question was handed to the trace layer.
+
+## Experiment 015B - Deterministic trace investigation
+
+RootLens now has a direct Jaeger v3 / OTLP trace layer.
+
+Core capabilities:
+
+```text
+find traces by service / operation / time
+fetch a complete trace
+parse immutable span evidence
+reconstruct parent/child topology
+find error and slow spans
+pair CLIENT -> SERVER spans
+report unmatched clients
+compare structural trace paths
+diagnose trace integrity
+freeze raw OTLP during experiments
+```
+
+### Telemetry-integrity finding
+
+Real traces exposed an approximately 18.6-hour timestamp offset in Quote spans inside otherwise short Checkout traces. RootLens does not repair those timestamps. It separates individual span duration, request/root duration, trace temporal envelope, parent/child temporal violations, and root-interval violations.
+
+### paymentFailure request-level result
+
+Frozen controlled result:
+
+```text
+baseline:
+  client_non_error_server_non_error  19 / 19
+
+incident:
+  client_error_server_error          13 / 13
+```
+
+The incident reached Payment and was visible as an error on both the Checkout client span and matching Payment server span.
+
+### paymentUnreachable request-level result
+
+Frozen controlled result:
+
+```text
+baseline:
+  client_non_error_server_non_error  18 / 18
+
+incident:
+  client_non_error_server_non_error  12 / 12
+```
+
+The trace layer therefore confirmed, rather than contradicted, the metrics ambiguity.
+
+### Missing evidence acquired: runtime feature-flag evaluation
+
+Every measured incident trace contained:
+
+```text
+feature_flag.key            = paymentUnreachable
+feature_flag.result.value   = False
+feature_flag.result.variant = off
+feature_flag.result.reason  = cached
+```
+
+even while experiment control-plane validation reported the flag as `on`.
+
+This localized the divergence before the Payment RPC:
+
+```text
+control-plane configuration = ON
+Checkout runtime evaluation = cached OFF
+```
+
+### Causal intervention
+
+With the control-plane value still ON, only Checkout was restarted. The next trace showed:
+
+```text
+feature_flag.result.value   = True
+feature_flag.result.variant = on
+feature_flag.result.reason  = static
+
+Checkout -> Payment CLIENT
+status  = ERROR
+message = "name resolver error: produced zero addresses"
+
+Payment SERVER
+not observed
+```
+
+This intervention strongly supports stale runtime/provider state in the previous Checkout process while leaving the deeper refresh/invalidation mechanism unresolved.
+
+### Evidence preservation lesson
+
+An earlier attempt to reuse old 015A windows failed because Jaeger no longer retained the individual traces. Controlled trace experiments now freeze both structured observations and raw OTLP `resourceSpans` while the evidence still exists.
+
+Key lesson:
+
+> RootLens should acquire missing evidence and test hypotheses instead of forcing an RCA from the first anomaly.
+
 ## Current architecture decision
 
 ```text
@@ -392,56 +539,59 @@ Question
   -> structured claim/source answer
   -> strict validation
 
-Next investigation path
------------------------
+Live incident path
+------------------
 Incident
-  -> deterministic metrics tool
-  -> deterministic trace tool
-  -> deterministic log tool
+  -> deterministic Prometheus metrics
+  -> deterministic Jaeger / OTLP traces
+  -> deterministic logs                 [next]
+  -> unified evidence / correlation
   -> knowledge retrieval when needed
-  -> hypothesis / evidence engine
+  -> single investigation loop
+  -> explicit hypothesis / evidence engine
   -> agentic orchestration
 ```
 
+No LangChain/LangGraph-style orchestration is justified yet.
+
 ## What comes next
 
-The retrieval phase is intentionally frozen. The next work is not more RAG tuning.
+The retrieval phase is frozen. Metrics and traces are now deterministic evidence sources.
 
 Planned sequence:
 
-1. deterministic Prometheus metrics tool;
-2. deterministic trace investigation tool;
-3. deterministic log search / correlation tool;
-4. baseline comparison and change detection;
-5. single custom investigation loop;
-6. agentic RAG and tool selection;
-7. explicit hypothesis / evidence / contradiction engine;
-8. multi-agent architecture only if it beats the single-agent baseline;
-9. code, Git, topology, and time-series investigation;
-10. productization, UI, final benchmark, and incident replay.
+1. **015C - deterministic log search and correlation**;
+2. **015D - unified metrics / traces / logs evidence correlation**;
+3. first single custom investigation loop;
+4. agentic RAG and tool selection;
+5. explicit hypothesis / evidence / contradiction engine;
+6. multi-agent architecture only if it beats the single-agent baseline;
+7. code, Git, topology, and time-series investigation;
+8. productization, UI, final benchmark, and incident replay.
 
 ## Interview-level project summary
 
-A concise way to describe RootLens:
-
-> I am building an AI incident investigator from first principles rather than starting from an agent framework. I first built and benchmarked the retrieval stack - sparse retrieval, dense embeddings, chunking, rerankers, multi-query, fusion, set-aware selection, and decomposition - then moved to an evidence-grounded RAG contract where every factual claim cites retrieved evidence and the model can abstain. I evaluate retrieval, citations, claim support, abstention, and answer quality separately. One of the main findings was that higher candidate recall did not reliably improve final answers, so I kept the simpler Dense top-5 retriever. The next phase is deterministic metrics, traces, and logs tooling before introducing a single investigation agent and, only if justified experimentally, a multi-agent system.
+> I am building an AI incident investigator from first principles rather than starting from an agent framework. I first benchmarked sparse retrieval, dense embeddings, chunking, rerankers, multi-query, fusion, set-aware selection, and decomposition, then built an evidence-grounded RAG contract where every factual claim cites evidence and the model can abstain. After freezing Dense top-5 as the default retrieval path, I moved to deterministic observability tools. The metrics layer captures exact PromQL and baseline-vs-incident evidence; the trace layer works directly with Jaeger v3 and OTLP, reconstructs request topology, diagnoses telemetry-integrity problems, and preserves raw traces during controlled experiments. One trace experiment exposed a control-plane/data-plane feature-flag divergence: the control plane reported a fault ON while every Checkout request evaluated a cached OFF value. Restarting only Checkout changed the evaluated flag to ON and produced the expected client-side resolver failure with no Payment server span. The next step is deterministic log correlation before any agentic orchestration.
 
 ## Status
 
 ```text
-Observability foundations        complete
-IR / retrieval foundations       complete
-Advanced retrieval experiments   complete
-Evidence-grounded RAG            complete
-RAG evaluation / abstention      complete
-Failure attribution              complete
-Answer-level retriever decision  complete
-Deterministic observability      next
-Single investigation agent       planned
-Agentic RAG                      planned
-Hypothesis / evidence engine      planned
-Multi-agent evaluation           planned
-Productization / final benchmark planned
+Observability foundations          complete
+IR / retrieval foundations         complete
+Advanced retrieval experiments     complete
+Evidence-grounded RAG              complete
+RAG evaluation / abstention        complete
+Failure attribution                complete
+Answer-level retriever decision    complete
+Deterministic metrics (015A)       complete
+Deterministic traces (015B)        complete
+Deterministic logs (015C)          next
+Unified evidence (015D)            planned
+Single investigation agent         planned
+Agentic RAG                        planned
+Hypothesis / evidence engine       planned
+Multi-agent evaluation             planned
+Productization / final benchmark   planned
 ```
 
-RootLens is currently at the transition from **retrieval-grounded QA** to **tool-driven incident investigation**.
+RootLens is now moving from **deterministic request-level observability** to **cross-modal evidence correlation**.
