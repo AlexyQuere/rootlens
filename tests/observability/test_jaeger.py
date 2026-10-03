@@ -523,3 +523,45 @@ def test_invalid_trace_schema(
             start=aware(10),
             end=aware(11),
         )
+
+def test_find_traces_returns_empty_on_no_traces(
+    monkeypatch,
+):
+
+    def fake_urlopen(
+        request,
+        timeout,
+    ):
+
+        raise HTTPError(
+            request.full_url,
+            404,
+            "Not Found",
+            hdrs=None,
+            fp=io.BytesIO(
+                (
+                    b'{"error":{'
+                    b'"httpCode":404,'
+                    b'"message":"No traces found"'
+                    b'}}'
+                )
+            ),
+        )
+
+    monkeypatch.setattr(
+        jaeger_module,
+        "urlopen",
+        fake_urlopen,
+    )
+
+    client = JaegerClient(
+        "http://localhost:8080"
+    )
+
+    result = client.find_traces(
+        service_name="checkout",
+        start=aware(10),
+        end=aware(11),
+    )
+
+    assert result.resource_spans == ()

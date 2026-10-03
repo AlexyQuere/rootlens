@@ -212,15 +212,28 @@ class JaegerClient:
                 "query.operation_name"
             ] = operation_name
 
-        payload = self._get(
-            "/traces",
-            params=params,
-        )
-
-        return (
-            self._parse_trace_payload(
-                payload
+        try:
+            payload = self._get(
+                "/traces",
+                params=params,
             )
+
+        except JaegerAPIError as exc:
+
+            message = str(exc)
+
+            if (
+                "HTTP 404" in message
+                and "No traces found" in message
+            ):
+                return JaegerTracePayload(
+                    resource_spans=()
+                )
+
+            raise
+
+        return self._parse_trace_payload(
+            payload
         )
 
     def get_trace(
