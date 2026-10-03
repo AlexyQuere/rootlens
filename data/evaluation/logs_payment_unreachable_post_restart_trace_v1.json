@@ -1,0 +1,4627 @@
+{
+  "experiment": "015C.4C",
+  "case": "paymentUnreachable_post_restart",
+  "captured_at": "2026-10-03T14:19:35.623364+00:00",
+  "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+  "opensearch_url": "http://localhost:57774",
+  "query": {
+    "index_pattern": "otel-logs-*",
+    "start": "2026-10-03T13:28:00+00:00",
+    "end": "2026-10-03T13:31:00+00:00",
+    "service_name": null,
+    "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+    "span_id": null,
+    "severity_text": null,
+    "limit": 1000,
+    "time_field": "observedTimestamp",
+    "request_body": {
+      "size": 1000,
+      "track_total_hits": true,
+      "query": {
+        "bool": {
+          "filter": [
+            {
+              "range": {
+                "observedTimestamp": {
+                  "gte": "2026-10-03T13:28:00Z",
+                  "lte": "2026-10-03T13:31:00Z"
+                }
+              }
+            },
+            {
+              "bool": {
+                "should": [
+                  {
+                    "term": {
+                      "traceId.keyword": "3541df651cfbedf57cb9dd68ac319682"
+                    }
+                  },
+                  {
+                    "term": {
+                      "traceId": "3541df651cfbedf57cb9dd68ac319682"
+                    }
+                  }
+                ],
+                "minimum_should_match": 1
+              }
+            }
+          ]
+        }
+      },
+      "sort": [
+        {
+          "observedTimestamp": {
+            "order": "asc",
+            "unmapped_type": "date"
+          }
+        }
+      ]
+    },
+    "source": "opensearch"
+  },
+  "total_hits": 44,
+  "returned_logs": 44,
+  "took_ms": 468,
+  "observation": {
+    "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+    "log_count": 44,
+    "service_counts": [
+      [
+        "cart",
+        7
+      ],
+      [
+        "checkout",
+        1
+      ],
+      [
+        "currency",
+        4
+      ],
+      [
+        "frontend",
+        8
+      ],
+      [
+        "frontend-proxy",
+        7
+      ],
+      [
+        "load-generator",
+        8
+      ],
+      [
+        "product-catalog",
+        6
+      ],
+      [
+        "quote",
+        1
+      ],
+      [
+        "shipping",
+        2
+      ]
+    ],
+    "severity_counts": [
+      [
+        "<missing>",
+        7
+      ],
+      [
+        "INFO",
+        22
+      ],
+      [
+        "Information",
+        7
+      ],
+      [
+        "error",
+        1
+      ],
+      [
+        "info",
+        7
+      ]
+    ],
+    "unique_signature_count": 21,
+    "possible_duplicate_group_count": 4,
+    "max_abs_observed_minus_event_ms": 1791034165440.404,
+    "signatures": [
+      {
+        "service_name": "cart",
+        "severity_text": "Information",
+        "body_key": "'AddItemAsync called with userId={userId}, productId={productId}, quantity={quantity}'"
+      },
+      {
+        "service_name": "cart",
+        "severity_text": "Information",
+        "body_key": "'GetCartAsync called with userId={userId}'"
+      },
+      {
+        "service_name": "checkout",
+        "severity_text": "INFO",
+        "body_key": "'[PlaceOrder]'"
+      },
+      {
+        "service_name": "currency",
+        "severity_text": "INFO",
+        "body_key": "'conversion successful'"
+      },
+      {
+        "service_name": "frontend",
+        "severity_text": "error",
+        "body_key": "'Checkout failed to place order'"
+      },
+      {
+        "service_name": "frontend",
+        "severity_text": "info",
+        "body_key": "'API request completed'"
+      },
+      {
+        "service_name": "frontend-proxy",
+        "severity_text": null,
+        "body_key": "'[2026-10-03T13:29:24.647Z] \"GET /api/products/6E92ZMYYFZ HTTP/1.1\" 200 - via_upstream - \"-\" 0 475 19 18 \"-\" \"python-requests/2.34.2\" \"5d44ffa2-1780-9f6c-9204-beb9b25f432d\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\\n'"
+      },
+      {
+        "service_name": "frontend-proxy",
+        "severity_text": null,
+        "body_key": "'[2026-10-03T13:29:24.671Z] \"POST /api/cart HTTP/1.1\" 200 - via_upstream - \"-\" 103 100 6 5 \"-\" \"python-requests/2.34.2\" \"cf6ed66d-c57a-9865-bf65-0ebca17a3cf6\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\\n'"
+      },
+      {
+        "service_name": "frontend-proxy",
+        "severity_text": null,
+        "body_key": "'[2026-10-03T13:29:24.679Z] \"GET /api/products/1YMWWN1N4O HTTP/1.1\" 200 - via_upstream - \"-\" 0 888 7 7 \"-\" \"python-requests/2.34.2\" \"526723aa-4a27-9f50-9e43-994c6e189b5b\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\\n'"
+      },
+      {
+        "service_name": "frontend-proxy",
+        "severity_text": null,
+        "body_key": "'[2026-10-03T13:29:24.688Z] \"POST /api/cart HTTP/1.1\" 200 - via_upstream - \"-\" 102 140 3 3 \"-\" \"python-requests/2.34.2\" \"33278761-049e-9e0f-8400-e6bfb487ae17\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\\n'"
+      },
+      {
+        "service_name": "frontend-proxy",
+        "severity_text": null,
+        "body_key": "'[2026-10-03T13:29:24.694Z] \"GET /api/products/9SIQT8TOJO HTTP/1.1\" 200 - via_upstream - \"-\" 0 778 3 2 \"-\" \"python-requests/2.34.2\" \"14eba26e-5eb2-9a63-8722-80d899c17f95\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\\n'"
+      },
+      {
+        "service_name": "frontend-proxy",
+        "severity_text": null,
+        "body_key": "'[2026-10-03T13:29:24.699Z] \"POST /api/cart HTTP/1.1\" 200 - via_upstream - \"-\" 102 180 1 1 \"-\" \"python-requests/2.34.2\" \"3b1bfe24-e453-9f6a-a9a3-d18a9294a69f\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\\n'"
+      },
+      {
+        "service_name": "frontend-proxy",
+        "severity_text": null,
+        "body_key": "'[2026-10-03T13:29:24.702Z] \"POST /api/checkout HTTP/1.1\" 500 - via_upstream - \"-\" 386 34 211 211 \"-\" \"python-requests/2.34.2\" \"93f0c4d5-d9de-9af5-9995-94cfba2f026f\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\\n'"
+      },
+      {
+        "service_name": "load-generator",
+        "severity_text": "INFO",
+        "body_key": "'Multi-item checkout completed for user 73251eae-bf2e-11f1-8e81-5a70dfff0703'"
+      },
+      {
+        "service_name": "load-generator",
+        "severity_text": "INFO",
+        "body_key": "'User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 10 of product 6E92ZMYYFZ to cart'"
+      },
+      {
+        "service_name": "load-generator",
+        "severity_text": "INFO",
+        "body_key": "'User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 3 of product 1YMWWN1N4O to cart'"
+      },
+      {
+        "service_name": "load-generator",
+        "severity_text": "INFO",
+        "body_key": "'User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 4 of product 9SIQT8TOJO to cart'"
+      },
+      {
+        "service_name": "product-catalog",
+        "severity_text": "INFO",
+        "body_key": "'Product Found'"
+      },
+      {
+        "service_name": "quote",
+        "severity_text": "INFO",
+        "body_key": "'Calculated quote'"
+      },
+      {
+        "service_name": "shipping",
+        "severity_text": "INFO",
+        "body_key": "'Requesting quote'"
+      },
+      {
+        "service_name": "shipping",
+        "severity_text": "INFO",
+        "body_key": "'Sending Quote'"
+      }
+    ]
+  },
+  "possible_duplicate_groups": [
+    {
+      "count": 2,
+      "service_name": "load-generator",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "2a6c6e66e53b6169",
+      "event_timestamp": "2026-10-03T13:29:24.642660864Z",
+      "severity_text": "INFO",
+      "body_key": "'User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 10 of product 6E92ZMYYFZ to cart'",
+      "document_ids": [
+        "AdL0AaEBSH3ZSryUiSWU",
+        "AtL0AaEBSH3ZSryUiSWU"
+      ]
+    },
+    {
+      "count": 2,
+      "service_name": "load-generator",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "3f8c492965962c17",
+      "event_timestamp": "2026-10-03T13:29:24.91584512Z",
+      "severity_text": "INFO",
+      "body_key": "'Multi-item checkout completed for user 73251eae-bf2e-11f1-8e81-5a70dfff0703'",
+      "document_ids": [
+        "B9L0AaEBSH3ZSryUiSWU",
+        "CNL0AaEBSH3ZSryUiSWU"
+      ]
+    },
+    {
+      "count": 2,
+      "service_name": "load-generator",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "77a821908ed306c6",
+      "event_timestamp": "2026-10-03T13:29:24.678532352Z",
+      "severity_text": "INFO",
+      "body_key": "'User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 3 of product 1YMWWN1N4O to cart'",
+      "document_ids": [
+        "A9L0AaEBSH3ZSryUiSWU",
+        "BNL0AaEBSH3ZSryUiSWU"
+      ]
+    },
+    {
+      "count": 2,
+      "service_name": "load-generator",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "9f95701deb08351e",
+      "event_timestamp": "2026-10-03T13:29:24.693175296Z",
+      "severity_text": "INFO",
+      "body_key": "'User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 4 of product 9SIQT8TOJO to cart'",
+      "document_ids": [
+        "BdL0AaEBSH3ZSryUiSWU",
+        "BtL0AaEBSH3ZSryUiSWU"
+      ]
+    }
+  ],
+  "largest_timestamp_differences": [
+    {
+      "service_name": "currency",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "dc1a052d6f56af1b",
+      "event_timestamp": "1970-01-01T00:00:00+00:00",
+      "observed_timestamp": "2026-10-03T13:29:25.440404+00:00",
+      "observed_minus_event_ms": 1791034165440.404,
+      "index": "otel-logs-2026-10-03",
+      "document_id": "ANL0AaEBSH3ZSryUiCXB"
+    },
+    {
+      "service_name": "currency",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "1877b2a58e136027",
+      "event_timestamp": "1970-01-01T00:00:00+00:00",
+      "observed_timestamp": "2026-10-03T13:29:25.440380+00:00",
+      "observed_minus_event_ms": 1791034165440.3801,
+      "index": "otel-logs-2026-10-03",
+      "document_id": "_9L0AaEBSH3ZSryUiCTB"
+    },
+    {
+      "service_name": "currency",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "03658f99d4fe2382",
+      "event_timestamp": "1970-01-01T00:00:00+00:00",
+      "observed_timestamp": "2026-10-03T13:29:25.440369+00:00",
+      "observed_minus_event_ms": 1791034165440.369,
+      "index": "otel-logs-2026-10-03",
+      "document_id": "_tL0AaEBSH3ZSryUiCTB"
+    },
+    {
+      "service_name": "currency",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "09bc4b0dbf55757b",
+      "event_timestamp": "1970-01-01T00:00:00+00:00",
+      "observed_timestamp": "2026-10-03T13:29:25.440325+00:00",
+      "observed_minus_event_ms": 1791034165440.325,
+      "index": "otel-logs-2026-10-03",
+      "document_id": "_dL0AaEBSH3ZSryUiCTB"
+    },
+    {
+      "service_name": "shipping",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "9d888ee758933619",
+      "event_timestamp": "1970-01-01T00:00:00+00:00",
+      "observed_timestamp": "2026-10-03T13:29:25.166942+00:00",
+      "observed_minus_event_ms": 1791034165166.942,
+      "index": "otel-logs-2026-10-03",
+      "document_id": "89L0AaEBSH3ZSryUhySx"
+    },
+    {
+      "service_name": "shipping",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "9d888ee758933619",
+      "event_timestamp": "1970-01-01T00:00:00+00:00",
+      "observed_timestamp": "2026-10-03T13:29:25.166926+00:00",
+      "observed_minus_event_ms": 1791034165166.926,
+      "index": "otel-logs-2026-10-03",
+      "document_id": "8tL0AaEBSH3ZSryUhySx"
+    },
+    {
+      "service_name": "cart",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "ed35f1d1ba7572d6",
+      "event_timestamp": "2026-10-03T13:29:24.674127+00:00",
+      "observed_timestamp": "2026-10-03T13:29:29.357532+00:00",
+      "observed_minus_event_ms": 4683.405,
+      "index": "otel-logs-2026-10-03",
+      "document_id": "e9L0AaEBSH3ZSryUmCUP"
+    },
+    {
+      "service_name": "cart",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "6a0191a6e68dc5ee",
+      "event_timestamp": "2026-10-03T13:29:24.676370+00:00",
+      "observed_timestamp": "2026-10-03T13:29:29.357556+00:00",
+      "observed_minus_event_ms": 4681.186000000001,
+      "index": "otel-logs-2026-10-03",
+      "document_id": "fNL0AaEBSH3ZSryUmCUP"
+    },
+    {
+      "service_name": "cart",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "0acc110faa3c4782",
+      "event_timestamp": "2026-10-03T13:29:24.689890+00:00",
+      "observed_timestamp": "2026-10-03T13:29:29.357607+00:00",
+      "observed_minus_event_ms": 4667.717,
+      "index": "otel-logs-2026-10-03",
+      "document_id": "fdL0AaEBSH3ZSryUmCUP"
+    },
+    {
+      "service_name": "cart",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "37d55749b32745b2",
+      "event_timestamp": "2026-10-03T13:29:24.691094+00:00",
+      "observed_timestamp": "2026-10-03T13:29:29.357625+00:00",
+      "observed_minus_event_ms": 4666.531,
+      "index": "otel-logs-2026-10-03",
+      "document_id": "ftL0AaEBSH3ZSryUmCUP"
+    }
+  ],
+  "logs": [
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "59L0AaEBSH3ZSryUhiTM",
+      "event_timestamp": "2026-10-03T13:29:24.665457218Z",
+      "observed_timestamp": "2026-10-03T13:29:24.940407926Z",
+      "observed_minus_event_ms": 274.95000000000005,
+      "service_name": "product-catalog",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "Product Found",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "c54a2cc389379c74",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "demo.product.id": "6E92ZMYYFZ",
+        "demo.product.name": "Solar Filter"
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+        "service.name": "product-catalog",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "go",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.46.0"
+      },
+      "instrumentation_scope": {
+        "name": "product-catalog"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "demo.product.id": "6E92ZMYYFZ",
+          "demo.product.name": "Solar Filter"
+        },
+        "body": "Product Found",
+        "instrumentationScope": {
+          "name": "product-catalog"
+        },
+        "observedTimestamp": "2026-10-03T13:29:24.940407926Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+          "service.name": "product-catalog",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "go",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.46.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "c54a2cc389379c74",
+        "@timestamp": "2026-10-03T13:29:24.665457218Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "6NL0AaEBSH3ZSryUhiTM",
+      "event_timestamp": "2026-10-03T13:29:24.686159968Z",
+      "observed_timestamp": "2026-10-03T13:29:24.94043901Z",
+      "observed_minus_event_ms": 254.28,
+      "service_name": "product-catalog",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "Product Found",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "bf3b5934e7e22858",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "demo.product.id": "1YMWWN1N4O",
+        "demo.product.name": "Eclipsmart Travel Refractor Telescope"
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+        "service.name": "product-catalog",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "go",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.46.0"
+      },
+      "instrumentation_scope": {
+        "name": "product-catalog"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "demo.product.id": "1YMWWN1N4O",
+          "demo.product.name": "Eclipsmart Travel Refractor Telescope"
+        },
+        "body": "Product Found",
+        "instrumentationScope": {
+          "name": "product-catalog"
+        },
+        "observedTimestamp": "2026-10-03T13:29:24.94043901Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+          "service.name": "product-catalog",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "go",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.46.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "bf3b5934e7e22858",
+        "@timestamp": "2026-10-03T13:29:24.686159968Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "6dL0AaEBSH3ZSryUhiTM",
+      "event_timestamp": "2026-10-03T13:29:24.697439676Z",
+      "observed_timestamp": "2026-10-03T13:29:24.940448926Z",
+      "observed_minus_event_ms": 243.00900000000001,
+      "service_name": "product-catalog",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "Product Found",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "b57879af699d6657",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "demo.product.id": "9SIQT8TOJO",
+        "demo.product.name": "Optical Tube Assembly"
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+        "service.name": "product-catalog",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "go",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.46.0"
+      },
+      "instrumentation_scope": {
+        "name": "product-catalog"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "demo.product.id": "9SIQT8TOJO",
+          "demo.product.name": "Optical Tube Assembly"
+        },
+        "body": "Product Found",
+        "instrumentationScope": {
+          "name": "product-catalog"
+        },
+        "observedTimestamp": "2026-10-03T13:29:24.940448926Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+          "service.name": "product-catalog",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "go",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.46.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "b57879af699d6657",
+        "@timestamp": "2026-10-03T13:29:24.697439676Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "6tL0AaEBSH3ZSryUhiTM",
+      "event_timestamp": "2026-10-03T13:29:24.72560676Z",
+      "observed_timestamp": "2026-10-03T13:29:24.94047551Z",
+      "observed_minus_event_ms": 214.869,
+      "service_name": "checkout",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "[PlaceOrder]",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "56234ea1c8dce3f1",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "user_currency": "USD",
+        "user_id": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "critical",
+        "service.name": "checkout",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "go",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.46.0"
+      },
+      "instrumentation_scope": {
+        "name": "checkout"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "user_currency": "USD",
+          "user_id": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+        },
+        "body": "[PlaceOrder]",
+        "instrumentationScope": {
+          "name": "checkout"
+        },
+        "observedTimestamp": "2026-10-03T13:29:24.94047551Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "critical",
+          "service.name": "checkout",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "go",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.46.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "56234ea1c8dce3f1",
+        "@timestamp": "2026-10-03T13:29:24.72560676Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "69L0AaEBSH3ZSryUhySx",
+      "event_timestamp": "2026-10-03T13:29:24.647531Z",
+      "observed_timestamp": "2026-10-03T13:29:25.16677776Z",
+      "observed_minus_event_ms": 519.246,
+      "service_name": "frontend-proxy",
+      "severity_text": null,
+      "severity_number": null,
+      "body": "[2026-10-03T13:29:24.647Z] \"GET /api/products/6E92ZMYYFZ HTTP/1.1\" 200 - via_upstream - \"-\" 0 475 19 18 \"-\" \"python-requests/2.34.2\" \"5d44ffa2-1780-9f6c-9204-beb9b25f432d\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "633bd7981c6ef3af",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "destination.address": "172.18.0.6",
+        "event.name": "proxy.access",
+        "server.address": "172.18.0.11:8080",
+        "source.address": "172.18.0.15",
+        "upstream.cluster": "frontend",
+        "upstream.host": "172.18.0.6:8080",
+        "url.full": "http://frontend-proxy:8080/api/products/6E92ZMYYFZ",
+        "url.path": "/api/products/6E92ZMYYFZ",
+        "url.query": "-",
+        "url.template": "-",
+        "user_agent.original": "python-requests/2.34.2"
+      },
+      "resource": {
+        "cluster_name": "",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "log_name": "otel_envoy_access_log",
+        "node_name": "",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.name": "frontend-proxy",
+        "service.namespace": "opentelemetry-demo",
+        "zone_name": ""
+      },
+      "instrumentation_scope": {},
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "destination.address": "172.18.0.6",
+          "event.name": "proxy.access",
+          "server.address": "172.18.0.11:8080",
+          "source.address": "172.18.0.15",
+          "upstream.cluster": "frontend",
+          "upstream.host": "172.18.0.6:8080",
+          "url.full": "http://frontend-proxy:8080/api/products/6E92ZMYYFZ",
+          "url.path": "/api/products/6E92ZMYYFZ",
+          "url.query": "-",
+          "url.template": "-",
+          "user_agent.original": "python-requests/2.34.2"
+        },
+        "body": "[2026-10-03T13:29:24.647Z] \"GET /api/products/6E92ZMYYFZ HTTP/1.1\" 200 - via_upstream - \"-\" 0 475 19 18 \"-\" \"python-requests/2.34.2\" \"5d44ffa2-1780-9f6c-9204-beb9b25f432d\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+        "instrumentationScope": {},
+        "observedTimestamp": "2026-10-03T13:29:25.16677776Z",
+        "resource": {
+          "cluster_name": "",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "log_name": "otel_envoy_access_log",
+          "node_name": "",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.name": "frontend-proxy",
+          "service.namespace": "opentelemetry-demo",
+          "zone_name": ""
+        },
+        "severity": {},
+        "spanId": "633bd7981c6ef3af",
+        "@timestamp": "2026-10-03T13:29:24.647531Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "7NL0AaEBSH3ZSryUhySx",
+      "event_timestamp": "2026-10-03T13:29:24.671316Z",
+      "observed_timestamp": "2026-10-03T13:29:25.166818635Z",
+      "observed_minus_event_ms": 495.502,
+      "service_name": "frontend-proxy",
+      "severity_text": null,
+      "severity_number": null,
+      "body": "[2026-10-03T13:29:24.671Z] \"POST /api/cart HTTP/1.1\" 200 - via_upstream - \"-\" 103 100 6 5 \"-\" \"python-requests/2.34.2\" \"cf6ed66d-c57a-9865-bf65-0ebca17a3cf6\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "df5d5a07323285e2",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "destination.address": "172.18.0.6",
+        "event.name": "proxy.access",
+        "server.address": "172.18.0.11:8080",
+        "source.address": "172.18.0.15",
+        "upstream.cluster": "frontend",
+        "upstream.host": "172.18.0.6:8080",
+        "url.full": "http://frontend-proxy:8080/api/cart",
+        "url.path": "/api/cart",
+        "url.query": "-",
+        "url.template": "-",
+        "user_agent.original": "python-requests/2.34.2"
+      },
+      "resource": {
+        "cluster_name": "",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "log_name": "otel_envoy_access_log",
+        "node_name": "",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.name": "frontend-proxy",
+        "service.namespace": "opentelemetry-demo",
+        "zone_name": ""
+      },
+      "instrumentation_scope": {},
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "destination.address": "172.18.0.6",
+          "event.name": "proxy.access",
+          "server.address": "172.18.0.11:8080",
+          "source.address": "172.18.0.15",
+          "upstream.cluster": "frontend",
+          "upstream.host": "172.18.0.6:8080",
+          "url.full": "http://frontend-proxy:8080/api/cart",
+          "url.path": "/api/cart",
+          "url.query": "-",
+          "url.template": "-",
+          "user_agent.original": "python-requests/2.34.2"
+        },
+        "body": "[2026-10-03T13:29:24.671Z] \"POST /api/cart HTTP/1.1\" 200 - via_upstream - \"-\" 103 100 6 5 \"-\" \"python-requests/2.34.2\" \"cf6ed66d-c57a-9865-bf65-0ebca17a3cf6\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+        "instrumentationScope": {},
+        "observedTimestamp": "2026-10-03T13:29:25.166818635Z",
+        "resource": {
+          "cluster_name": "",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "log_name": "otel_envoy_access_log",
+          "node_name": "",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.name": "frontend-proxy",
+          "service.namespace": "opentelemetry-demo",
+          "zone_name": ""
+        },
+        "severity": {},
+        "spanId": "df5d5a07323285e2",
+        "@timestamp": "2026-10-03T13:29:24.671316Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "7dL0AaEBSH3ZSryUhySx",
+      "event_timestamp": "2026-10-03T13:29:24.679385Z",
+      "observed_timestamp": "2026-10-03T13:29:25.166844176Z",
+      "observed_minus_event_ms": 487.459,
+      "service_name": "frontend-proxy",
+      "severity_text": null,
+      "severity_number": null,
+      "body": "[2026-10-03T13:29:24.679Z] \"GET /api/products/1YMWWN1N4O HTTP/1.1\" 200 - via_upstream - \"-\" 0 888 7 7 \"-\" \"python-requests/2.34.2\" \"526723aa-4a27-9f50-9e43-994c6e189b5b\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "4de7c0f113de2811",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "destination.address": "172.18.0.6",
+        "event.name": "proxy.access",
+        "server.address": "172.18.0.11:8080",
+        "source.address": "172.18.0.15",
+        "upstream.cluster": "frontend",
+        "upstream.host": "172.18.0.6:8080",
+        "url.full": "http://frontend-proxy:8080/api/products/1YMWWN1N4O",
+        "url.path": "/api/products/1YMWWN1N4O",
+        "url.query": "-",
+        "url.template": "-",
+        "user_agent.original": "python-requests/2.34.2"
+      },
+      "resource": {
+        "cluster_name": "",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "log_name": "otel_envoy_access_log",
+        "node_name": "",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.name": "frontend-proxy",
+        "service.namespace": "opentelemetry-demo",
+        "zone_name": ""
+      },
+      "instrumentation_scope": {},
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "destination.address": "172.18.0.6",
+          "event.name": "proxy.access",
+          "server.address": "172.18.0.11:8080",
+          "source.address": "172.18.0.15",
+          "upstream.cluster": "frontend",
+          "upstream.host": "172.18.0.6:8080",
+          "url.full": "http://frontend-proxy:8080/api/products/1YMWWN1N4O",
+          "url.path": "/api/products/1YMWWN1N4O",
+          "url.query": "-",
+          "url.template": "-",
+          "user_agent.original": "python-requests/2.34.2"
+        },
+        "body": "[2026-10-03T13:29:24.679Z] \"GET /api/products/1YMWWN1N4O HTTP/1.1\" 200 - via_upstream - \"-\" 0 888 7 7 \"-\" \"python-requests/2.34.2\" \"526723aa-4a27-9f50-9e43-994c6e189b5b\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+        "instrumentationScope": {},
+        "observedTimestamp": "2026-10-03T13:29:25.166844176Z",
+        "resource": {
+          "cluster_name": "",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "log_name": "otel_envoy_access_log",
+          "node_name": "",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.name": "frontend-proxy",
+          "service.namespace": "opentelemetry-demo",
+          "zone_name": ""
+        },
+        "severity": {},
+        "spanId": "4de7c0f113de2811",
+        "@timestamp": "2026-10-03T13:29:24.679385Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "7tL0AaEBSH3ZSryUhySx",
+      "event_timestamp": "2026-10-03T13:29:24.688637Z",
+      "observed_timestamp": "2026-10-03T13:29:25.166854468Z",
+      "observed_minus_event_ms": 478.217,
+      "service_name": "frontend-proxy",
+      "severity_text": null,
+      "severity_number": null,
+      "body": "[2026-10-03T13:29:24.688Z] \"POST /api/cart HTTP/1.1\" 200 - via_upstream - \"-\" 102 140 3 3 \"-\" \"python-requests/2.34.2\" \"33278761-049e-9e0f-8400-e6bfb487ae17\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "a260197184882119",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "destination.address": "172.18.0.6",
+        "event.name": "proxy.access",
+        "server.address": "172.18.0.11:8080",
+        "source.address": "172.18.0.15",
+        "upstream.cluster": "frontend",
+        "upstream.host": "172.18.0.6:8080",
+        "url.full": "http://frontend-proxy:8080/api/cart",
+        "url.path": "/api/cart",
+        "url.query": "-",
+        "url.template": "-",
+        "user_agent.original": "python-requests/2.34.2"
+      },
+      "resource": {
+        "cluster_name": "",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "log_name": "otel_envoy_access_log",
+        "node_name": "",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.name": "frontend-proxy",
+        "service.namespace": "opentelemetry-demo",
+        "zone_name": ""
+      },
+      "instrumentation_scope": {},
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "destination.address": "172.18.0.6",
+          "event.name": "proxy.access",
+          "server.address": "172.18.0.11:8080",
+          "source.address": "172.18.0.15",
+          "upstream.cluster": "frontend",
+          "upstream.host": "172.18.0.6:8080",
+          "url.full": "http://frontend-proxy:8080/api/cart",
+          "url.path": "/api/cart",
+          "url.query": "-",
+          "url.template": "-",
+          "user_agent.original": "python-requests/2.34.2"
+        },
+        "body": "[2026-10-03T13:29:24.688Z] \"POST /api/cart HTTP/1.1\" 200 - via_upstream - \"-\" 102 140 3 3 \"-\" \"python-requests/2.34.2\" \"33278761-049e-9e0f-8400-e6bfb487ae17\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+        "instrumentationScope": {},
+        "observedTimestamp": "2026-10-03T13:29:25.166854468Z",
+        "resource": {
+          "cluster_name": "",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "log_name": "otel_envoy_access_log",
+          "node_name": "",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.name": "frontend-proxy",
+          "service.namespace": "opentelemetry-demo",
+          "zone_name": ""
+        },
+        "severity": {},
+        "spanId": "a260197184882119",
+        "@timestamp": "2026-10-03T13:29:24.688637Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "79L0AaEBSH3ZSryUhySx",
+      "event_timestamp": "2026-10-03T13:29:24.694704Z",
+      "observed_timestamp": "2026-10-03T13:29:25.166865968Z",
+      "observed_minus_event_ms": 472.161,
+      "service_name": "frontend-proxy",
+      "severity_text": null,
+      "severity_number": null,
+      "body": "[2026-10-03T13:29:24.694Z] \"GET /api/products/9SIQT8TOJO HTTP/1.1\" 200 - via_upstream - \"-\" 0 778 3 2 \"-\" \"python-requests/2.34.2\" \"14eba26e-5eb2-9a63-8722-80d899c17f95\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "ea36c572d2da39ac",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "destination.address": "172.18.0.6",
+        "event.name": "proxy.access",
+        "server.address": "172.18.0.11:8080",
+        "source.address": "172.18.0.15",
+        "upstream.cluster": "frontend",
+        "upstream.host": "172.18.0.6:8080",
+        "url.full": "http://frontend-proxy:8080/api/products/9SIQT8TOJO",
+        "url.path": "/api/products/9SIQT8TOJO",
+        "url.query": "-",
+        "url.template": "-",
+        "user_agent.original": "python-requests/2.34.2"
+      },
+      "resource": {
+        "cluster_name": "",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "log_name": "otel_envoy_access_log",
+        "node_name": "",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.name": "frontend-proxy",
+        "service.namespace": "opentelemetry-demo",
+        "zone_name": ""
+      },
+      "instrumentation_scope": {},
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "destination.address": "172.18.0.6",
+          "event.name": "proxy.access",
+          "server.address": "172.18.0.11:8080",
+          "source.address": "172.18.0.15",
+          "upstream.cluster": "frontend",
+          "upstream.host": "172.18.0.6:8080",
+          "url.full": "http://frontend-proxy:8080/api/products/9SIQT8TOJO",
+          "url.path": "/api/products/9SIQT8TOJO",
+          "url.query": "-",
+          "url.template": "-",
+          "user_agent.original": "python-requests/2.34.2"
+        },
+        "body": "[2026-10-03T13:29:24.694Z] \"GET /api/products/9SIQT8TOJO HTTP/1.1\" 200 - via_upstream - \"-\" 0 778 3 2 \"-\" \"python-requests/2.34.2\" \"14eba26e-5eb2-9a63-8722-80d899c17f95\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+        "instrumentationScope": {},
+        "observedTimestamp": "2026-10-03T13:29:25.166865968Z",
+        "resource": {
+          "cluster_name": "",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "log_name": "otel_envoy_access_log",
+          "node_name": "",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.name": "frontend-proxy",
+          "service.namespace": "opentelemetry-demo",
+          "zone_name": ""
+        },
+        "severity": {},
+        "spanId": "ea36c572d2da39ac",
+        "@timestamp": "2026-10-03T13:29:24.694704Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "8NL0AaEBSH3ZSryUhySx",
+      "event_timestamp": "2026-10-03T13:29:24.699384Z",
+      "observed_timestamp": "2026-10-03T13:29:25.166886051Z",
+      "observed_minus_event_ms": 467.50199999999995,
+      "service_name": "frontend-proxy",
+      "severity_text": null,
+      "severity_number": null,
+      "body": "[2026-10-03T13:29:24.699Z] \"POST /api/cart HTTP/1.1\" 200 - via_upstream - \"-\" 102 180 1 1 \"-\" \"python-requests/2.34.2\" \"3b1bfe24-e453-9f6a-a9a3-d18a9294a69f\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "2c26153e45b79ca2",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "destination.address": "172.18.0.6",
+        "event.name": "proxy.access",
+        "server.address": "172.18.0.11:8080",
+        "source.address": "172.18.0.15",
+        "upstream.cluster": "frontend",
+        "upstream.host": "172.18.0.6:8080",
+        "url.full": "http://frontend-proxy:8080/api/cart",
+        "url.path": "/api/cart",
+        "url.query": "-",
+        "url.template": "-",
+        "user_agent.original": "python-requests/2.34.2"
+      },
+      "resource": {
+        "cluster_name": "",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "log_name": "otel_envoy_access_log",
+        "node_name": "",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.name": "frontend-proxy",
+        "service.namespace": "opentelemetry-demo",
+        "zone_name": ""
+      },
+      "instrumentation_scope": {},
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "destination.address": "172.18.0.6",
+          "event.name": "proxy.access",
+          "server.address": "172.18.0.11:8080",
+          "source.address": "172.18.0.15",
+          "upstream.cluster": "frontend",
+          "upstream.host": "172.18.0.6:8080",
+          "url.full": "http://frontend-proxy:8080/api/cart",
+          "url.path": "/api/cart",
+          "url.query": "-",
+          "url.template": "-",
+          "user_agent.original": "python-requests/2.34.2"
+        },
+        "body": "[2026-10-03T13:29:24.699Z] \"POST /api/cart HTTP/1.1\" 200 - via_upstream - \"-\" 102 180 1 1 \"-\" \"python-requests/2.34.2\" \"3b1bfe24-e453-9f6a-a9a3-d18a9294a69f\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+        "instrumentationScope": {},
+        "observedTimestamp": "2026-10-03T13:29:25.166886051Z",
+        "resource": {
+          "cluster_name": "",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "log_name": "otel_envoy_access_log",
+          "node_name": "",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.name": "frontend-proxy",
+          "service.namespace": "opentelemetry-demo",
+          "zone_name": ""
+        },
+        "severity": {},
+        "spanId": "2c26153e45b79ca2",
+        "@timestamp": "2026-10-03T13:29:24.699384Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "8dL0AaEBSH3ZSryUhySx",
+      "event_timestamp": "2026-10-03T13:29:24.702471Z",
+      "observed_timestamp": "2026-10-03T13:29:25.16690826Z",
+      "observed_minus_event_ms": 464.437,
+      "service_name": "frontend-proxy",
+      "severity_text": null,
+      "severity_number": null,
+      "body": "[2026-10-03T13:29:24.702Z] \"POST /api/checkout HTTP/1.1\" 500 - via_upstream - \"-\" 386 34 211 211 \"-\" \"python-requests/2.34.2\" \"93f0c4d5-d9de-9af5-9995-94cfba2f026f\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "98e29bfb2a711567",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "destination.address": "172.18.0.6",
+        "event.name": "proxy.access",
+        "server.address": "172.18.0.11:8080",
+        "source.address": "172.18.0.15",
+        "upstream.cluster": "frontend",
+        "upstream.host": "172.18.0.6:8080",
+        "url.full": "http://frontend-proxy:8080/api/checkout",
+        "url.path": "/api/checkout",
+        "url.query": "-",
+        "url.template": "-",
+        "user_agent.original": "python-requests/2.34.2"
+      },
+      "resource": {
+        "cluster_name": "",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "log_name": "otel_envoy_access_log",
+        "node_name": "",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.name": "frontend-proxy",
+        "service.namespace": "opentelemetry-demo",
+        "zone_name": ""
+      },
+      "instrumentation_scope": {},
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "destination.address": "172.18.0.6",
+          "event.name": "proxy.access",
+          "server.address": "172.18.0.11:8080",
+          "source.address": "172.18.0.15",
+          "upstream.cluster": "frontend",
+          "upstream.host": "172.18.0.6:8080",
+          "url.full": "http://frontend-proxy:8080/api/checkout",
+          "url.path": "/api/checkout",
+          "url.query": "-",
+          "url.template": "-",
+          "user_agent.original": "python-requests/2.34.2"
+        },
+        "body": "[2026-10-03T13:29:24.702Z] \"POST /api/checkout HTTP/1.1\" 500 - via_upstream - \"-\" 386 34 211 211 \"-\" \"python-requests/2.34.2\" \"93f0c4d5-d9de-9af5-9995-94cfba2f026f\" \"frontend-proxy:8080\" \"172.18.0.6:8080\" frontend 172.18.0.11:35290 172.18.0.11:8080 172.18.0.15:56414 - -\n",
+        "instrumentationScope": {},
+        "observedTimestamp": "2026-10-03T13:29:25.16690826Z",
+        "resource": {
+          "cluster_name": "",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "log_name": "otel_envoy_access_log",
+          "node_name": "",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.name": "frontend-proxy",
+          "service.namespace": "opentelemetry-demo",
+          "zone_name": ""
+        },
+        "severity": {},
+        "spanId": "98e29bfb2a711567",
+        "@timestamp": "2026-10-03T13:29:24.702471Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "8tL0AaEBSH3ZSryUhySx",
+      "event_timestamp": "1970-01-01T00:00:00Z",
+      "observed_timestamp": "2026-10-03T13:29:25.166926926Z",
+      "observed_minus_event_ms": 1791034165166.926,
+      "service_name": "shipping",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "Requesting quote",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "9d888ee758933619",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "quote_service_addr": "http://quote:8090/getquote"
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "process.command_args": "[\"./shipping\"]",
+        "process.pid": "1",
+        "process.runtime.description": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+        "process.runtime.name": "rustc",
+        "process.runtime.version": "1.98.0",
+        "service.criticality": "high",
+        "service.name": "shipping",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "rust",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "0.32.1"
+      },
+      "instrumentation_scope": {
+        "name": "shipping::shipping_service::quote"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "quote_service_addr": "http://quote:8090/getquote"
+        },
+        "body": "Requesting quote",
+        "eventName": "shipping.quote.requested",
+        "instrumentationScope": {
+          "name": "shipping::shipping_service::quote"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.166926926Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "process.command_args": "[\"./shipping\"]",
+          "process.pid": "1",
+          "process.runtime.description": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+          "process.runtime.name": "rustc",
+          "process.runtime.version": "1.98.0",
+          "service.criticality": "high",
+          "service.name": "shipping",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "rust",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "0.32.1"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "9d888ee758933619",
+        "@timestamp": "1970-01-01T00:00:00Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "89L0AaEBSH3ZSryUhySx",
+      "event_timestamp": "1970-01-01T00:00:00Z",
+      "observed_timestamp": "2026-10-03T13:29:25.166942968Z",
+      "observed_minus_event_ms": 1791034165166.942,
+      "service_name": "shipping",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "Sending Quote",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "9d888ee758933619",
+      "attributes": {
+        "cents": 83,
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "dollars": 152
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "process.command_args": "[\"./shipping\"]",
+        "process.pid": "1",
+        "process.runtime.description": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+        "process.runtime.name": "rustc",
+        "process.runtime.version": "1.98.0",
+        "service.criticality": "high",
+        "service.name": "shipping",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "rust",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "0.32.1"
+      },
+      "instrumentation_scope": {
+        "name": "shipping::shipping_service"
+      },
+      "raw_source": {
+        "attributes": {
+          "cents": 83,
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "dollars": 152
+        },
+        "body": "Sending Quote",
+        "eventName": "shipping.quote.sent",
+        "instrumentationScope": {
+          "name": "shipping::shipping_service"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.166942968Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "process.command_args": "[\"./shipping\"]",
+          "process.pid": "1",
+          "process.runtime.description": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+          "process.runtime.name": "rustc",
+          "process.runtime.version": "1.98.0",
+          "service.criticality": "high",
+          "service.name": "shipping",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "rust",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "0.32.1"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "9d888ee758933619",
+        "@timestamp": "1970-01-01T00:00:00Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "9NL0AaEBSH3ZSryUhySx",
+      "event_timestamp": "2026-10-03T13:29:24.850141Z",
+      "observed_timestamp": "2026-10-03T13:29:25.16695426Z",
+      "observed_minus_event_ms": 316.813,
+      "service_name": "quote",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "Calculated quote",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "4c46e912409834a4",
+      "attributes": {
+        "context": {
+          "total": 152.83
+        },
+        "context.total": 152.83,
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        }
+      },
+      "resource": {
+        "container.id": "9488065835a3051faa701caadca1ff2145b4798949ab682ec4fa5c33d510f6c7",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.name": "Linux",
+        "os.type": "linux",
+        "os.version": "#1 SMP Wed Sep 10 06:47:45 UTC 2025",
+        "process.args_count": "1",
+        "process.command": "public/index.php",
+        "process.executable.path": "/usr/local/bin/php",
+        "process.owner": "www-data",
+        "process.pid": "1",
+        "process.runtime.name": "cli",
+        "process.runtime.version": "8.5.10",
+        "service.criticality": "low",
+        "service.name": "quote",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.distro.name": "opentelemetry-php-instrumentation",
+        "telemetry.distro.version": "1.4.2",
+        "telemetry.sdk.language": "php",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.15.0"
+      },
+      "instrumentation_scope": {
+        "name": "slim-app"
+      },
+      "raw_source": {
+        "attributes": {
+          "context": {
+            "total": 152.83
+          },
+          "context.total": 152.83,
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          }
+        },
+        "body": "Calculated quote",
+        "instrumentationScope": {
+          "name": "slim-app"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.16695426Z",
+        "resource": {
+          "container.id": "9488065835a3051faa701caadca1ff2145b4798949ab682ec4fa5c33d510f6c7",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.name": "Linux",
+          "os.type": "linux",
+          "os.version": "#1 SMP Wed Sep 10 06:47:45 UTC 2025",
+          "process.args_count": "1",
+          "process.command": "public/index.php",
+          "process.executable.path": "/usr/local/bin/php",
+          "process.owner": "www-data",
+          "process.pid": "1",
+          "process.runtime.name": "cli",
+          "process.runtime.version": "8.5.10",
+          "service.criticality": "low",
+          "service.name": "quote",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.distro.name": "opentelemetry-php-instrumentation",
+          "telemetry.distro.version": "1.4.2",
+          "telemetry.sdk.language": "php",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.15.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "4c46e912409834a4",
+        "@timestamp": "2026-10-03T13:29:24.850141Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "_dL0AaEBSH3ZSryUiCTB",
+      "event_timestamp": "1970-01-01T00:00:00Z",
+      "observed_timestamp": "2026-10-03T13:29:25.440325093Z",
+      "observed_minus_event_ms": 1791034165440.325,
+      "service_name": "currency",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "conversion successful",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "09bc4b0dbf55757b",
+      "attributes": {
+        "currency.from": "USD",
+        "currency.to": "USD",
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        }
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.name": "currency",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "cpp",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.28.0"
+      },
+      "instrumentation_scope": {
+        "name": "currency",
+        "version": "1.28.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "currency.from": "USD",
+          "currency.to": "USD",
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          }
+        },
+        "body": "conversion successful",
+        "eventName": "currency.conversion",
+        "instrumentationScope": {
+          "name": "currency",
+          "version": "1.28.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.440325093Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.name": "currency",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "cpp",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.28.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "09bc4b0dbf55757b",
+        "@timestamp": "1970-01-01T00:00:00Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "_tL0AaEBSH3ZSryUiCTB",
+      "event_timestamp": "1970-01-01T00:00:00Z",
+      "observed_timestamp": "2026-10-03T13:29:25.440369593Z",
+      "observed_minus_event_ms": 1791034165440.369,
+      "service_name": "currency",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "conversion successful",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "03658f99d4fe2382",
+      "attributes": {
+        "currency.from": "USD",
+        "currency.to": "USD",
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        }
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.name": "currency",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "cpp",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.28.0"
+      },
+      "instrumentation_scope": {
+        "name": "currency",
+        "version": "1.28.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "currency.from": "USD",
+          "currency.to": "USD",
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          }
+        },
+        "body": "conversion successful",
+        "eventName": "currency.conversion",
+        "instrumentationScope": {
+          "name": "currency",
+          "version": "1.28.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.440369593Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.name": "currency",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "cpp",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.28.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "03658f99d4fe2382",
+        "@timestamp": "1970-01-01T00:00:00Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "_9L0AaEBSH3ZSryUiCTB",
+      "event_timestamp": "1970-01-01T00:00:00Z",
+      "observed_timestamp": "2026-10-03T13:29:25.440380927Z",
+      "observed_minus_event_ms": 1791034165440.3801,
+      "service_name": "currency",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "conversion successful",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "1877b2a58e136027",
+      "attributes": {
+        "currency.from": "USD",
+        "currency.to": "USD",
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        }
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.name": "currency",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "cpp",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.28.0"
+      },
+      "instrumentation_scope": {
+        "name": "currency",
+        "version": "1.28.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "currency.from": "USD",
+          "currency.to": "USD",
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          }
+        },
+        "body": "conversion successful",
+        "eventName": "currency.conversion",
+        "instrumentationScope": {
+          "name": "currency",
+          "version": "1.28.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.440380927Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.name": "currency",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "cpp",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.28.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "1877b2a58e136027",
+        "@timestamp": "1970-01-01T00:00:00Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "ANL0AaEBSH3ZSryUiCXB",
+      "event_timestamp": "1970-01-01T00:00:00Z",
+      "observed_timestamp": "2026-10-03T13:29:25.44040401Z",
+      "observed_minus_event_ms": 1791034165440.404,
+      "service_name": "currency",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "conversion successful",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "dc1a052d6f56af1b",
+      "attributes": {
+        "currency.from": "USD",
+        "currency.to": "USD",
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        }
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.name": "currency",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "cpp",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.28.0"
+      },
+      "instrumentation_scope": {
+        "name": "currency",
+        "version": "1.28.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "currency.from": "USD",
+          "currency.to": "USD",
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          }
+        },
+        "body": "conversion successful",
+        "eventName": "currency.conversion",
+        "instrumentationScope": {
+          "name": "currency",
+          "version": "1.28.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.44040401Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.name": "currency",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "cpp",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.28.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "dc1a052d6f56af1b",
+        "@timestamp": "1970-01-01T00:00:00Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "AdL0AaEBSH3ZSryUiSWU",
+      "event_timestamp": "2026-10-03T13:29:24.642660864Z",
+      "observed_timestamp": "2026-10-03T13:29:25.65139126Z",
+      "observed_minus_event_ms": 1008.731,
+      "service_name": "load-generator",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 10 of product 6E92ZMYYFZ to cart",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "2a6c6e66e53b6169",
+      "attributes": {
+        "code.file.path": "/usr/src/app/locustfile.py",
+        "code.function.name": "add_to_cart",
+        "code.line.number": 190,
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "otelServiceName": "load-generator",
+        "otelSpanID": "2a6c6e66e53b6169",
+        "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+        "otelTraceSampled": true
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "low",
+        "service.name": "load-generator",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.42.0"
+      },
+      "instrumentation_scope": {
+        "name": "root"
+      },
+      "raw_source": {
+        "attributes": {
+          "code.file.path": "/usr/src/app/locustfile.py",
+          "code.function.name": "add_to_cart",
+          "code.line.number": 190,
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "otelServiceName": "load-generator",
+          "otelSpanID": "2a6c6e66e53b6169",
+          "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+          "otelTraceSampled": true
+        },
+        "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 10 of product 6E92ZMYYFZ to cart",
+        "instrumentationScope": {
+          "name": "root"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.65139126Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "low",
+          "service.name": "load-generator",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "2a6c6e66e53b6169",
+        "@timestamp": "2026-10-03T13:29:24.642660864Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "AtL0AaEBSH3ZSryUiSWU",
+      "event_timestamp": "2026-10-03T13:29:24.642660864Z",
+      "observed_timestamp": "2026-10-03T13:29:25.65144901Z",
+      "observed_minus_event_ms": 1008.789,
+      "service_name": "load-generator",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 10 of product 6E92ZMYYFZ to cart",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "2a6c6e66e53b6169",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "otelServiceName": "load-generator",
+        "otelSpanID": "2a6c6e66e53b6169",
+        "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+        "otelTraceSampled": true
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "low",
+        "service.name": "load-generator",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.42.0"
+      },
+      "instrumentation_scope": {
+        "name": "root"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "otelServiceName": "load-generator",
+          "otelSpanID": "2a6c6e66e53b6169",
+          "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+          "otelTraceSampled": true
+        },
+        "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 10 of product 6E92ZMYYFZ to cart",
+        "instrumentationScope": {
+          "name": "root"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.65144901Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "low",
+          "service.name": "load-generator",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "2a6c6e66e53b6169",
+        "@timestamp": "2026-10-03T13:29:24.642660864Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "A9L0AaEBSH3ZSryUiSWU",
+      "event_timestamp": "2026-10-03T13:29:24.678532352Z",
+      "observed_timestamp": "2026-10-03T13:29:25.651463593Z",
+      "observed_minus_event_ms": 972.931,
+      "service_name": "load-generator",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 3 of product 1YMWWN1N4O to cart",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "77a821908ed306c6",
+      "attributes": {
+        "code.file.path": "/usr/src/app/locustfile.py",
+        "code.function.name": "add_to_cart",
+        "code.line.number": 190,
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "otelServiceName": "load-generator",
+        "otelSpanID": "77a821908ed306c6",
+        "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+        "otelTraceSampled": true
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "low",
+        "service.name": "load-generator",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.42.0"
+      },
+      "instrumentation_scope": {
+        "name": "root"
+      },
+      "raw_source": {
+        "attributes": {
+          "code.file.path": "/usr/src/app/locustfile.py",
+          "code.function.name": "add_to_cart",
+          "code.line.number": 190,
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "otelServiceName": "load-generator",
+          "otelSpanID": "77a821908ed306c6",
+          "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+          "otelTraceSampled": true
+        },
+        "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 3 of product 1YMWWN1N4O to cart",
+        "instrumentationScope": {
+          "name": "root"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.651463593Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "low",
+          "service.name": "load-generator",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "77a821908ed306c6",
+        "@timestamp": "2026-10-03T13:29:24.678532352Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "BNL0AaEBSH3ZSryUiSWU",
+      "event_timestamp": "2026-10-03T13:29:24.678532352Z",
+      "observed_timestamp": "2026-10-03T13:29:25.651489718Z",
+      "observed_minus_event_ms": 972.957,
+      "service_name": "load-generator",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 3 of product 1YMWWN1N4O to cart",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "77a821908ed306c6",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "otelServiceName": "load-generator",
+        "otelSpanID": "77a821908ed306c6",
+        "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+        "otelTraceSampled": true
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "low",
+        "service.name": "load-generator",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.42.0"
+      },
+      "instrumentation_scope": {
+        "name": "root"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "otelServiceName": "load-generator",
+          "otelSpanID": "77a821908ed306c6",
+          "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+          "otelTraceSampled": true
+        },
+        "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 3 of product 1YMWWN1N4O to cart",
+        "instrumentationScope": {
+          "name": "root"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.651489718Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "low",
+          "service.name": "load-generator",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "77a821908ed306c6",
+        "@timestamp": "2026-10-03T13:29:24.678532352Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "BdL0AaEBSH3ZSryUiSWU",
+      "event_timestamp": "2026-10-03T13:29:24.693175296Z",
+      "observed_timestamp": "2026-10-03T13:29:25.651506135Z",
+      "observed_minus_event_ms": 958.331,
+      "service_name": "load-generator",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 4 of product 9SIQT8TOJO to cart",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "9f95701deb08351e",
+      "attributes": {
+        "code.file.path": "/usr/src/app/locustfile.py",
+        "code.function.name": "add_to_cart",
+        "code.line.number": 190,
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "otelServiceName": "load-generator",
+        "otelSpanID": "9f95701deb08351e",
+        "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+        "otelTraceSampled": true
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "low",
+        "service.name": "load-generator",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.42.0"
+      },
+      "instrumentation_scope": {
+        "name": "root"
+      },
+      "raw_source": {
+        "attributes": {
+          "code.file.path": "/usr/src/app/locustfile.py",
+          "code.function.name": "add_to_cart",
+          "code.line.number": 190,
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "otelServiceName": "load-generator",
+          "otelSpanID": "9f95701deb08351e",
+          "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+          "otelTraceSampled": true
+        },
+        "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 4 of product 9SIQT8TOJO to cart",
+        "instrumentationScope": {
+          "name": "root"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.651506135Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "low",
+          "service.name": "load-generator",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "9f95701deb08351e",
+        "@timestamp": "2026-10-03T13:29:24.693175296Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "BtL0AaEBSH3ZSryUiSWU",
+      "event_timestamp": "2026-10-03T13:29:24.693175296Z",
+      "observed_timestamp": "2026-10-03T13:29:25.651530135Z",
+      "observed_minus_event_ms": 958.3549999999999,
+      "service_name": "load-generator",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 4 of product 9SIQT8TOJO to cart",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "9f95701deb08351e",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "otelServiceName": "load-generator",
+        "otelSpanID": "9f95701deb08351e",
+        "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+        "otelTraceSampled": true
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "low",
+        "service.name": "load-generator",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.42.0"
+      },
+      "instrumentation_scope": {
+        "name": "root"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "otelServiceName": "load-generator",
+          "otelSpanID": "9f95701deb08351e",
+          "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+          "otelTraceSampled": true
+        },
+        "body": "User 73251eae-bf2e-11f1-8e81-5a70dfff0703 adding 4 of product 9SIQT8TOJO to cart",
+        "instrumentationScope": {
+          "name": "root"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.651530135Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "low",
+          "service.name": "load-generator",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "9f95701deb08351e",
+        "@timestamp": "2026-10-03T13:29:24.693175296Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "B9L0AaEBSH3ZSryUiSWU",
+      "event_timestamp": "2026-10-03T13:29:24.91584512Z",
+      "observed_timestamp": "2026-10-03T13:29:25.651560343Z",
+      "observed_minus_event_ms": 735.715,
+      "service_name": "load-generator",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "Multi-item checkout completed for user 73251eae-bf2e-11f1-8e81-5a70dfff0703",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "3f8c492965962c17",
+      "attributes": {
+        "code.file.path": "/usr/src/app/locustfile.py",
+        "code.function.name": "checkout_multi",
+        "code.line.number": 222,
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "otelServiceName": "load-generator",
+        "otelSpanID": "3f8c492965962c17",
+        "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+        "otelTraceSampled": true
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "low",
+        "service.name": "load-generator",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.42.0"
+      },
+      "instrumentation_scope": {
+        "name": "root"
+      },
+      "raw_source": {
+        "attributes": {
+          "code.file.path": "/usr/src/app/locustfile.py",
+          "code.function.name": "checkout_multi",
+          "code.line.number": 222,
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "otelServiceName": "load-generator",
+          "otelSpanID": "3f8c492965962c17",
+          "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+          "otelTraceSampled": true
+        },
+        "body": "Multi-item checkout completed for user 73251eae-bf2e-11f1-8e81-5a70dfff0703",
+        "instrumentationScope": {
+          "name": "root"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.651560343Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "low",
+          "service.name": "load-generator",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "3f8c492965962c17",
+        "@timestamp": "2026-10-03T13:29:24.91584512Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "CNL0AaEBSH3ZSryUiSWU",
+      "event_timestamp": "2026-10-03T13:29:24.91584512Z",
+      "observed_timestamp": "2026-10-03T13:29:25.651584552Z",
+      "observed_minus_event_ms": 735.739,
+      "service_name": "load-generator",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "Multi-item checkout completed for user 73251eae-bf2e-11f1-8e81-5a70dfff0703",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "3f8c492965962c17",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "otelServiceName": "load-generator",
+        "otelSpanID": "3f8c492965962c17",
+        "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+        "otelTraceSampled": true
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "low",
+        "service.name": "load-generator",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.42.0"
+      },
+      "instrumentation_scope": {
+        "name": "root"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "otelServiceName": "load-generator",
+          "otelSpanID": "3f8c492965962c17",
+          "otelTraceID": "3541df651cfbedf57cb9dd68ac319682",
+          "otelTraceSampled": true
+        },
+        "body": "Multi-item checkout completed for user 73251eae-bf2e-11f1-8e81-5a70dfff0703",
+        "instrumentationScope": {
+          "name": "root"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.651584552Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "low",
+          "service.name": "load-generator",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "3f8c492965962c17",
+        "@timestamp": "2026-10-03T13:29:24.91584512Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "C9L0AaEBSH3ZSryUiiVx",
+      "event_timestamp": "2026-10-03T13:29:24.666Z",
+      "observed_timestamp": "2026-10-03T13:29:25.872343927Z",
+      "observed_minus_event_ms": 1206.3429999999998,
+      "service_name": "frontend",
+      "severity_text": "info",
+      "severity_number": 9,
+      "body": "API request completed",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "ac910290f41b8a8f",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "http.request.method": "GET",
+        "http.response.status_code": 200,
+        "url.path": "/api/products/6E92ZMYYFZ"
+      },
+      "resource": {
+        "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "os.version": "6.10.14-linuxkit",
+        "process.command": "/app/server.js",
+        "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+        "process.executable.name": "/nodejs/bin/node",
+        "process.executable.path": "/nodejs/bin/node",
+        "process.owner": "nonroot",
+        "process.pid": "1",
+        "process.runtime.description": "Node.js",
+        "process.runtime.name": "nodejs",
+        "process.runtime.version": "24.21.0",
+        "service.criticality": "critical",
+        "service.name": "frontend",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "nodejs",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "2.11.0"
+      },
+      "instrumentation_scope": {
+        "name": "@opentelemetry/instrumentation-pino",
+        "version": "0.68.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "http.request.method": "GET",
+          "http.response.status_code": 200,
+          "url.path": "/api/products/6E92ZMYYFZ"
+        },
+        "body": "API request completed",
+        "instrumentationScope": {
+          "name": "@opentelemetry/instrumentation-pino",
+          "version": "0.68.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.872343927Z",
+        "resource": {
+          "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "os.version": "6.10.14-linuxkit",
+          "process.command": "/app/server.js",
+          "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+          "process.executable.name": "/nodejs/bin/node",
+          "process.executable.path": "/nodejs/bin/node",
+          "process.owner": "nonroot",
+          "process.pid": "1",
+          "process.runtime.description": "Node.js",
+          "process.runtime.name": "nodejs",
+          "process.runtime.version": "24.21.0",
+          "service.criticality": "critical",
+          "service.name": "frontend",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "nodejs",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "2.11.0"
+        },
+        "severity": {
+          "text": "info",
+          "number": 9
+        },
+        "spanId": "ac910290f41b8a8f",
+        "@timestamp": "2026-10-03T13:29:24.666Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "DNL0AaEBSH3ZSryUiiVx",
+      "event_timestamp": "2026-10-03T13:29:24.677Z",
+      "observed_timestamp": "2026-10-03T13:29:25.872386843Z",
+      "observed_minus_event_ms": 1195.386,
+      "service_name": "frontend",
+      "severity_text": "info",
+      "severity_number": 9,
+      "body": "API request completed",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "1241c655be3393c9",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "http.request.method": "POST",
+        "http.response.status_code": 200,
+        "url.path": "/api/cart"
+      },
+      "resource": {
+        "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "os.version": "6.10.14-linuxkit",
+        "process.command": "/app/server.js",
+        "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+        "process.executable.name": "/nodejs/bin/node",
+        "process.executable.path": "/nodejs/bin/node",
+        "process.owner": "nonroot",
+        "process.pid": "1",
+        "process.runtime.description": "Node.js",
+        "process.runtime.name": "nodejs",
+        "process.runtime.version": "24.21.0",
+        "service.criticality": "critical",
+        "service.name": "frontend",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "nodejs",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "2.11.0"
+      },
+      "instrumentation_scope": {
+        "name": "@opentelemetry/instrumentation-pino",
+        "version": "0.68.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "http.request.method": "POST",
+          "http.response.status_code": 200,
+          "url.path": "/api/cart"
+        },
+        "body": "API request completed",
+        "instrumentationScope": {
+          "name": "@opentelemetry/instrumentation-pino",
+          "version": "0.68.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.872386843Z",
+        "resource": {
+          "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "os.version": "6.10.14-linuxkit",
+          "process.command": "/app/server.js",
+          "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+          "process.executable.name": "/nodejs/bin/node",
+          "process.executable.path": "/nodejs/bin/node",
+          "process.owner": "nonroot",
+          "process.pid": "1",
+          "process.runtime.description": "Node.js",
+          "process.runtime.name": "nodejs",
+          "process.runtime.version": "24.21.0",
+          "service.criticality": "critical",
+          "service.name": "frontend",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "nodejs",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "2.11.0"
+        },
+        "severity": {
+          "text": "info",
+          "number": 9
+        },
+        "spanId": "1241c655be3393c9",
+        "@timestamp": "2026-10-03T13:29:24.677Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "DdL0AaEBSH3ZSryUiiVx",
+      "event_timestamp": "2026-10-03T13:29:24.686Z",
+      "observed_timestamp": "2026-10-03T13:29:25.872404635Z",
+      "observed_minus_event_ms": 1186.404,
+      "service_name": "frontend",
+      "severity_text": "info",
+      "severity_number": 9,
+      "body": "API request completed",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "797c0268672b3e47",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "http.request.method": "GET",
+        "http.response.status_code": 200,
+        "url.path": "/api/products/1YMWWN1N4O"
+      },
+      "resource": {
+        "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "os.version": "6.10.14-linuxkit",
+        "process.command": "/app/server.js",
+        "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+        "process.executable.name": "/nodejs/bin/node",
+        "process.executable.path": "/nodejs/bin/node",
+        "process.owner": "nonroot",
+        "process.pid": "1",
+        "process.runtime.description": "Node.js",
+        "process.runtime.name": "nodejs",
+        "process.runtime.version": "24.21.0",
+        "service.criticality": "critical",
+        "service.name": "frontend",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "nodejs",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "2.11.0"
+      },
+      "instrumentation_scope": {
+        "name": "@opentelemetry/instrumentation-pino",
+        "version": "0.68.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "http.request.method": "GET",
+          "http.response.status_code": 200,
+          "url.path": "/api/products/1YMWWN1N4O"
+        },
+        "body": "API request completed",
+        "instrumentationScope": {
+          "name": "@opentelemetry/instrumentation-pino",
+          "version": "0.68.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.872404635Z",
+        "resource": {
+          "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "os.version": "6.10.14-linuxkit",
+          "process.command": "/app/server.js",
+          "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+          "process.executable.name": "/nodejs/bin/node",
+          "process.executable.path": "/nodejs/bin/node",
+          "process.owner": "nonroot",
+          "process.pid": "1",
+          "process.runtime.description": "Node.js",
+          "process.runtime.name": "nodejs",
+          "process.runtime.version": "24.21.0",
+          "service.criticality": "critical",
+          "service.name": "frontend",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "nodejs",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "2.11.0"
+        },
+        "severity": {
+          "text": "info",
+          "number": 9
+        },
+        "spanId": "797c0268672b3e47",
+        "@timestamp": "2026-10-03T13:29:24.686Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "DtL0AaEBSH3ZSryUiiVx",
+      "event_timestamp": "2026-10-03T13:29:24.692Z",
+      "observed_timestamp": "2026-10-03T13:29:25.872433593Z",
+      "observed_minus_event_ms": 1180.433,
+      "service_name": "frontend",
+      "severity_text": "info",
+      "severity_number": 9,
+      "body": "API request completed",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "343d3aa122886311",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "http.request.method": "POST",
+        "http.response.status_code": 200,
+        "url.path": "/api/cart"
+      },
+      "resource": {
+        "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "os.version": "6.10.14-linuxkit",
+        "process.command": "/app/server.js",
+        "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+        "process.executable.name": "/nodejs/bin/node",
+        "process.executable.path": "/nodejs/bin/node",
+        "process.owner": "nonroot",
+        "process.pid": "1",
+        "process.runtime.description": "Node.js",
+        "process.runtime.name": "nodejs",
+        "process.runtime.version": "24.21.0",
+        "service.criticality": "critical",
+        "service.name": "frontend",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "nodejs",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "2.11.0"
+      },
+      "instrumentation_scope": {
+        "name": "@opentelemetry/instrumentation-pino",
+        "version": "0.68.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "http.request.method": "POST",
+          "http.response.status_code": 200,
+          "url.path": "/api/cart"
+        },
+        "body": "API request completed",
+        "instrumentationScope": {
+          "name": "@opentelemetry/instrumentation-pino",
+          "version": "0.68.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.872433593Z",
+        "resource": {
+          "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "os.version": "6.10.14-linuxkit",
+          "process.command": "/app/server.js",
+          "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+          "process.executable.name": "/nodejs/bin/node",
+          "process.executable.path": "/nodejs/bin/node",
+          "process.owner": "nonroot",
+          "process.pid": "1",
+          "process.runtime.description": "Node.js",
+          "process.runtime.name": "nodejs",
+          "process.runtime.version": "24.21.0",
+          "service.criticality": "critical",
+          "service.name": "frontend",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "nodejs",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "2.11.0"
+        },
+        "severity": {
+          "text": "info",
+          "number": 9
+        },
+        "spanId": "343d3aa122886311",
+        "@timestamp": "2026-10-03T13:29:24.692Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "D9L0AaEBSH3ZSryUiiVx",
+      "event_timestamp": "2026-10-03T13:29:24.697Z",
+      "observed_timestamp": "2026-10-03T13:29:25.872450927Z",
+      "observed_minus_event_ms": 1175.45,
+      "service_name": "frontend",
+      "severity_text": "info",
+      "severity_number": 9,
+      "body": "API request completed",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "da6177611d3a4a04",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "http.request.method": "GET",
+        "http.response.status_code": 200,
+        "url.path": "/api/products/9SIQT8TOJO"
+      },
+      "resource": {
+        "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "os.version": "6.10.14-linuxkit",
+        "process.command": "/app/server.js",
+        "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+        "process.executable.name": "/nodejs/bin/node",
+        "process.executable.path": "/nodejs/bin/node",
+        "process.owner": "nonroot",
+        "process.pid": "1",
+        "process.runtime.description": "Node.js",
+        "process.runtime.name": "nodejs",
+        "process.runtime.version": "24.21.0",
+        "service.criticality": "critical",
+        "service.name": "frontend",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "nodejs",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "2.11.0"
+      },
+      "instrumentation_scope": {
+        "name": "@opentelemetry/instrumentation-pino",
+        "version": "0.68.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "http.request.method": "GET",
+          "http.response.status_code": 200,
+          "url.path": "/api/products/9SIQT8TOJO"
+        },
+        "body": "API request completed",
+        "instrumentationScope": {
+          "name": "@opentelemetry/instrumentation-pino",
+          "version": "0.68.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.872450927Z",
+        "resource": {
+          "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "os.version": "6.10.14-linuxkit",
+          "process.command": "/app/server.js",
+          "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+          "process.executable.name": "/nodejs/bin/node",
+          "process.executable.path": "/nodejs/bin/node",
+          "process.owner": "nonroot",
+          "process.pid": "1",
+          "process.runtime.description": "Node.js",
+          "process.runtime.name": "nodejs",
+          "process.runtime.version": "24.21.0",
+          "service.criticality": "critical",
+          "service.name": "frontend",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "nodejs",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "2.11.0"
+        },
+        "severity": {
+          "text": "info",
+          "number": 9
+        },
+        "spanId": "da6177611d3a4a04",
+        "@timestamp": "2026-10-03T13:29:24.697Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "ENL0AaEBSH3ZSryUiiVx",
+      "event_timestamp": "2026-10-03T13:29:24.701Z",
+      "observed_timestamp": "2026-10-03T13:29:25.872460677Z",
+      "observed_minus_event_ms": 1171.46,
+      "service_name": "frontend",
+      "severity_text": "info",
+      "severity_number": 9,
+      "body": "API request completed",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "ca8e6af5eb587b45",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "http.request.method": "POST",
+        "http.response.status_code": 200,
+        "url.path": "/api/cart"
+      },
+      "resource": {
+        "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "os.version": "6.10.14-linuxkit",
+        "process.command": "/app/server.js",
+        "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+        "process.executable.name": "/nodejs/bin/node",
+        "process.executable.path": "/nodejs/bin/node",
+        "process.owner": "nonroot",
+        "process.pid": "1",
+        "process.runtime.description": "Node.js",
+        "process.runtime.name": "nodejs",
+        "process.runtime.version": "24.21.0",
+        "service.criticality": "critical",
+        "service.name": "frontend",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "nodejs",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "2.11.0"
+      },
+      "instrumentation_scope": {
+        "name": "@opentelemetry/instrumentation-pino",
+        "version": "0.68.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "http.request.method": "POST",
+          "http.response.status_code": 200,
+          "url.path": "/api/cart"
+        },
+        "body": "API request completed",
+        "instrumentationScope": {
+          "name": "@opentelemetry/instrumentation-pino",
+          "version": "0.68.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.872460677Z",
+        "resource": {
+          "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "os.version": "6.10.14-linuxkit",
+          "process.command": "/app/server.js",
+          "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+          "process.executable.name": "/nodejs/bin/node",
+          "process.executable.path": "/nodejs/bin/node",
+          "process.owner": "nonroot",
+          "process.pid": "1",
+          "process.runtime.description": "Node.js",
+          "process.runtime.name": "nodejs",
+          "process.runtime.version": "24.21.0",
+          "service.criticality": "critical",
+          "service.name": "frontend",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "nodejs",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "2.11.0"
+        },
+        "severity": {
+          "text": "info",
+          "number": 9
+        },
+        "spanId": "ca8e6af5eb587b45",
+        "@timestamp": "2026-10-03T13:29:24.701Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "EdL0AaEBSH3ZSryUiiVx",
+      "event_timestamp": "2026-10-03T13:29:24.912Z",
+      "observed_timestamp": "2026-10-03T13:29:25.87249626Z",
+      "observed_minus_event_ms": 960.496,
+      "service_name": "frontend",
+      "severity_text": "error",
+      "severity_number": 17,
+      "body": "Checkout failed to place order",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "fcef4bc280cddaac",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "exception.message": "13 INTERNAL: failed to charge card: could not charge the card: rpc error: code = Unavailable desc = name resolver error: produced zero addresses",
+        "exception.stacktrace": "Error: 13 INTERNAL: failed to charge card: could not charge the card: rpc error: code = Unavailable desc = name resolver error: produced zero addresses\n    at callErrorFromStatus (/app/node_modules/@grpc/grpc-js/build/src/call.js:32:19)\n    at Object.onReceiveStatus (/app/node_modules/@grpc/grpc-js/build/src/client.js:193:76)\n    at Object.onReceiveStatus (/app/node_modules/@grpc/grpc-js/build/src/client-interceptors.js:367:141)\n    at Object.onReceiveStatus (/app/node_modules/@grpc/grpc-js/build/src/client-interceptors.js:327:181)\n    at /app/node_modules/@grpc/grpc-js/build/src/resolving-call.js:148:78\n    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)\nfor call at\n    at ServiceClientImpl.makeUnaryRequest (/app/node_modules/@grpc/grpc-js/build/src/client.js:161:32)\n    at ServiceClientImpl.<anonymous> (/app/node_modules/@grpc/grpc-js/build/src/make-client.js:105:19)\n    at /app/node_modules/@opentelemetry/instrumentation-grpc/build/src/clientUtils.js:119:31\n    at /app/node_modules/@opentelemetry/instrumentation-grpc/build/src/instrumentation.js:202:209\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:65:14)\n    at AsyncLocalStorageContextManager.with (/app/node_modules/@opentelemetry/context-async-hooks/build/src/AsyncLocalStorageContextManager.js:45:40)\n    at ContextAPI.with (/app/node_modules/@opentelemetry/api/build/src/api/context.js:51:46)\n    at ServiceClientImpl.clientMethodTrace [as placeOrder] (/app/node_modules/@opentelemetry/instrumentation-grpc/build/src/instrumentation.js:202:42)\n    at /app/.next/server/chunks/[root-of-the-server]__009k40p._.js:1:546\n    at new Promise (<anonymous>)",
+        "exception.type": "13"
+      },
+      "resource": {
+        "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "os.version": "6.10.14-linuxkit",
+        "process.command": "/app/server.js",
+        "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+        "process.executable.name": "/nodejs/bin/node",
+        "process.executable.path": "/nodejs/bin/node",
+        "process.owner": "nonroot",
+        "process.pid": "1",
+        "process.runtime.description": "Node.js",
+        "process.runtime.name": "nodejs",
+        "process.runtime.version": "24.21.0",
+        "service.criticality": "critical",
+        "service.name": "frontend",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "nodejs",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "2.11.0"
+      },
+      "instrumentation_scope": {
+        "name": "@opentelemetry/instrumentation-pino",
+        "version": "0.68.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "exception.message": "13 INTERNAL: failed to charge card: could not charge the card: rpc error: code = Unavailable desc = name resolver error: produced zero addresses",
+          "exception.stacktrace": "Error: 13 INTERNAL: failed to charge card: could not charge the card: rpc error: code = Unavailable desc = name resolver error: produced zero addresses\n    at callErrorFromStatus (/app/node_modules/@grpc/grpc-js/build/src/call.js:32:19)\n    at Object.onReceiveStatus (/app/node_modules/@grpc/grpc-js/build/src/client.js:193:76)\n    at Object.onReceiveStatus (/app/node_modules/@grpc/grpc-js/build/src/client-interceptors.js:367:141)\n    at Object.onReceiveStatus (/app/node_modules/@grpc/grpc-js/build/src/client-interceptors.js:327:181)\n    at /app/node_modules/@grpc/grpc-js/build/src/resolving-call.js:148:78\n    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)\nfor call at\n    at ServiceClientImpl.makeUnaryRequest (/app/node_modules/@grpc/grpc-js/build/src/client.js:161:32)\n    at ServiceClientImpl.<anonymous> (/app/node_modules/@grpc/grpc-js/build/src/make-client.js:105:19)\n    at /app/node_modules/@opentelemetry/instrumentation-grpc/build/src/clientUtils.js:119:31\n    at /app/node_modules/@opentelemetry/instrumentation-grpc/build/src/instrumentation.js:202:209\n    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:65:14)\n    at AsyncLocalStorageContextManager.with (/app/node_modules/@opentelemetry/context-async-hooks/build/src/AsyncLocalStorageContextManager.js:45:40)\n    at ContextAPI.with (/app/node_modules/@opentelemetry/api/build/src/api/context.js:51:46)\n    at ServiceClientImpl.clientMethodTrace [as placeOrder] (/app/node_modules/@opentelemetry/instrumentation-grpc/build/src/instrumentation.js:202:42)\n    at /app/.next/server/chunks/[root-of-the-server]__009k40p._.js:1:546\n    at new Promise (<anonymous>)",
+          "exception.type": "13"
+        },
+        "body": "Checkout failed to place order",
+        "instrumentationScope": {
+          "name": "@opentelemetry/instrumentation-pino",
+          "version": "0.68.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.87249626Z",
+        "resource": {
+          "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "os.version": "6.10.14-linuxkit",
+          "process.command": "/app/server.js",
+          "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+          "process.executable.name": "/nodejs/bin/node",
+          "process.executable.path": "/nodejs/bin/node",
+          "process.owner": "nonroot",
+          "process.pid": "1",
+          "process.runtime.description": "Node.js",
+          "process.runtime.name": "nodejs",
+          "process.runtime.version": "24.21.0",
+          "service.criticality": "critical",
+          "service.name": "frontend",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "nodejs",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "2.11.0"
+        },
+        "severity": {
+          "text": "error",
+          "number": 17
+        },
+        "spanId": "fcef4bc280cddaac",
+        "@timestamp": "2026-10-03T13:29:24.912Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "EtL0AaEBSH3ZSryUiiVx",
+      "event_timestamp": "2026-10-03T13:29:24.913Z",
+      "observed_timestamp": "2026-10-03T13:29:25.872522302Z",
+      "observed_minus_event_ms": 959.5219999999999,
+      "service_name": "frontend",
+      "severity_text": "info",
+      "severity_number": 9,
+      "body": "API request completed",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "fcef4bc280cddaac",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "http.request.method": "POST",
+        "http.response.status_code": 500,
+        "url.path": "/api/checkout"
+      },
+      "resource": {
+        "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "os.version": "6.10.14-linuxkit",
+        "process.command": "/app/server.js",
+        "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+        "process.executable.name": "/nodejs/bin/node",
+        "process.executable.path": "/nodejs/bin/node",
+        "process.owner": "nonroot",
+        "process.pid": "1",
+        "process.runtime.description": "Node.js",
+        "process.runtime.name": "nodejs",
+        "process.runtime.version": "24.21.0",
+        "service.criticality": "critical",
+        "service.name": "frontend",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "nodejs",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "2.11.0"
+      },
+      "instrumentation_scope": {
+        "name": "@opentelemetry/instrumentation-pino",
+        "version": "0.68.0"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "http.request.method": "POST",
+          "http.response.status_code": 500,
+          "url.path": "/api/checkout"
+        },
+        "body": "API request completed",
+        "instrumentationScope": {
+          "name": "@opentelemetry/instrumentation-pino",
+          "version": "0.68.0"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.872522302Z",
+        "resource": {
+          "container.id": "6c8fdf8dafd6cb8076aecf2a23dbbb464b8cd71b64c40e47b73c435f54a7aaa4",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "os.version": "6.10.14-linuxkit",
+          "process.command": "/app/server.js",
+          "process.command_args": "[\"/nodejs/bin/node\",\"--require=./Instrumentation.js\",\"/app/server.js\"]",
+          "process.executable.name": "/nodejs/bin/node",
+          "process.executable.path": "/nodejs/bin/node",
+          "process.owner": "nonroot",
+          "process.pid": "1",
+          "process.runtime.description": "Node.js",
+          "process.runtime.name": "nodejs",
+          "process.runtime.version": "24.21.0",
+          "service.criticality": "critical",
+          "service.name": "frontend",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "nodejs",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "2.11.0"
+        },
+        "severity": {
+          "text": "info",
+          "number": 9
+        },
+        "spanId": "fcef4bc280cddaac",
+        "@timestamp": "2026-10-03T13:29:24.913Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "E9L0AaEBSH3ZSryUiiVx",
+      "event_timestamp": "2026-10-03T13:29:24.800214093Z",
+      "observed_timestamp": "2026-10-03T13:29:25.872551593Z",
+      "observed_minus_event_ms": 1072.337,
+      "service_name": "product-catalog",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "Product Found",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "0918ad45c44dd323",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "demo.product.id": "6E92ZMYYFZ",
+        "demo.product.name": "Solar Filter"
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+        "service.name": "product-catalog",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "go",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.46.0"
+      },
+      "instrumentation_scope": {
+        "name": "product-catalog"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "demo.product.id": "6E92ZMYYFZ",
+          "demo.product.name": "Solar Filter"
+        },
+        "body": "Product Found",
+        "instrumentationScope": {
+          "name": "product-catalog"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.872551593Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+          "service.name": "product-catalog",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "go",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.46.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "0918ad45c44dd323",
+        "@timestamp": "2026-10-03T13:29:24.800214093Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "FNL0AaEBSH3ZSryUiiVx",
+      "event_timestamp": "2026-10-03T13:29:24.841128385Z",
+      "observed_timestamp": "2026-10-03T13:29:25.872604468Z",
+      "observed_minus_event_ms": 1031.476,
+      "service_name": "product-catalog",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "Product Found",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "40854c44febd1b51",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "demo.product.id": "1YMWWN1N4O",
+        "demo.product.name": "Eclipsmart Travel Refractor Telescope"
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+        "service.name": "product-catalog",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "go",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.46.0"
+      },
+      "instrumentation_scope": {
+        "name": "product-catalog"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "demo.product.id": "1YMWWN1N4O",
+          "demo.product.name": "Eclipsmart Travel Refractor Telescope"
+        },
+        "body": "Product Found",
+        "instrumentationScope": {
+          "name": "product-catalog"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.872604468Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+          "service.name": "product-catalog",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "go",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.46.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "40854c44febd1b51",
+        "@timestamp": "2026-10-03T13:29:24.841128385Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "FdL0AaEBSH3ZSryUiiVx",
+      "event_timestamp": "2026-10-03T13:29:24.842805343Z",
+      "observed_timestamp": "2026-10-03T13:29:25.872614427Z",
+      "observed_minus_event_ms": 1029.809,
+      "service_name": "product-catalog",
+      "severity_text": "INFO",
+      "severity_number": 9,
+      "body": "Product Found",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "fc7b62ff40800560",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "demo.product.id": "9SIQT8TOJO",
+        "demo.product.name": "Optical Tube Assembly"
+      },
+      "resource": {
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+        "service.name": "product-catalog",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "go",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.46.0"
+      },
+      "instrumentation_scope": {
+        "name": "product-catalog"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "demo.product.id": "9SIQT8TOJO",
+          "demo.product.name": "Optical Tube Assembly"
+        },
+        "body": "Product Found",
+        "instrumentationScope": {
+          "name": "product-catalog"
+        },
+        "observedTimestamp": "2026-10-03T13:29:25.872614427Z",
+        "resource": {
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "3bd39cb8a7003ed840a1bd9249df5daa",
+          "service.name": "product-catalog",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "go",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.46.0"
+        },
+        "severity": {
+          "text": "INFO",
+          "number": 9
+        },
+        "spanId": "fc7b62ff40800560",
+        "@timestamp": "2026-10-03T13:29:24.842805343Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "e9L0AaEBSH3ZSryUmCUP",
+      "event_timestamp": "2026-10-03T13:29:24.6741278Z",
+      "observed_timestamp": "2026-10-03T13:29:29.357532637Z",
+      "observed_minus_event_ms": 4683.405,
+      "service_name": "cart",
+      "severity_text": "Information",
+      "severity_number": 9,
+      "body": "AddItemAsync called with userId={userId}, productId={productId}, quantity={quantity}",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "ed35f1d1ba7572d6",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "productId": "6E92ZMYYFZ",
+        "quantity": 10,
+        "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+      },
+      "resource": {
+        "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+        "container.runtime.name": "docker",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+        "service.name": "cart",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "dotnet",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.19.1"
+      },
+      "instrumentation_scope": {
+        "name": "cart.cartstore.ValkeyCartStore"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "productId": "6E92ZMYYFZ",
+          "quantity": 10,
+          "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+        },
+        "body": "AddItemAsync called with userId={userId}, productId={productId}, quantity={quantity}",
+        "eventName": "cart.add_item",
+        "instrumentationScope": {
+          "name": "cart.cartstore.ValkeyCartStore"
+        },
+        "observedTimestamp": "2026-10-03T13:29:29.357532637Z",
+        "resource": {
+          "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+          "container.runtime.name": "docker",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+          "service.name": "cart",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "dotnet",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.19.1"
+        },
+        "severity": {
+          "text": "Information",
+          "number": 9
+        },
+        "spanId": "ed35f1d1ba7572d6",
+        "@timestamp": "2026-10-03T13:29:24.6741278Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "fNL0AaEBSH3ZSryUmCUP",
+      "event_timestamp": "2026-10-03T13:29:24.6763704Z",
+      "observed_timestamp": "2026-10-03T13:29:29.357556095Z",
+      "observed_minus_event_ms": 4681.186000000001,
+      "service_name": "cart",
+      "severity_text": "Information",
+      "severity_number": 9,
+      "body": "GetCartAsync called with userId={userId}",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "6a0191a6e68dc5ee",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+      },
+      "resource": {
+        "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+        "container.runtime.name": "docker",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+        "service.name": "cart",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "dotnet",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.19.1"
+      },
+      "instrumentation_scope": {
+        "name": "cart.cartstore.ValkeyCartStore"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+        },
+        "body": "GetCartAsync called with userId={userId}",
+        "eventName": "cart.get",
+        "instrumentationScope": {
+          "name": "cart.cartstore.ValkeyCartStore"
+        },
+        "observedTimestamp": "2026-10-03T13:29:29.357556095Z",
+        "resource": {
+          "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+          "container.runtime.name": "docker",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+          "service.name": "cart",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "dotnet",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.19.1"
+        },
+        "severity": {
+          "text": "Information",
+          "number": 9
+        },
+        "spanId": "6a0191a6e68dc5ee",
+        "@timestamp": "2026-10-03T13:29:24.6763704Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "fdL0AaEBSH3ZSryUmCUP",
+      "event_timestamp": "2026-10-03T13:29:24.6898909Z",
+      "observed_timestamp": "2026-10-03T13:29:29.357607803Z",
+      "observed_minus_event_ms": 4667.717,
+      "service_name": "cart",
+      "severity_text": "Information",
+      "severity_number": 9,
+      "body": "AddItemAsync called with userId={userId}, productId={productId}, quantity={quantity}",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "0acc110faa3c4782",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "productId": "1YMWWN1N4O",
+        "quantity": 3,
+        "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+      },
+      "resource": {
+        "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+        "container.runtime.name": "docker",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+        "service.name": "cart",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "dotnet",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.19.1"
+      },
+      "instrumentation_scope": {
+        "name": "cart.cartstore.ValkeyCartStore"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "productId": "1YMWWN1N4O",
+          "quantity": 3,
+          "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+        },
+        "body": "AddItemAsync called with userId={userId}, productId={productId}, quantity={quantity}",
+        "eventName": "cart.add_item",
+        "instrumentationScope": {
+          "name": "cart.cartstore.ValkeyCartStore"
+        },
+        "observedTimestamp": "2026-10-03T13:29:29.357607803Z",
+        "resource": {
+          "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+          "container.runtime.name": "docker",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+          "service.name": "cart",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "dotnet",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.19.1"
+        },
+        "severity": {
+          "text": "Information",
+          "number": 9
+        },
+        "spanId": "0acc110faa3c4782",
+        "@timestamp": "2026-10-03T13:29:24.6898909Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "ftL0AaEBSH3ZSryUmCUP",
+      "event_timestamp": "2026-10-03T13:29:24.6910942Z",
+      "observed_timestamp": "2026-10-03T13:29:29.357625845Z",
+      "observed_minus_event_ms": 4666.531,
+      "service_name": "cart",
+      "severity_text": "Information",
+      "severity_number": 9,
+      "body": "GetCartAsync called with userId={userId}",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "37d55749b32745b2",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+      },
+      "resource": {
+        "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+        "container.runtime.name": "docker",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+        "service.name": "cart",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "dotnet",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.19.1"
+      },
+      "instrumentation_scope": {
+        "name": "cart.cartstore.ValkeyCartStore"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+        },
+        "body": "GetCartAsync called with userId={userId}",
+        "eventName": "cart.get",
+        "instrumentationScope": {
+          "name": "cart.cartstore.ValkeyCartStore"
+        },
+        "observedTimestamp": "2026-10-03T13:29:29.357625845Z",
+        "resource": {
+          "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+          "container.runtime.name": "docker",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+          "service.name": "cart",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "dotnet",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.19.1"
+        },
+        "severity": {
+          "text": "Information",
+          "number": 9
+        },
+        "spanId": "37d55749b32745b2",
+        "@timestamp": "2026-10-03T13:29:24.6910942Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "f9L0AaEBSH3ZSryUmCUP",
+      "event_timestamp": "2026-10-03T13:29:24.7002325Z",
+      "observed_timestamp": "2026-10-03T13:29:29.357641512Z",
+      "observed_minus_event_ms": 4657.409000000001,
+      "service_name": "cart",
+      "severity_text": "Information",
+      "severity_number": 9,
+      "body": "AddItemAsync called with userId={userId}, productId={productId}, quantity={quantity}",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "e10e2ef6935b8a6b",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "productId": "9SIQT8TOJO",
+        "quantity": 4,
+        "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+      },
+      "resource": {
+        "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+        "container.runtime.name": "docker",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+        "service.name": "cart",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "dotnet",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.19.1"
+      },
+      "instrumentation_scope": {
+        "name": "cart.cartstore.ValkeyCartStore"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "productId": "9SIQT8TOJO",
+          "quantity": 4,
+          "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+        },
+        "body": "AddItemAsync called with userId={userId}, productId={productId}, quantity={quantity}",
+        "eventName": "cart.add_item",
+        "instrumentationScope": {
+          "name": "cart.cartstore.ValkeyCartStore"
+        },
+        "observedTimestamp": "2026-10-03T13:29:29.357641512Z",
+        "resource": {
+          "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+          "container.runtime.name": "docker",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+          "service.name": "cart",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "dotnet",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.19.1"
+        },
+        "severity": {
+          "text": "Information",
+          "number": 9
+        },
+        "spanId": "e10e2ef6935b8a6b",
+        "@timestamp": "2026-10-03T13:29:24.7002325Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "gNL0AaEBSH3ZSryUmCUP",
+      "event_timestamp": "2026-10-03T13:29:24.701021Z",
+      "observed_timestamp": "2026-10-03T13:29:29.357658845Z",
+      "observed_minus_event_ms": 4656.637,
+      "service_name": "cart",
+      "severity_text": "Information",
+      "severity_number": 9,
+      "body": "GetCartAsync called with userId={userId}",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "208893fa3f6fcd45",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+      },
+      "resource": {
+        "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+        "container.runtime.name": "docker",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+        "service.name": "cart",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "dotnet",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.19.1"
+      },
+      "instrumentation_scope": {
+        "name": "cart.cartstore.ValkeyCartStore"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+        },
+        "body": "GetCartAsync called with userId={userId}",
+        "eventName": "cart.get",
+        "instrumentationScope": {
+          "name": "cart.cartstore.ValkeyCartStore"
+        },
+        "observedTimestamp": "2026-10-03T13:29:29.357658845Z",
+        "resource": {
+          "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+          "container.runtime.name": "docker",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+          "service.name": "cart",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "dotnet",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.19.1"
+        },
+        "severity": {
+          "text": "Information",
+          "number": 9
+        },
+        "spanId": "208893fa3f6fcd45",
+        "@timestamp": "2026-10-03T13:29:24.701021Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    },
+    {
+      "index": "otel-logs-2026-10-03",
+      "document_id": "gdL0AaEBSH3ZSryUmCUP",
+      "event_timestamp": "2026-10-03T13:29:24.7628173Z",
+      "observed_timestamp": "2026-10-03T13:29:29.357666262Z",
+      "observed_minus_event_ms": 4594.849,
+      "service_name": "cart",
+      "severity_text": "Information",
+      "severity_number": 9,
+      "body": "GetCartAsync called with userId={userId}",
+      "trace_id": "3541df651cfbedf57cb9dd68ac319682",
+      "span_id": "a203f65bd596ddb9",
+      "attributes": {
+        "data_stream": {
+          "dataset": "default",
+          "namespace": "namespace",
+          "type": "record"
+        },
+        "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+      },
+      "resource": {
+        "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+        "container.runtime.name": "docker",
+        "host.arch": "arm64",
+        "host.cpu.cache.l2.size": "0",
+        "host.cpu.family": "",
+        "host.cpu.model.id": "0x000",
+        "host.cpu.model.name": "",
+        "host.cpu.stepping": "0",
+        "host.cpu.vendor.id": "Apple",
+        "host.name": "docker-desktop",
+        "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+        "os.type": "linux",
+        "service.criticality": "high",
+        "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+        "service.name": "cart",
+        "service.namespace": "opentelemetry-demo",
+        "service.version": "3.1.0",
+        "telemetry.sdk.language": "dotnet",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.19.1"
+      },
+      "instrumentation_scope": {
+        "name": "cart.cartstore.ValkeyCartStore"
+      },
+      "raw_source": {
+        "attributes": {
+          "data_stream": {
+            "dataset": "default",
+            "namespace": "namespace",
+            "type": "record"
+          },
+          "userId": "73251eae-bf2e-11f1-8e81-5a70dfff0703"
+        },
+        "body": "GetCartAsync called with userId={userId}",
+        "eventName": "cart.get",
+        "instrumentationScope": {
+          "name": "cart.cartstore.ValkeyCartStore"
+        },
+        "observedTimestamp": "2026-10-03T13:29:29.357666262Z",
+        "resource": {
+          "container.id": "7bf5d6c8e04d214d7f7e0f8caaa839b59331811975077fae27116a49df272de7",
+          "container.runtime.name": "docker",
+          "host.arch": "arm64",
+          "host.cpu.cache.l2.size": "0",
+          "host.cpu.family": "",
+          "host.cpu.model.id": "0x000",
+          "host.cpu.model.name": "",
+          "host.cpu.stepping": "0",
+          "host.cpu.vendor.id": "Apple",
+          "host.name": "docker-desktop",
+          "os.description": "Linux 2f23b5cc6e3f 6.10.14-linuxkit #1 SMP Wed Sep 10 06:47:45 UTC 2025 aarch64",
+          "os.type": "linux",
+          "service.criticality": "high",
+          "service.instance.id": "074db6ae-b112-4126-9904-702858785de3",
+          "service.name": "cart",
+          "service.namespace": "opentelemetry-demo",
+          "service.version": "3.1.0",
+          "telemetry.sdk.language": "dotnet",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.19.1"
+        },
+        "severity": {
+          "text": "Information",
+          "number": 9
+        },
+        "spanId": "a203f65bd596ddb9",
+        "@timestamp": "2026-10-03T13:29:24.7628173Z",
+        "traceId": "3541df651cfbedf57cb9dd68ac319682"
+      }
+    }
+  ]
+}
