@@ -259,6 +259,60 @@ class MetricsTool:
             labels=labels,
         )
 
+    def request_count(
+        self,
+        *,
+        family: MetricFamilyName,
+        service: str,
+        window: TimeWindow,
+        operation: str | None = None,
+    ) -> MetricEvidence:
+
+        spec = self._get_family(
+            family
+        )
+
+        selector = self._selector(
+            spec=spec,
+            service=service,
+            operation=operation,
+        )
+
+        duration = self._promql_duration(
+            window
+        )
+
+        promql = (
+            "sum("
+            "increase("
+            f"{spec.count_metric}"
+            f"{selector}"
+            f"[{duration}]"
+            ")"
+            ")"
+        )
+
+        value = self._query_scalar(
+            promql=promql,
+            window=window,
+        )
+
+        labels = self._evidence_labels(
+            family=family,
+            operation=operation,
+        )
+
+        return MetricEvidence(
+            name=spec.count_metric,
+            statistic="request_count",
+            value=value,
+            unit="requests",
+            service=service,
+            window=window,
+            promql=promql,
+            labels=labels,
+        )
+
     def error_rate(
         self,
         *,

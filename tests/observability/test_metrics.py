@@ -567,3 +567,54 @@ def test_label_values_are_escaped():
         'service_name="check\\"out"'
         in query
     )
+
+def test_rpc_client_request_count():
+
+    client = FakePrometheusClient(
+        [
+            sample(
+                42.0
+            )
+        ]
+    )
+
+    tool = MetricsTool(
+        client
+    )
+
+    evidence = tool.request_count(
+        family="rpc_client",
+        service="checkout",
+        operation=(
+            "oteldemo."
+            "PaymentService/"
+            "Charge"
+        ),
+        window=window(),
+    )
+
+    assert (
+        evidence.value
+        == pytest.approx(
+            42.0
+        )
+    )
+
+    assert (
+        evidence.unit
+        == "requests"
+    )
+
+    query = client.calls[0][
+        "promql"
+    ]
+
+    assert (
+        "increase("
+        in query
+    )
+
+    assert (
+        "[300s]"
+        in query
+    )
